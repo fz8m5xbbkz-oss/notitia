@@ -1,0 +1,103 @@
+---
+import Basis from '../../layouts/Basis.astro';
+import { getCollection } from 'astro:content';
+import { ladeSubstackFeed } from '../../lib/substack';
+
+type StromEintrag = {
+  art: 'essay' | 'substack';
+  title: string;
+  datum: Date;
+  url: string;
+};
+
+const essays = await getCollection('essays');
+const substack = await ladeSubstackFeed();
+
+const strom: StromEintrag[] = [
+  ...essays.map((e) => ({
+    art: 'essay' as const,
+    title: e.data.title,
+    datum: e.data.date,
+    url: `/essays/${e.id}`,
+  })),
+  ...substack.map((s) => ({
+    art: 'substack' as const,
+    title: s.title,
+    datum: s.datum,
+    url: s.url,
+  })),
+].sort((a, b) => b.datum.valueOf() - a.datum.valueOf());
+
+const formatDatum = (datum: Date) =>
+  datum.toLocaleDateString('de-DE', { day: '2-digit', month: 'long', year: 'numeric' });
+---
+
+<Basis titel="Essays — denkfeld">
+  <h1>Essays</h1>
+  {strom.length === 0 ? (
+    <p>Noch keine Essays.</p>
+  ) : (
+    <ul class="liste">
+      {strom.map((eintrag) => {
+        const extern = eintrag.art === 'substack';
+        return (
+          <li>
+            <a
+              href={eintrag.url}
+              {...(extern ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
+            >
+              <span class="titel">{eintrag.title}</span>
+              <span class="meta">
+                <span>{formatDatum(eintrag.datum)}</span>
+                {extern && <span class="ort">· auf Substack ↗</span>}
+              </span>
+            </a>
+          </li>
+        );
+      })}
+    </ul>
+  )}
+</Basis>
+
+<style>
+  .liste {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  .liste li {
+    padding: 1rem 0;
+    border-bottom: 1px solid var(--linie);
+  }
+
+  .liste li:last-child {
+    border-bottom: none;
+  }
+
+  .liste a {
+    text-decoration: none;
+    color: var(--ink);
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+  }
+
+  .liste a:hover .titel {
+    color: var(--akzent);
+  }
+
+  .titel {
+    font-size: 1.15rem;
+  }
+
+  .meta {
+    font-family: var(--schrift-ui);
+    font-size: 0.85rem;
+    color: var(--grau);
+  }
+
+  .ort {
+    margin-left: 0.4rem;
+  }
+</style>

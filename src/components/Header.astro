@@ -1,0 +1,58 @@
+---
+const links = [
+  { href: '/essays', text: 'Essays' },
+  { href: '/felder', text: 'Felder' },
+  { href: '/ueber', text: 'Über' },
+];
+---
+
+<header>
+  <a href="/" class="wordmark">denk<em>feld</em></a>
+  <nav>
+    {links.map(({ href, text }) => <a href={href}>{text}</a>)}
+  </nav>
+</header>
+
+<style>
+  header {
+    max-width: var(--max-breite);
+    margin: 0 auto;
+    padding: 1.5rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    border-bottom: 1px solid var(--linie);
+    flex-wrap: wrap;
+    gap: 1rem;
+  }
+
+  .wordmark {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: var(--ink);
+    text-decoration: none;
+    letter-spacing: -0.02em;
+    line-height: 1;
+  }
+
+  .wordmark em {
+    font-style: italic;
+    font-weight: 400;
+  }
+
+  nav {
+    display: flex;
+    gap: 1.25rem;
+    font-family: var(--schrift-ui);
+    font-size: 0.95rem;
+  }
+
+  nav a {
+    color: var(--grau);
+    text-decoration: none;
+  }
+
+  nav a:hover {
+    color: var(--ink);
+  }
+</style>

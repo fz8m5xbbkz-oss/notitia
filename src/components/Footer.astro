@@ -1,0 +1,74 @@
+---
+const jahr = new Date().getFullYear();
+
+const sozial = [
+  { name: 'Substack', url: 'https://luisfzl.substack.com' },
+  { name: 'Bluesky', url: 'https://bsky.app/profile/luis-57.bsky.social' },
+];
+---
+
+<footer>
+  <div class="links">
+    <span>© {jahr} Luis</span>
+    <span aria-hidden="true">·</span>
+    <a href="/ueber">Kolophon</a>
+  </div>
+  <div class="rechts">
+    {sozial.map(({ name, url }) => (
+      <a href={url} target="_blank" rel="noopener noreferrer" class="knopf">
+        {name} ↗
+      </a>
+    ))}
+  </div>
+</footer>
+
+<style>
+  footer {
+    max-width: var(--max-breite);
+    margin: 0 auto;
+    padding: 1.5rem;
+    border-top: 1px solid var(--linie);
+    color: var(--grau);
+    font-family: var(--schrift-ui);
+    font-size: 0.85rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 1rem;
+  }
+
+  .links, .rechts {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+  }
+
+  .links a {
+    color: var(--grau);
+    text-decoration: underline;
+    text-decoration-color: var(--linie);
+  }
+
+  .links a:hover {
+    color: var(--ink);
+  }
+
+  .knopf {
+    display: inline-block;
+    padding: 0.4rem 0.85rem;
+    border: 1px solid var(--linie);
+    color: var(--grau);
+    text-decoration: none;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    transition: border-color 0.15s, color 0.15s;
+  }
+
+  .knopf:hover {
+    color: var(--ink);
+    border-color: var(--ink);
+  }
+</style>

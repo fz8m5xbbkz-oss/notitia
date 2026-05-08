@@ -1,0 +1,98 @@
+---
+import Basis from '../../layouts/Basis.astro';
+import felderDaten from '../../data/felder.json';
+
+const { felder } = felderDaten;
+---
+
+<Basis titel="Felder — denkfeld">
+  <h1>Felder</h1>
+  <p class="einleitung">
+    Fünf Felder, jeweils acht Themengebiete, jeweils fünf Unterthemen.
+    Was hier steht, ist im Aufbau.
+  </p>
+
+  {felder.map((feld) => (
+    <section class="feld">
+      <h2><a href={`/felder/${feld.slug}`}>{feld.name}</a></h2>
+      {feld.themengebiete.length === 0 ? (
+        <p class="leer">Noch keine Themengebiete.</p>
+      ) : (
+        <ul class="themengebiete">
+          {feld.themengebiete.map((tg) => (
+            <li>
+              <span class="tg-name">{tg.name}</span>
+              {tg.unterthemen.length > 0 && (
+                <ul class="unterthemen">
+                  {tg.unterthemen.map((ut) => <li>{ut.name}</li>)}
+                </ul>
+              )}
+            </li>
+          ))}
+        </ul>
+      )}
+    </section>
+  ))}
+</Basis>
+
+<style>
+  .einleitung {
+    color: var(--grau);
+    margin-bottom: 2.5rem;
+  }
+
+  .feld {
+    margin-bottom: 2.5rem;
+    padding-bottom: 1.5rem;
+    border-bottom: 1px solid var(--linie);
+  }
+
+  .feld:last-child {
+    border-bottom: none;
+  }
+
+  .feld h2 {
+    margin-top: 0;
+  }
+
+  .feld h2 a {
+    color: var(--ink);
+    text-decoration: none;
+  }
+
+  .feld h2 a:hover {
+    color: var(--akzent);
+  }
+
+  .themengebiete {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  .themengebiete > li {
+    margin-bottom: 1rem;
+  }
+
+  .tg-name {
+    font-weight: 600;
+  }
+
+  .unterthemen {
+    list-style: none;
+    padding-left: 1rem;
+    margin: 0.25rem 0 0;
+    color: var(--grau);
+    font-size: 0.95rem;
+  }
+
+  .unterthemen li {
+    padding: 0.15rem 0;
+  }
+
+  .leer {
+    color: var(--grau);
+    font-style: italic;
+    margin: 0;
+  }
+</style>

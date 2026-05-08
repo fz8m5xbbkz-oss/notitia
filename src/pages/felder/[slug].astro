@@ -1,0 +1,149 @@
+---
+import Basis from '../../layouts/Basis.astro';
+import { getCollection } from 'astro:content';
+import felderDaten from '../../data/felder.json';
+
+export async function getStaticPaths() {
+  return felderDaten.felder.map((feld) => ({
+    params: { slug: feld.slug },
+    props: { feld },
+  }));
+}
+
+const { feld } = Astro.props;
+
+const alleEssays = await getCollection('essays');
+const essays = alleEssays
+  .filter((e) => e.data.feld === feld.slug)
+  .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
+
+const formatDatum = (datum: Date) =>
+  datum.toLocaleDateString('de-DE', { day: '2-digit', month: 'long', year: 'numeric' });
+---
+
+<Basis titel={`${feld.name} — denkfeld`}>
+  <h1>{feld.name}</h1>
+
+  <section class="block">
+    <h2>Essays in diesem Feld</h2>
+    {essays.length === 0 ? (
+      <p class="leer">Noch keine Essays.</p>
+    ) : (
+      <ul class="essay-liste">
+        {essays.map((essay) => (
+          <li>
+            <a href={`/essays/${essay.id}`}>
+              <span class="titel">{essay.data.title}</span>
+              <span class="datum">{formatDatum(essay.data.date)}</span>
+            </a>
+          </li>
+        ))}
+      </ul>
+    )}
+  </section>
+
+  <section class="block">
+    <h2>Themen im Feld</h2>
+    {feld.themengebiete.length === 0 ? (
+      <p class="leer">Noch keine Themengebiete.</p>
+    ) : (
+      <ul class="themengebiete">
+        {feld.themengebiete.map((tg) => (
+          <li>
+            <span class="tg-name">{tg.name}</span>
+            {tg.unterthemen.length > 0 && (
+              <ul class="unterthemen">
+                {tg.unterthemen.map((ut) => <li>{ut.name}</li>)}
+              </ul>
+            )}
+          </li>
+        ))}
+      </ul>
+    )}
+  </section>
+</Basis>
+
+<style>
+  .block {
+    margin-bottom: 2.5rem;
+  }
+
+  .block h2 {
+    font-family: var(--schrift-ui);
+    font-size: 0.9rem;
+    color: var(--grau);
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin: 0 0 1rem;
+  }
+
+  .essay-liste {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  .essay-liste li {
+    padding: 0.75rem 0;
+    border-bottom: 1px solid var(--linie);
+  }
+
+  .essay-liste li:last-child {
+    border-bottom: none;
+  }
+
+  .essay-liste a {
+    text-decoration: none;
+    color: var(--ink);
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+  }
+
+  .essay-liste a:hover .titel {
+    color: var(--akzent);
+  }
+
+  .essay-liste .titel {
+    font-size: 1.1rem;
+  }
+
+  .essay-liste .datum {
+    font-family: var(--schrift-ui);
+    font-size: 0.85rem;
+    color: var(--grau);
+  }
+
+  .themengebiete {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  .themengebiete > li {
+    margin-bottom: 1rem;
+  }
+
+  .tg-name {
+    font-weight: 600;
+  }
+
+  .unterthemen {
+    list-style: none;
+    padding-left: 1rem;
+    margin: 0.25rem 0 0;
+    color: var(--grau);
+    font-size: 0.95rem;
+  }
+
+  .unterthemen li {
+    padding: 0.15rem 0;
+  }
+
+  .leer {
+    color: var(--grau);
+    font-style: italic;
+    margin: 0;
+  }
+</style>

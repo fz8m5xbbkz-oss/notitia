@@ -1,0 +1,85 @@
+/* ============ FONTS ============ */
+@font-face {
+  font-family: 'Source Serif 4';
+  src: url('/fonts/SourceSerif4Variable-Roman.woff2') format('woff2-variations');
+  font-weight: 200 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Source Serif 4';
+  src: url('/fonts/SourceSerif4Variable-Italic.woff2') format('woff2-variations');
+  font-weight: 200 900;
+  font-style: italic;
+  font-display: swap;
+}
+
+/* ============ TOKENS ============ */
+:root {
+  --paper: #EDE6D7;
+  --paper-dark: #E2DAC7;
+  --bg: var(--paper);
+
+  --ink: #1a1a1a;
+  --ink-soft: #6b6b6b;
+  --grau: var(--ink-soft);
+
+  --akzent: #5b6b3e;
+  --linie: rgba(26, 26, 26, 0.15);
+
+  --schrift-text: 'Source Serif 4', Georgia, 'Iowan Old Style', serif;
+  --schrift-ui: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+
+  --max-breite: 38rem;
+}
+
+/* ============ RESET / BASE ============ */
+* {
+  box-sizing: border-box;
+}
+
+html {
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--schrift-text);
+  font-size: 18px;
+  line-height: 1.6;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='240' height='240'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0.08 0 0 0 0 0.06 0 0 0 0 0.04 0 0 0 0.05 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+}
+
+main {
+  flex: 1;
+  width: 100%;
+  max-width: var(--max-breite);
+  margin: 0 auto;
+  padding: 3rem 1.5rem;
+}
+
+h1, h2, h3 {
+  line-height: 1.2;
+  font-weight: 600;
+}
+
+h1 { font-size: 2rem; margin: 0 0 1rem; }
+h2 { font-size: 1.5rem; margin: 2rem 0 0.75rem; }
+h3 { font-size: 1.15rem; margin: 1.5rem 0 0.5rem; }
+
+p { margin: 0 0 1rem; }
+
+a {
+  color: var(--akzent);
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.15em;
+}
+
+a:hover {
+  text-decoration-thickness: 2px;
+}

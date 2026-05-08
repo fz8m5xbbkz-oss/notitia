@@ -1,17 +1,80 @@
 ---
+import Basis from '../layouts/Basis.astro';
+import { ladeBlueskyPosts } from '../lib/bluesky';
+import { Content as Manifest } from '../inhalte/start.md';
 
+const notizen = await ladeBlueskyPosts(3);
+
+const formatDatum = (datum: Date) =>
+  datum.toLocaleDateString('de-DE', { day: '2-digit', month: 'long', year: 'numeric' });
 ---
 
-<html lang="en">
-	<head>
-		<meta charset="utf-8" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<link rel="icon" href="/favicon.ico" />
-		<meta name="viewport" content="width=device-width" />
-		<meta name="generator" content={Astro.generator} />
-		<title>Astro</title>
-	</head>
-	<body>
-		<h1>Astro</h1>
-	</body>
-</html>
+<Basis titel="denkfeld">
+  <Manifest />
+
+  {notizen.length > 0 && (
+    <section class="notizen">
+      <h2>Aus dem Notizbuch</h2>
+      <ul>
+        {notizen.map((post) => (
+          <li>
+            <p class="text">{post.text}</p>
+            <a href={post.url} target="_blank" rel="noopener noreferrer">
+              {formatDatum(post.datum)} · auf Bluesky ↗
+            </a>
+          </li>
+        ))}
+      </ul>
+    </section>
+  )}
+</Basis>
+
+<style>
+  .notizen {
+    margin-top: 3rem;
+    padding-top: 2rem;
+    border-top: 1px solid var(--linie);
+  }
+
+  .notizen h2 {
+    font-family: var(--schrift-ui);
+    font-size: 0.9rem;
+    color: var(--grau);
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin: 0 0 1.5rem;
+  }
+
+  .notizen ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  .notizen li {
+    padding: 1.25rem 0;
+    border-bottom: 1px solid var(--linie);
+  }
+
+  .notizen li:last-child {
+    border-bottom: none;
+  }
+
+  .notizen .text {
+    margin: 0 0 0.5rem;
+    white-space: pre-wrap;
+    font-size: 0.95rem;
+  }
+
+  .notizen a {
+    font-family: var(--schrift-ui);
+    font-size: 0.8rem;
+    color: var(--grau);
+    text-decoration: none;
+  }
+
+  .notizen a:hover {
+    color: var(--ink);
+  }
+</style>
