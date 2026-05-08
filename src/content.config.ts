@@ -44,4 +44,13 @@ const themengebiete = defineCollection({
   }),
 });
 
-export const collections = { essays, lerneinheiten, materialien, themengebiete };
+const unterthemen = defineCollection({
+  loader: glob({ pattern: '**/*.md', base: './src/content/unterthemen' }),
+  schema: z.object({
+    title: z.string(),
+    feld: z.string(),
+    themengebiet: z.string(),
+  }),
+});
+
+export const collections = { essays, lerneinheiten, materialien, themengebiete, unterthemen };

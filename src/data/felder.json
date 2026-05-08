@@ -5,10 +5,10 @@
       "name": "Philosophie & Ethik",
       "themengebiete": [
         {
-          "slug": "tugendethik",
-          "name": "Tugendethik",
+          "slug": "einfuehrung-in-philosophisches-denken",
+          "name": "Einführung in philosophisches Denken",
           "unterthemen": [
-            { "slug": "aristoteles-eudaimonia", "name": "Aristoteles über Eudaimonia" }
+            { "slug": "aufgabe-der-philosophie", "name": "Aufgabe der Philosophie" }
           ]
         }
       ]

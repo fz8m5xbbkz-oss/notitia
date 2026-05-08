@@ -1,24 +1,26 @@
 ---
-import Basis from '../../../layouts/Basis.astro';
+import Basis from '../../../../layouts/Basis.astro';
 import { getCollection, getEntry, render } from 'astro:content';
-import felderDaten from '../../../data/felder.json';
+import felderDaten from '../../../../data/felder.json';
 
 export async function getStaticPaths() {
   const paths = [];
   for (const feld of felderDaten.felder) {
     for (const tg of feld.themengebiete) {
-      paths.push({
-        params: { feld: feld.slug, themengebiet: tg.slug },
-        props: { feld, themengebiet: tg },
-      });
+      for (const ut of tg.unterthemen) {
+        paths.push({
+          params: { feld: feld.slug, themengebiet: tg.slug, unterthema: ut.slug },
+          props: { feld, themengebiet: tg, unterthema: ut },
+        });
+      }
     }
   }
   return paths;
 }
 
-const { feld, themengebiet } = Astro.props;
+const { feld, themengebiet, unterthema } = Astro.props;
 
-const erklaerung = await getEntry('themengebiete', themengebiet.slug);
+const erklaerung = await getEntry('unterthemen', unterthema.slug);
 const Content = erklaerung && erklaerung.body && erklaerung.body.trim().length > 0
   ? (await render(erklaerung)).Content
   : null;
@@ -26,7 +28,10 @@ const Content = erklaerung && erklaerung.body && erklaerung.body.trim().length >
 const alleEssays = await getCollection('essays');
 const essays = alleEssays
   .filter(
-    (e) => e.data.feld === feld.slug && e.data.themengebiet === themengebiet.slug
+    (e) =>
+      e.data.feld === feld.slug &&
+      e.data.themengebiet === themengebiet.slug &&
+      e.data.unterthema === unterthema.slug
   )
   .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
 
@@ -38,14 +43,16 @@ const formatDatum = (datum: Date) =>
   });
 ---
 
-<Basis titel={`${themengebiet.name} — denkfeld`}>
+<Basis titel={`${unterthema.name} — denkfeld`}>
   <p class="brotkrumen">
     <a href="/felder">Felder</a>
     <span aria-hidden="true">›</span>
     <a href={`/felder/${feld.slug}`}>{feld.name}</a>
+    <span aria-hidden="true">›</span>
+    <a href={`/felder/${feld.slug}/${themengebiet.slug}`}>{themengebiet.name}</a>
   </p>
 
-  <h1>{themengebiet.name}</h1>
+  <h1>{unterthema.name}</h1>
 
   {Content ? (
     <div class="erklaerung">
@@ -56,22 +63,7 @@ const formatDatum = (datum: Date) =>
   )}
 
   <section class="block">
-    <h2>Unterthemen</h2>
-    {themengebiet.unterthemen.length === 0 ? (
-      <p class="leer">Noch keine Unterthemen.</p>
-    ) : (
-      <ul class="unterthemen">
-        {themengebiet.unterthemen.map((ut) => (
-          <li>
-            <a href={`/felder/${feld.slug}/${themengebiet.slug}/${ut.slug}`}>{ut.name}</a>
-          </li>
-        ))}
-      </ul>
-    )}
-  </section>
-
-  <section class="block">
-    <h2>Essays in diesem Themengebiet</h2>
+    <h2>Essays zu diesem Unterthema</h2>
     {essays.length === 0 ? (
       <p class="leer">Noch keine Essays.</p>
     ) : (
@@ -141,32 +133,6 @@ const formatDatum = (datum: Date) =>
     color: var(--grau);
     font-style: italic;
     margin: 0;
-  }
-
-  .unterthemen {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-  }
-
-  .unterthemen li {
-    padding: 0.5rem 0;
-    border-bottom: 1px solid var(--linie);
-  }
-
-  .unterthemen li:last-child {
-    border-bottom: none;
-  }
-
-  .unterthemen a {
-    color: var(--ink);
-    text-decoration: none;
-  }
-
-  .unterthemen a:hover {
-    text-decoration: underline;
-    text-decoration-color: var(--linie);
-    text-underline-offset: 0.2em;
   }
 
   .essay-liste {
