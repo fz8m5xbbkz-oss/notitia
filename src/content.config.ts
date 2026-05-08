@@ -36,4 +36,12 @@ const materialien = defineCollection({
   }),
 });
 
-export const collections = { essays, lerneinheiten, materialien };
+const themengebiete = defineCollection({
+  loader: glob({ pattern: '**/*.md', base: './src/content/themengebiete' }),
+  schema: z.object({
+    title: z.string(),
+    feld: z.string(),
+  }),
+});
+
+export const collections = { essays, lerneinheiten, materialien, themengebiete };

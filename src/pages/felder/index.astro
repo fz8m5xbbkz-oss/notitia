@@ -21,7 +21,7 @@ const { felder } = felderDaten;
         <ul class="themengebiete">
           {feld.themengebiete.map((tg) => (
             <li>
-              <span class="tg-name">{tg.name}</span>
+              <a class="tg-name" href={`/felder/${feld.slug}/${tg.slug}`}>{tg.name}</a>
               {tg.unterthemen.length > 0 && (
                 <ul class="unterthemen">
                   {tg.unterthemen.map((ut) => <li>{ut.name}</li>)}
@@ -76,6 +76,14 @@ const { felder } = felderDaten;
 
   .tg-name {
     font-weight: 600;
+    color: var(--ink);
+    text-decoration: none;
+  }
+
+  .tg-name:hover {
+    text-decoration: underline;
+    text-decoration-color: var(--linie);
+    text-underline-offset: 0.2em;
   }
 
   .unterthemen {

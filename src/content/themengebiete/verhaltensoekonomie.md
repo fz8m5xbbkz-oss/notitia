@@ -1,0 +1,4 @@
+---
+title: "Verhaltensökonomie"
+feld: wirtschaft
+---

@@ -1,0 +1,195 @@
+---
+import Basis from '../../../layouts/Basis.astro';
+import { getCollection, getEntry, render } from 'astro:content';
+import felderDaten from '../../../data/felder.json';
+
+export async function getStaticPaths() {
+  const paths = [];
+  for (const feld of felderDaten.felder) {
+    for (const tg of feld.themengebiete) {
+      paths.push({
+        params: { feld: feld.slug, themengebiet: tg.slug },
+        props: { feld, themengebiet: tg },
+      });
+    }
+  }
+  return paths;
+}
+
+const { feld, themengebiet } = Astro.props;
+
+const erklaerung = await getEntry('themengebiete', themengebiet.slug);
+const Content = erklaerung && erklaerung.body && erklaerung.body.trim().length > 0
+  ? (await render(erklaerung)).Content
+  : null;
+
+const alleEssays = await getCollection('essays');
+const essays = alleEssays
+  .filter(
+    (e) => e.data.feld === feld.slug && e.data.themengebiet === themengebiet.slug
+  )
+  .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
+
+const formatDatum = (datum: Date) =>
+  datum.toLocaleDateString('de-DE', {
+    day: '2-digit',
+    month: 'long',
+    year: 'numeric',
+  });
+---
+
+<Basis titel={`${themengebiet.name} — denkfeld`}>
+  <p class="brotkrumen">
+    <a href="/felder">Felder</a>
+    <span aria-hidden="true">›</span>
+    <a href={`/felder/${feld.slug}`}>{feld.name}</a>
+  </p>
+
+  <h1>{themengebiet.name}</h1>
+
+  {Content ? (
+    <div class="erklaerung">
+      <Content />
+    </div>
+  ) : (
+    <p class="leer">Noch keine Erklärung verfasst.</p>
+  )}
+
+  <section class="block">
+    <h2>Unterthemen</h2>
+    {themengebiet.unterthemen.length === 0 ? (
+      <p class="leer">Noch keine Unterthemen.</p>
+    ) : (
+      <ul class="unterthemen">
+        {themengebiet.unterthemen.map((ut) => (
+          <li>{ut.name}</li>
+        ))}
+      </ul>
+    )}
+  </section>
+
+  <section class="block">
+    <h2>Essays in diesem Themengebiet</h2>
+    {essays.length === 0 ? (
+      <p class="leer">Noch keine Essays.</p>
+    ) : (
+      <ul class="essay-liste">
+        {essays.map((essay) => (
+          <li>
+            <a href={`/essays/${essay.id}`}>
+              <span class="titel">{essay.data.title}</span>
+              <span class="datum">{formatDatum(essay.data.date)}</span>
+            </a>
+          </li>
+        ))}
+      </ul>
+    )}
+  </section>
+</Basis>
+
+<style>
+  .brotkrumen {
+    font-family: var(--schrift-ui);
+    font-size: 0.85rem;
+    color: var(--grau);
+    margin: 0 0 1rem;
+  }
+
+  .brotkrumen a {
+    color: var(--grau);
+    text-decoration: underline;
+    text-decoration-color: var(--linie);
+  }
+
+  .brotkrumen a:hover {
+    color: var(--ink);
+  }
+
+  .brotkrumen span {
+    margin: 0 0.4rem;
+  }
+
+  .erklaerung {
+    margin: 1.5rem 0 3rem;
+  }
+
+  .erklaerung :global(p) {
+    margin: 0 0 1rem;
+  }
+
+  .erklaerung :global(em) {
+    font-style: italic;
+  }
+
+  .block {
+    margin-bottom: 2.5rem;
+  }
+
+  .block h2 {
+    font-family: var(--schrift-ui);
+    font-size: 0.9rem;
+    color: var(--grau);
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin: 0 0 1rem;
+  }
+
+  .leer {
+    color: var(--grau);
+    font-style: italic;
+    margin: 0;
+  }
+
+  .unterthemen {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  .unterthemen li {
+    padding: 0.5rem 0;
+    border-bottom: 1px solid var(--linie);
+  }
+
+  .unterthemen li:last-child {
+    border-bottom: none;
+  }
+
+  .essay-liste {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  .essay-liste li {
+    padding: 0.75rem 0;
+    border-bottom: 1px solid var(--linie);
+  }
+
+  .essay-liste li:last-child {
+    border-bottom: none;
+  }
+
+  .essay-liste a {
+    text-decoration: none;
+    color: var(--ink);
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+  }
+
+  .essay-liste a:hover .titel {
+    color: var(--akzent);
+  }
+
+  .essay-liste .titel {
+    font-size: 1.1rem;
+  }
+
+  .essay-liste .datum {
+    font-family: var(--schrift-ui);
+    font-size: 0.85rem;
+    color: var(--grau);
+  }
+</style>
