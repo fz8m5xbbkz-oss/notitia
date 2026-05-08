@@ -5,8 +5,10 @@ import '../styles/global.css';
 
 const {
   titel = 'denkfeld',
-  beschreibung = 'Selbstgesteuertes Lernen in fünf Feldern.',
+  beschreibung = 'Selbstgesteuertes Lernen in fünf Feldern. Essays zu Philosophie, Politik, Kunst, Psychologie und Wirtschaft.',
 } = Astro.props;
+
+const kanonisch = new URL(Astro.url.pathname, Astro.site).toString();
 ---
 
 <html lang="de">
@@ -14,7 +16,22 @@ const {
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width" />
     <meta name="description" content={beschreibung} />
+    <link rel="canonical" href={kanonisch} />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+
+    <!-- OpenGraph -->
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content={titel} />
+    <meta property="og:description" content={beschreibung} />
+    <meta property="og:url" content={kanonisch} />
+    <meta property="og:locale" content="de_DE" />
+    <meta property="og:site_name" content="denkfeld" />
+
+    <!-- Twitter / Bluesky-Vorschau -->
+    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:title" content={titel} />
+    <meta name="twitter:description" content={beschreibung} />
+
     <title>{titel}</title>
   </head>
   <body>
