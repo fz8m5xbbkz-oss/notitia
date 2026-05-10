@@ -4,6 +4,6 @@ import sitemap from '@astrojs/sitemap';
 
 // https://astro.build/config
 export default defineConfig({
-  site: 'https://magnolia.netlify.app',
+  site: 'https://luis-magnolia.netlify.app',
   integrations: [sitemap()],
 });
