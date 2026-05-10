@@ -8,10 +8,19 @@
           "slug": "einfuehrung-in-philosophisches-denken",
           "name": "Einführung in philosophisches Denken",
           "unterthemen": [
-            { "slug": "aufgabe-der-philosophie", "name": "Aufgabe der Philosophie" }]
+            { "slug": "aufgabe-der-philosophie", "name": "Aufgabe der Philosophie" }
+          ]
+        },
+        {
+          "slug": "erkenntnistheorie",
+          "name": "Erkenntnistheorie",
+          "unterthemen": []
+        },
+        {
+          "slug": "metaphysik",
+          "name": "Metaphysik",
+          "unterthemen": []
         }
-        ]
-        }  
       ]
     },
     {

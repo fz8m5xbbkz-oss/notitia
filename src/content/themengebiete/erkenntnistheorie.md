@@ -1,4 +1,4 @@
 ---
-title: "Die Ethik"
+title: "Erkenntnistheorie"
 feld: philosophie-ethik
 ---
