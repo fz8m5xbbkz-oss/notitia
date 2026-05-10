@@ -36,7 +36,16 @@ const feld = felderDaten.felder.find((f) => f.slug === essay.data.feld);
         )}
       </p>
       <h1>{essay.data.title}</h1>
+      {essay.data.deck && <p class="deck">{essay.data.deck}</p>}
     </header>
+    {essay.data.bild && (
+      <figure class="hero">
+        <img src={`/bilder/${essay.data.bild}`} alt={essay.data.title} />
+        {essay.data.bild_caption && (
+          <figcaption set:html={essay.data.bild_caption} />
+        )}
+      </figure>
+    )}
     <Content />
   </article>
 </Basis>
@@ -78,5 +87,41 @@ const feld = felderDaten.felder.find((f) => f.slug === essay.data.feld);
 
   article :global(em) {
     font-style: italic;
+  }
+
+  .deck {
+    font-size: 1.15rem;
+    font-style: italic;
+    color: var(--grau);
+    margin: 0.5rem 0 0;
+    line-height: 1.4;
+  }
+
+  .hero {
+    margin: 2rem 0;
+  }
+
+  .hero img {
+    width: 100%;
+    height: auto;
+    display: block;
+  }
+
+  .hero figcaption {
+    font-family: var(--schrift-ui);
+    font-size: 0.8rem;
+    color: var(--grau);
+    margin-top: 0.5rem;
+    line-height: 1.4;
+  }
+
+  .hero figcaption :global(a) {
+    color: var(--grau);
+    text-decoration: underline;
+    text-decoration-color: var(--linie);
+  }
+
+  .hero figcaption :global(a:hover) {
+    color: var(--ink);
   }
 </style>

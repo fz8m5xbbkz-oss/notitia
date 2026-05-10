@@ -10,6 +10,9 @@ const essays = defineCollection({
     themengebiet: z.string(),
     unterthema: z.string(),
     substack_url: z.string().url().optional(),
+    bild: z.string().optional(),
+    bild_caption: z.string().optional(),
+    deck: z.string().optional(),
   }),
 });
 

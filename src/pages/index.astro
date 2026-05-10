@@ -1,7 +1,18 @@
 ---
 import Basis from '../layouts/Basis.astro';
+import { getCollection } from 'astro:content';
 import { ladeBlueskyPosts } from '../lib/bluesky';
 import { Content as Manifest } from '../inhalte/start.md';
+import felderDaten from '../data/felder.json';
+
+const alleEssays = await getCollection('essays');
+const beitraege = alleEssays
+  .filter((e) => e.data.bild)
+  .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf())
+  .slice(0, 2);
+
+const feldName = (slug: string) =>
+  felderDaten.felder.find((f) => f.slug === slug)?.name ?? slug;
 
 const notizen = await ladeBlueskyPosts(3);
 
@@ -11,6 +22,26 @@ const formatDatum = (datum: Date) =>
 
 <Basis titel="magnolia">
   <Manifest />
+
+  {beitraege.length > 0 && (
+    <section class="beitraege">
+      <h2>Beiträge</h2>
+      <ul>
+        {beitraege.map((essay) => (
+          <li>
+            <a href={`/essays/${essay.id}`}>
+              <img src={`/bilder/${essay.data.bild}`} alt={essay.data.title} />
+              <div class="text">
+                <p class="tag">{feldName(essay.data.feld)}</p>
+                <h3>{essay.data.title}</h3>
+                {essay.data.deck && <p class="deck">{essay.data.deck}</p>}
+              </div>
+            </a>
+          </li>
+        ))}
+      </ul>
+    </section>
+  )}
 
   {notizen.length > 0 && (
     <section class="notizen">
@@ -30,6 +61,80 @@ const formatDatum = (datum: Date) =>
 </Basis>
 
 <style>
+  /* ============ BEITRAEGE ============ */
+  .beitraege {
+    margin-top: 3rem;
+    padding-top: 2rem;
+    border-top: 1px solid var(--linie);
+  }
+
+  .beitraege > h2 {
+    font-family: var(--schrift-ui);
+    font-size: 0.9rem;
+    color: var(--grau);
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin: 0 0 1.5rem;
+  }
+
+  .beitraege ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 2.5rem;
+  }
+
+  .beitraege li {
+    margin: 0;
+  }
+
+  .beitraege a {
+    text-decoration: none;
+    color: var(--ink);
+    display: block;
+  }
+
+  .beitraege img {
+    width: 100%;
+    height: auto;
+    aspect-ratio: 3/2;
+    object-fit: cover;
+    display: block;
+    margin-bottom: 0.75rem;
+    background: var(--paper-dark);
+  }
+
+  .beitraege .tag {
+    font-family: var(--schrift-ui);
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--akzent);
+    margin: 0 0 0.4rem;
+  }
+
+  .beitraege h3 {
+    font-size: 1.4rem;
+    font-weight: 600;
+    line-height: 1.2;
+    margin: 0;
+  }
+
+  .beitraege a:hover h3 {
+    color: var(--akzent);
+  }
+
+  .beitraege .deck {
+    font-style: italic;
+    color: var(--grau);
+    margin: 0.5rem 0 0;
+    line-height: 1.45;
+  }
+
+  /* ============ NOTIZEN ============ */
   .notizen {
     margin-top: 3rem;
     padding-top: 2rem;
