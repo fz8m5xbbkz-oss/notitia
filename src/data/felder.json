@@ -9,9 +9,14 @@
           "name": "Einführung in philosophisches Denken",
           "unterthemen": [
             { "slug": "aufgabe-der-philosophie", "name": "Aufgabe der Philosophie" }]
-          "slug": "die-ethik",
-          "name": "Die Ethik"}]
         }
+        {
+        "slug": "die-ethik",
+        "name": "Die Ethik",
+        "unterthemen": [
+        { "slug": "hoehlengleichnis", "name": "Höhlengleichnis" }
+        ]
+        }  
       ]
     },
     {
