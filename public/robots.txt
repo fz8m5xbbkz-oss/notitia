@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://denkfeld.netlify.app/sitemap-index.xml
+Sitemap: https://magnolia.netlify.app/sitemap-index.xml

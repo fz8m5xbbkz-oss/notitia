@@ -47,8 +47,7 @@
           "slug": "kognitive-verzerrungen",
           "name": "Kognitive Verzerrungen",
           "unterthemen": [
-            { "slug": "bestaetigungsfehler", "name": "Bestätigungsfehler" },
-            { "slug": "narzissmus", "name": "Narzissmus" }
+            { "slug": "bestaetigungsfehler", "name": "Bestätigungsfehler" }
           ]
         }
       ]
