@@ -12,7 +12,7 @@
          { "slug": "die-ethik",
           "name": "Die Ethik",
           "unterthemen": [
-            { "slug": "die-ethik", "name": "Die Ethik" }
+            }
           ]
         }
       ]
