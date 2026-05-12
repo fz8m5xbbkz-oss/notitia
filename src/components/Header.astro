@@ -1,13 +1,12 @@
 ---
 const links = [
   { href: '/essays', text: 'Essays' },
-  { href: '/felder', text: 'Felder' },
   { href: '/ueber', text: 'Über' },
 ];
 ---
 
 <header>
-  <a href="/" class="wordmark">magnolia</a>
+  <a href="/" class="wordmark">[SITENAME]</a>
   <nav>
     {links.map(({ href, text }) => <a href={href}>{text}</a>)}
   </nav>

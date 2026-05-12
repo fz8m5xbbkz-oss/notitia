@@ -1,80 +1,45 @@
 ---
 import Basis from '../layouts/Basis.astro';
-import { ladeBlueskyPosts } from '../lib/bluesky';
 import { Content as Manifest } from '../inhalte/start.md';
-
-const notizen = await ladeBlueskyPosts(3);
-
-const formatDatum = (datum: Date) =>
-  datum.toLocaleDateString('de-DE', { day: '2-digit', month: 'long', year: 'numeric' });
 ---
 
-<Basis titel="magnolia">
+<Basis titel="[SITENAME]">
   <Manifest />
 
-  {notizen.length > 0 && (
-    <section class="notizen">
-      <h2>Aus dem Notizbuch</h2>
-      <ul>
-        {notizen.map((post) => (
-          <li>
-            <p class="text">{post.text}</p>
-            <a href={post.url} target="_blank" rel="noopener noreferrer">
-              {formatDatum(post.datum)} · auf Bluesky ↗
-            </a>
-          </li>
-        ))}
-      </ul>
-    </section>
-  )}
+  <nav class="cta">
+    <a href="/essays">Essays lesen →</a>
+    <a href="https://luisfzl.substack.com" target="_blank" rel="noopener noreferrer">
+      Newsletter abonnieren →
+    </a>
+  </nav>
+
+  {/*
+    Bluesky-Notizbuch entfernt (Stand: Restrukturierung Mai 2026).
+    Falls du einen einzelnen kuratierten Gedanken einbauen willst,
+    fuege hier eine Markdown-Datei wie src/inhalte/notiz.md ein und importiere sie:
+      import { Content as Notiz } from '../inhalte/notiz.md';
+    Bisheriger Bluesky-Code ist in der Git-Historie auffindbar (Commit 920de62 und davor).
+  */}
 </Basis>
 
 <style>
-  .notizen {
-    margin-top: 3rem;
-    padding-top: 2rem;
-    border-top: 1px solid var(--linie);
-  }
-
-  .notizen h2 {
+  .cta {
+    margin-top: 2rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
     font-family: var(--schrift-ui);
-    font-size: 0.9rem;
-    color: var(--grau);
-    font-weight: 500;
-    text-transform: uppercase;
-    letter-spacing: 0.08em;
-    margin: 0 0 1.5rem;
-  }
-
-  .notizen ul {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-  }
-
-  .notizen li {
-    padding: 1.25rem 0;
-    border-bottom: 1px solid var(--linie);
-  }
-
-  .notizen li:last-child {
-    border-bottom: none;
-  }
-
-  .notizen .text {
-    margin: 0 0 0.5rem;
-    white-space: pre-wrap;
     font-size: 0.95rem;
   }
 
-  .notizen a {
-    font-family: var(--schrift-ui);
-    font-size: 0.8rem;
-    color: var(--grau);
-    text-decoration: none;
+  .cta a {
+    color: var(--akzent);
+    text-decoration: underline;
+    text-decoration-color: var(--linie);
+    text-underline-offset: 0.2em;
   }
 
-  .notizen a:hover {
-    color: var(--ink);
+  .cta a:hover {
+    text-decoration-color: var(--akzent);
   }
 </style>

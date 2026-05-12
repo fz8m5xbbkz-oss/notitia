@@ -32,7 +32,7 @@ const feld = felder.find((f) => f.slug === essay.data.feld);
         {feld && (
           <>
             <span aria-hidden="true"> · </span>
-            <a href={`/felder/${feld.slug}`}>{feld.name}</a>
+            <span>{feld.name}</span>
           </>
         )}
       </p>
