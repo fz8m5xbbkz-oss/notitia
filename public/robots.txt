@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://luis-magnolia.netlify.app/sitemap-index.xml
+Sitemap: https://luis-notitia.netlify.app/sitemap-index.xml
