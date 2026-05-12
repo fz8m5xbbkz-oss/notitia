@@ -4,7 +4,7 @@ import Footer from '../components/Footer.astro';
 import '../styles/global.css';
 
 const {
-  titel = '[SITENAME]',
+  titel = 'quaestio',
   beschreibung = 'Philosophie aus dem Inneren der Verwaltung. Ein monatliches Denktagebuch von Luis.',
 } = Astro.props;
 
@@ -26,7 +26,7 @@ const kanonisch = new URL(Astro.url.pathname, Astro.site).toString();
     <meta property="og:description" content={beschreibung} />
     <meta property="og:url" content={kanonisch} />
     <meta property="og:locale" content="de_DE" />
-    <meta property="og:site_name" content="[SITENAME]" />
+    <meta property="og:site_name" content="quaestio" />
 
     <!-- Twitter / Bluesky-Vorschau -->
     <meta name="twitter:card" content="summary" />
