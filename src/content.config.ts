@@ -36,11 +36,20 @@ const materialien = defineCollection({
   }),
 });
 
+const felder = defineCollection({
+  loader: glob({ pattern: '**/*.md', base: './src/content/felder' }),
+  schema: z.object({
+    title: z.string(),
+    position: z.number().optional(),
+  }),
+});
+
 const themengebiete = defineCollection({
   loader: glob({ pattern: '**/*.md', base: './src/content/themengebiete' }),
   schema: z.object({
     title: z.string(),
     feld: z.string(),
+    position: z.number().optional(),
   }),
 });
 
@@ -50,7 +59,8 @@ const unterthemen = defineCollection({
     title: z.string(),
     feld: z.string(),
     themengebiet: z.string(),
+    position: z.number().optional(),
   }),
 });
 
-export const collections = { essays, lerneinheiten, materialien, themengebiete, unterthemen };
+export const collections = { essays, lerneinheiten, materialien, felder, themengebiete, unterthemen };

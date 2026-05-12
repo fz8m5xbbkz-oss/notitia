@@ -1,10 +1,11 @@
 ---
 import Basis from '../../layouts/Basis.astro';
 import { getCollection } from 'astro:content';
-import felderDaten from '../../data/felder.json';
+import { ladeFelder } from '../../lib/taxonomie';
 
 export async function getStaticPaths() {
-  return felderDaten.felder.map((feld) => ({
+  const felder = await ladeFelder();
+  return felder.map((feld) => ({
     params: { slug: feld.slug },
     props: { feld },
   }));

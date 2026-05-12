@@ -1,7 +1,7 @@
 ---
 import Basis from '../../layouts/Basis.astro';
 import { getCollection, render } from 'astro:content';
-import felderDaten from '../../data/felder.json';
+import { ladeFelder } from '../../lib/taxonomie';
 
 export async function getStaticPaths() {
   const essays = await getCollection('essays');
@@ -20,7 +20,8 @@ const datum = essay.data.date.toLocaleDateString('de-DE', {
   year: 'numeric',
 });
 
-const feld = felderDaten.felder.find((f) => f.slug === essay.data.feld);
+const felder = await ladeFelder();
+const feld = felder.find((f) => f.slug === essay.data.feld);
 ---
 
 <Basis titel={`${essay.data.title} — magnolia`}>

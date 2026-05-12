@@ -1,8 +1,8 @@
 ---
 import Basis from '../../layouts/Basis.astro';
-import felderDaten from '../../data/felder.json';
+import { ladeFelder } from '../../lib/taxonomie';
 
-const { felder } = felderDaten;
+const felder = await ladeFelder();
 ---
 
 <Basis titel="Felder — magnolia">

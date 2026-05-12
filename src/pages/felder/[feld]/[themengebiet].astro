@@ -1,11 +1,12 @@
 ---
 import Basis from '../../../layouts/Basis.astro';
 import { getCollection, getEntry, render } from 'astro:content';
-import felderDaten from '../../../data/felder.json';
+import { ladeFelder } from '../../../lib/taxonomie';
 
 export async function getStaticPaths() {
+  const felder = await ladeFelder();
   const paths = [];
-  for (const feld of felderDaten.felder) {
+  for (const feld of felder) {
     for (const tg of feld.themengebiete) {
       paths.push({
         params: { feld: feld.slug, themengebiet: tg.slug },
