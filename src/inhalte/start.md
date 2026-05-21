@@ -1,3 +1,3 @@
 # notitia
 
-Philosophie aus dem Inneren der Verwaltung. Jeden Monat ein Essay über das, was ich im System erlebe — und was die großen Denker dazu gesagt hätten.
+Philosophie aus dem Inneren der Verwaltung. Jeden Monat ein Essay über das, was mich beschäftigt — Kant, Aristoteles, Hegel, und was sie über Bürokratie, Freiheit und den Staat zu sagen hätten.

@@ -13,29 +13,6 @@ const essays = defineCollection({
   }),
 });
 
-const lerneinheiten = defineCollection({
-  loader: glob({ pattern: '**/*.md', base: './src/content/lerneinheiten' }),
-  schema: z.object({
-    feld: z.string(),
-    themengebiet: z.string(),
-    unterthema: z.string(),
-    date: z.coerce.date(),
-    material: z.string(),
-    reflexion: z.string(),
-  }),
-});
-
-const materialien = defineCollection({
-  loader: glob({ pattern: '**/*.md', base: './src/content/materialien' }),
-  schema: z.object({
-    typ: z.enum(['Buch', 'Artikel', 'Podcast', 'Video']),
-    title: z.string(),
-    autor: z.string(),
-    quelle_url: z.string().url().optional(),
-    notiz: z.string().optional(),
-  }),
-});
-
 const felder = defineCollection({
   loader: glob({ pattern: '**/*.md', base: './src/content/felder' }),
   schema: z.object({
@@ -44,23 +21,4 @@ const felder = defineCollection({
   }),
 });
 
-const themengebiete = defineCollection({
-  loader: glob({ pattern: '**/*.md', base: './src/content/themengebiete' }),
-  schema: z.object({
-    title: z.string(),
-    feld: z.string(),
-    position: z.number().optional(),
-  }),
-});
-
-const unterthemen = defineCollection({
-  loader: glob({ pattern: '**/*.md', base: './src/content/unterthemen' }),
-  schema: z.object({
-    title: z.string(),
-    feld: z.string(),
-    themengebiet: z.string(),
-    position: z.number().optional(),
-  }),
-});
-
-export const collections = { essays, lerneinheiten, materialien, felder, themengebiete, unterthemen };
+export const collections = { essays, felder };

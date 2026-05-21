@@ -1,7 +1,6 @@
 ---
 import Basis from '../../layouts/Basis.astro';
-import { getCollection, render } from 'astro:content';
-import { ladeFelder } from '../../lib/taxonomie';
+import { getCollection, render, getEntry } from 'astro:content';
 
 export async function getStaticPaths() {
   const essays = await getCollection('essays');
@@ -20,12 +19,13 @@ const datum = essay.data.date.toLocaleDateString('de-DE', {
   year: 'numeric',
 });
 
-const felder = await ladeFelder();
-const feld = felder.find((f) => f.slug === essay.data.feld);
+const feldEntry = await getEntry('felder', essay.data.feld);
+const feld = feldEntry ? { name: feldEntry.data.title } : null;
 ---
 
-<Basis titel={`${essay.data.title} — notitia`}>
+<Basis titel={`${essay.data.title} — notitia`} leserModus={true}>
   <article>
+    <a href="/essays" class="zurueck">← Essays</a>
     <header class="kopf">
       <p class="meta">
         {datum}
@@ -43,6 +43,22 @@ const feld = felder.find((f) => f.slug === essay.data.feld);
 </Basis>
 
 <style>
+  /* Nur im Reader Mode (mobile) sichtbar — Rücknavigation ohne globalen Header */
+  .zurueck {
+    display: none;
+    font-family: var(--schrift-ui);
+    font-size: 0.85rem;
+    color: var(--grau);
+    text-decoration: none;
+    margin-bottom: 2rem;
+  }
+
+  @media (max-width: 640px) {
+    .zurueck {
+      display: block;
+    }
+  }
+
   .kopf {
     margin-bottom: 2rem;
   }

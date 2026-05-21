@@ -1,43 +1,43 @@
-# Astro Starter Kit: Minimal
+# notitia
+
+Philosophie aus dem Inneren der Verwaltung.
+Ein monatliches Essay-Journal von Luis — gehostet auf [luis-notitia.netlify.app](https://luis-notitia.netlify.app).
+
+## Stack
+
+- **Framework:** [Astro](https://astro.build) — Static Site Generator
+- **Hosting:** Netlify (CD via Git-Push auf `main`)
+- **Schrift:** Source Serif 4 (selbst gehostet, SIL OFL)
+- **Analytics:** — (bewusst keine)
+
+## Lokale Entwicklung
 
 ```sh
-npm create astro@latest -- --template minimal
+npm install
+npm run dev       # http://localhost:4321
+npm run build     # dist/ erzeugen
+npm run preview   # dist/ lokal prüfen
 ```
 
-> 🧑‍🚀 **Seasoned astronaut?** Delete this file. Have fun!
+## Struktur
 
-## 🚀 Project Structure
-
-Inside of your Astro project, you'll see the following folders and files:
-
-```text
-/
-├── public/
-├── src/
-│   └── pages/
-│       └── index.astro
-└── package.json
+```
+src/
+├── content/
+│   ├── essays/        # Alle Essays (Markdown)
+│   └── felder/        # Taxonomie-Felder (Metadaten)
+├── layouts/
+│   └── Basis.astro    # Haupt-Layout (leserModus-Prop für Reader Mode)
+├── pages/
+│   ├── index.astro
+│   ├── ueber.astro
+│   ├── rss.xml.ts     # RSS-Feed (Volltext)
+│   └── essays/
+└── styles/
+    └── global.css
 ```
 
-Astro looks for `.astro` or `.md` files in the `src/pages/` directory. Each page is exposed as a route based on its file name.
+## Prinzipien
 
-There's nothing special about `src/components/`, but that's where we like to put any Astro/React/Vue/Svelte/Preact components.
-
-Any static assets, like images, can be placed in the `public/` directory.
-
-## 🧞 Commands
-
-All commands are run from the root of the project, from a terminal:
-
-| Command                   | Action                                           |
-| :------------------------ | :----------------------------------------------- |
-| `npm install`             | Installs dependencies                            |
-| `npm run dev`             | Starts local dev server at `localhost:4321`      |
-| `npm run build`           | Build your production site to `./dist/`          |
-| `npm run preview`         | Preview your build locally, before deploying     |
-| `npm run astro ...`       | Run CLI commands like `astro add`, `astro check` |
-| `npm run astro -- --help` | Get help using the Astro CLI                     |
-
-## 👀 Want to learn more?
-
-Feel free to check [our documentation](https://docs.astro.build) or jump into our [Discord server](https://astro.build/chat).
+Siehe `THESIS.md` und `AUDIENCE.md`.
+Architektur-Entscheidungen: `docs/decisions/`.

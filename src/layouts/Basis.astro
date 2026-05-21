@@ -6,6 +6,7 @@ import '../styles/global.css';
 const {
   titel = 'notitia',
   beschreibung = 'Philosophie aus dem Inneren der Verwaltung. Ein monatliches Denktagebuch von Luis.',
+  leserModus = false,
 } = Astro.props;
 
 const kanonisch = new URL(Astro.url.pathname, Astro.site).toString();
@@ -19,6 +20,7 @@ const kanonisch = new URL(Astro.url.pathname, Astro.site).toString();
     <meta name="google-site-verification" content="UzhefoeozfShCbWZqVo5oWkuAWSCY5Msd4gjdooc1r4" />
     <link rel="canonical" href={kanonisch} />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="alternate" type="application/rss+xml" title="notitia" href="/rss.xml" />
 
     <!-- OpenGraph -->
     <meta property="og:type" content="website" />
@@ -35,7 +37,7 @@ const kanonisch = new URL(Astro.url.pathname, Astro.site).toString();
 
     <title>{titel}</title>
   </head>
-  <body>
+  <body class:list={[{ 'reader-modus': leserModus }]}>
     <Header />
     <main>
       <slot />
