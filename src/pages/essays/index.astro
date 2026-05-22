@@ -18,7 +18,7 @@ const strom: StromEintrag[] = [
     art: 'essay' as const,
     title: e.data.title,
     datum: e.data.date,
-    url: `/essays/${e.id}`,
+    url: `/essays/${e.id}/`,
   })),
   ...substack.map((s) => ({
     art: 'substack' as const,

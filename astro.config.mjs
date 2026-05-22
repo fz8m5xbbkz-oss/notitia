@@ -4,6 +4,7 @@ import sitemap from '@astrojs/sitemap';
 
 // https://astro.build/config
 export default defineConfig({
-  site: 'https://luis-notitia.netlify.app',
+  site: 'https://luis-notitia.netlify.app', // TODO: Cloudflare-URL eintragen
+  trailingSlash: 'always',
   integrations: [sitemap()],
 });
