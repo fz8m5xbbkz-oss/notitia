@@ -4,7 +4,7 @@ import sitemap from '@astrojs/sitemap';
 
 // https://astro.build/config
 export default defineConfig({
-  site: 'https://notitia.pages.dev',
+  site: 'https://notitia-eta.vercel.app',
   trailingSlash: 'always',
   integrations: [sitemap()],
 });
