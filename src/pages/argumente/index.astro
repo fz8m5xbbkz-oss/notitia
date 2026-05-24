@@ -1,0 +1,45 @@
+---
+import Basis from '../../layouts/Basis.astro';
+import { argumente } from '../../data/argumente.js';
+---
+
+<Basis
+  titel="Argumente — notitia"
+  beschreibung="Argumentationsstrukturen der Essays — als Baumdiagramm."
+>
+  <h1>Argumente</h1>
+
+  <p>
+    Die Argumentationsstruktur jedes Essays — für den, der nicht nur lesen,
+    sondern nachvollziehen will.
+  </p>
+
+  <ul>
+    {argumente.map((a) => (
+      <li>
+        <a href={`/argumente/${a.slug}`}>{a.titel}</a>
+      </li>
+    ))}
+  </ul>
+</Basis>
+
+<style>
+  ul {
+    list-style: none;
+    padding: 0;
+    margin: 2rem 0 0;
+  }
+
+  li {
+    border-top: 1px solid var(--linie);
+    padding: 0.75rem 0;
+  }
+
+  li:last-child {
+    border-bottom: 1px solid var(--linie);
+  }
+
+  a {
+    font-size: 1.1rem;
+  }
+</style>

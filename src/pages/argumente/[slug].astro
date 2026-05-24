@@ -1,0 +1,80 @@
+---
+import Basis from '../../layouts/Basis.astro';
+import { argumente } from '../../data/argumente.js';
+
+export function getStaticPaths() {
+  return argumente.map((a) => ({ params: { slug: a.slug } }));
+}
+
+const { slug } = Astro.params;
+const eintrag = argumente.find((a) => a.slug === slug);
+---
+
+<Basis
+  titel={`Argumente: ${eintrag.titel} — notitia`}
+  beschreibung={`Argumentationsstruktur des Essays „${eintrag.titel}"`}
+>
+  <p class="zurueck"><a href="/argumente">← Alle Argument-Karten</a></p>
+
+  <h1>{eintrag.titel}</h1>
+  <p class="hinweis">Argumentationsstruktur des Essays</p>
+
+  <div class="diagramm-wrapper">
+    <pre class="mermaid">{eintrag.diagramm.trim()}</pre>
+  </div>
+
+  <p class="essay-link">
+    <a href={`/essays/${eintrag.slug}`}>Essay lesen →</a>
+  </p>
+</Basis>
+
+<!-- Mermaid von CDN, kein npm install -->
+<script type="module">
+  import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs';
+
+  mermaid.initialize({
+    startOnLoad: true,
+    theme: 'base',
+    themeVariables: {
+      background: '#EDE6D7',
+      primaryColor: '#EDE6D7',
+      primaryBorderColor: '#5b6b3e',
+      primaryTextColor: '#1a1a1a',
+      lineColor: '#5b6b3e',
+      edgeLabelBackground: '#EDE6D7',
+      fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif',
+      fontSize: '14px',
+    },
+  });
+</script>
+
+<style>
+  .zurueck {
+    font-family: var(--schrift-ui);
+    font-size: 0.9rem;
+    margin-bottom: 2rem;
+  }
+
+  .hinweis {
+    font-family: var(--schrift-ui);
+    font-size: 0.9rem;
+    color: var(--ink-soft);
+    margin-top: -0.5rem;
+  }
+
+  .diagramm-wrapper {
+    margin: 2rem 0;
+    overflow-x: auto;
+  }
+
+  .mermaid {
+    background: transparent;
+    font-family: var(--schrift-ui);
+  }
+
+  .essay-link {
+    margin-top: 2rem;
+    font-family: var(--schrift-ui);
+    font-size: 0.95rem;
+  }
+</style>
