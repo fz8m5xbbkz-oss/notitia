@@ -1,0 +1,83 @@
+---
+import Basis from '../layouts/Basis.astro';
+import { aktuell, empfohlen } from '../data/lektuere.js';
+---
+
+<Basis
+  titel="Lektüre — notitia"
+  beschreibung="Was ich gerade lese — und was ich uneingeschränkt empfehle."
+>
+  <h1>Lektüre</h1>
+
+  <p>
+    Was ich gerade lese, und was ich jedem empfehle, der an der Schnittstelle
+    von Philosophie und Verwaltung denkt.
+  </p>
+
+  <section>
+    <h2>Gerade</h2>
+    <ol>
+      {aktuell.map((b) => (
+        <li>
+          <span class="autor">{b.autor ? `${b.autor}: ` : ''}</span>
+          {b.url
+            ? <a href={b.url} target="_blank" rel="noopener noreferrer"><em>{b.titel}</em></a>
+            : <em>{b.titel}</em>
+          }
+          {b.jahr && <span class="meta">, {b.jahr}</span>}
+          {b.notiz && <p class="notiz">{b.notiz}</p>}
+        </li>
+      ))}
+    </ol>
+  </section>
+
+  <section>
+    <h2>Empfohlen</h2>
+    <ol>
+      {empfohlen.map((b) => (
+        <li>
+          <span class="autor">{b.autor ? `${b.autor}: ` : ''}</span>
+          {b.url
+            ? <a href={b.url} target="_blank" rel="noopener noreferrer"><em>{b.titel}</em></a>
+            : <em>{b.titel}</em>
+          }
+          {b.jahr && <span class="meta">, {b.jahr}</span>}
+          {b.notiz && <p class="notiz">{b.notiz}</p>}
+        </li>
+      ))}
+    </ol>
+  </section>
+</Basis>
+
+<style>
+  h2 {
+    border-bottom: 1px solid var(--linie);
+    padding-bottom: 0.25rem;
+    margin-top: 2.5rem;
+  }
+
+  ol {
+    padding-left: 1.5rem;
+    margin: 1rem 0 0;
+  }
+
+  li {
+    margin-bottom: 1.25rem;
+    line-height: 1.5;
+  }
+
+  .autor {
+    font-weight: 600;
+  }
+
+  .meta {
+    color: var(--ink-soft);
+  }
+
+  .notiz {
+    margin: 0.25rem 0 0;
+    font-style: italic;
+    color: var(--ink-soft);
+    font-size: 0.9rem;
+  }
+</style>
