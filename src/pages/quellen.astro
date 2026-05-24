@@ -1,0 +1,78 @@
+---
+import Basis from '../layouts/Basis.astro';
+import { quellen, typReihenfolge, typLabel } from '../data/quellen.js';
+
+// Quellen nach Typ gruppieren, in definierter Reihenfolge
+const gruppen = typReihenfolge
+  .map((typ) => ({
+    typ,
+    label: typLabel[typ],
+    eintraege: quellen.filter((q) => q.typ === typ),
+  }))
+  .filter((g) => g.eintraege.length > 0);
+---
+
+<Basis
+  titel="Quellen — notitia"
+  beschreibung="Bücher, Aufsätze und Primärtexte, auf die sich die Essays von notitia stützen."
+>
+  <h1>Quellen</h1>
+
+  <p>
+    Alle Texte, die in den Essays eine Rolle spielen — zur Orientierung
+    für den, der tiefer lesen will.
+  </p>
+
+  {gruppen.map(({ label, eintraege }) => (
+    <section>
+      <h2>{label}</h2>
+      <ol>
+        {eintraege.map((q) => (
+          <li>
+            <span class="autor">{q.autor ? `${q.autor}: ` : ''}</span>
+            {q.url
+              ? <a href={q.url} target="_blank" rel="noopener noreferrer"><em>{q.titel}</em></a>
+              : <em>{q.titel}</em>
+            }
+            {q.untertitel && <span class="untertitel">. {q.untertitel}</span>}
+            {q.jahr && <span class="meta">, {q.jahr}</span>}
+            {q.verlag && <span class="meta">. {q.verlag}</span>}
+            {q.notiz && <span class="notiz"> — {q.notiz}</span>}
+          </li>
+        ))}
+      </ol>
+    </section>
+  ))}
+</Basis>
+
+<style>
+  h2 {
+    border-bottom: 1px solid var(--linie);
+    padding-bottom: 0.25rem;
+    margin-top: 2.5rem;
+  }
+
+  ol {
+    padding-left: 1.5rem;
+    margin: 1rem 0 0;
+  }
+
+  li {
+    margin-bottom: 0.75rem;
+    line-height: 1.5;
+  }
+
+  .autor {
+    font-weight: 600;
+  }
+
+  .meta {
+    color: var(--ink-soft);
+  }
+
+  .notiz {
+    font-style: italic;
+    color: var(--ink-soft);
+    font-size: 0.9rem;
+  }
+</style>
