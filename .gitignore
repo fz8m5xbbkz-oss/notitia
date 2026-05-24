@@ -25,3 +25,6 @@ pnpm-debug.log*
 
 # Briefing-Ordner (versehentlich hier gelandet, nicht Teil des Codes)
 Projekt Denkfeld/
+
+# Lokale Schreib-Werkzeuge
+neuer-essay.mjs
