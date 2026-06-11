@@ -55,8 +55,8 @@ src/
 │       ├── index.astro          Liste, mischt lokale Essays + Substack-RSS
 │       └── [slug].astro         Dynamisches Routing pro Essay (leserModus=true)
 ├── content/
-│   ├── essays/*.md              Essays (Frontmatter: title, date, feld,
-│   │                             themengebiet, unterthema, optional substack_url)
+│   ├── essays/*.md              Essays (Frontmatter: nur title + date Pflicht,
+│   │                             feld default philosophie-ethik, optional substack_url)
 │   └── felder/*.md              Philosophie-Felder (nur noch philosophie-ethik aktiv)
 ├── data/
 │   ├── lektuere.js              Bücherliste (aktuell / empfohlen)
@@ -73,7 +73,9 @@ src/
 public/
 └── fonts/                       Source Serif 4 (variable, Roman + Italic)
 
-neuer-essay.mjs                  CLI-Tool: node neuer-essay.mjs → neue Essay-Datei
+neuer-essay.mjs                  CLI: npm run neu → leere Essay-Datei (nur Titel-Frage)
+publizieren.mjs                  CLI: npm run publizieren → Essays aus Obsidian
+                                  importieren + nach Bestätigung committen/pushen
 THESIS.md                        Thiel-Direktive: ein Satz, was notitia glaubt
 AUDIENCE.md                      Godin-Direktive: für wen / für wen nicht
 astro.config.mjs                 site-URL + trailingSlash: always + Sitemap
@@ -91,17 +93,25 @@ astro.config.mjs                 site-URL + trailingSlash: always + Sitemap
 ### Frontmatter
 
 - **Immer drei Striche oben UND unten** (`---`), sonst greift kein Schema
-- **Schema-Pflichtfelder:** `title`, `date`, `feld`, `themengebiet`, `unterthema`
+- **Pflicht nur noch:** `title`, `date` — `feld` hat Default `philosophie-ethik`,
+  `themengebiet`/`unterthema` sind optional (Juni 2026 entschlackt, wurden nirgends angezeigt)
 - Tippfehler bricht den Build
 
 ### Veröffentlichungs-Workflow
 
-1. Edit lokal oder im GitHub-Web-Editor
-2. `git add ... && git commit -m "..."` — post-commit-Hook pusht automatisch
-3. Vercel deployt in ~20 Sek
-4. Sitemap und alle Routen aktualisieren sich automatisch
+**Hauptweg — Schreiben in Obsidian (seit Juni 2026):**
 
-Neuen Essay anlegen: `node neuer-essay.mjs`
+1. Notiz im Vault-Ordner `03 - Nebenprojekte/notitia Essays/` schreiben
+   (erste Zeile `# Titel`; Anleitung liegt als `_Anleitung.md` im Ordner)
+2. Wenn fertig: Eigenschaft `status: fertig` setzen
+3. `npm run publizieren` — zeigt neue/geänderte Essays, fragt einmal nach,
+   committet (Hook pusht, Vercel deployt)
+
+**Nebenweg — direkt im Repo:**
+
+1. `npm run neu` (fragt nur den Titel ab) oder Datei von Hand anlegen
+2. Schreiben, dann `git add ... && git commit` — post-commit-Hook pusht automatisch
+3. Vercel deployt in ~20 Sek, Sitemap/Routen aktualisieren sich automatisch
 
 ## Arbeitsweise (Luis' Präferenzen)
 

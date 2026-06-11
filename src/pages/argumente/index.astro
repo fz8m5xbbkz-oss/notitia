@@ -17,7 +17,7 @@ import { argumente } from '../../data/argumente.js';
   <ul>
     {argumente.map((a, i) => (
       <li data-reveal style={`--reveal-delay: ${160 + Math.min(i, 8) * 70}ms`}>
-        <a href={`/argumente/${a.slug}`}>{a.titel}</a>
+        <a href={`/argumente/${a.slug}/`}>{a.titel}</a>
       </li>
     ))}
   </ul>

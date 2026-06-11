@@ -9,7 +9,9 @@
     "dev": "astro dev",
     "build": "astro build",
     "preview": "astro preview",
-    "astro": "astro"
+    "astro": "astro",
+    "neu": "node neuer-essay.mjs",
+    "publizieren": "node publizieren.mjs"
   },
   "dependencies": {
     "@astrojs/rss": "^4.0.18",

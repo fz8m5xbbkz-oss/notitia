@@ -14,7 +14,7 @@ const eintrag = argumente.find((a) => a.slug === slug);
   titel={`Argumente: ${eintrag.titel} — notitia`}
   beschreibung={`Argumentationsstruktur des Essays „${eintrag.titel}"`}
 >
-  <p class="zurueck"><a href="/argumente">← Alle Argument-Karten</a></p>
+  <p class="zurueck"><a href="/argumente/">← Alle Argument-Karten</a></p>
 
   <h1>{eintrag.titel}</h1>
   <p class="hinweis">Argumentationsstruktur des Essays</p>
@@ -24,7 +24,7 @@ const eintrag = argumente.find((a) => a.slug === slug);
   </div>
 
   <p class="essay-link">
-    <a href={`/essays/${eintrag.slug}`}>Essay lesen →</a>
+    <a href={`/essays/${eintrag.slug}/`}>Essay lesen →</a>
   </p>
 </Basis>
 
@@ -32,20 +32,30 @@ const eintrag = argumente.find((a) => a.slug === slug);
 <script type="module">
   import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs';
 
+  // Farben aus den CSS-Variablen lesen, damit das Diagramm im Dark Mode lesbar bleibt
+  const stil = getComputedStyle(document.documentElement);
+  const papier = stil.getPropertyValue('--paper').trim();
+  const tinte = stil.getPropertyValue('--ink').trim();
+  const akzent = stil.getPropertyValue('--akzent').trim();
+
   mermaid.initialize({
     startOnLoad: true,
     theme: 'base',
     themeVariables: {
-      background: '#EDE6D7',
-      primaryColor: '#EDE6D7',
-      primaryBorderColor: '#5b6b3e',
-      primaryTextColor: '#1a1a1a',
-      lineColor: '#5b6b3e',
-      edgeLabelBackground: '#EDE6D7',
+      background: papier,
+      primaryColor: papier,
+      primaryBorderColor: akzent,
+      primaryTextColor: tinte,
+      lineColor: akzent,
+      edgeLabelBackground: papier,
       fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif',
       fontSize: '14px',
     },
   });
+
+  // Nach einem Schema-Wechsel mit neuen Farben neu zeichnen (Mermaid cached das Theme)
+  const knopf = document.querySelector('.schema-knopf');
+  knopf?.addEventListener('click', () => setTimeout(() => location.reload(), 500));
 </script>
 
 <style>
