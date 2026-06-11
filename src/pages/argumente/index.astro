@@ -1,5 +1,6 @@
 ---
 import Basis from '../../layouts/Basis.astro';
+import Vignette from '../../components/Vignette.astro';
 import { argumente } from '../../data/argumente.js';
 ---
 
@@ -7,6 +8,7 @@ import { argumente } from '../../data/argumente.js';
   titel="Argumente — notitia"
   beschreibung="Argumentationsstrukturen der Essays — als Baumdiagramm."
 >
+  <Vignette motiv="baum" />
   <h1 data-reveal>Argumente</h1>
 
   <p data-reveal style="--reveal-delay: 80ms">

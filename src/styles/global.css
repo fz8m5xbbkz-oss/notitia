@@ -127,6 +127,22 @@ html[data-farbschema='dunkel'] body {
   }
 }
 
+/* Vignetten: Linien zeichnen sich selbst (stroke-dashoffset mit pathLength=1) */
+@keyframes zeichnen {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+@keyframes erscheinen {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
 /* Wie ein Blatt, das auf den Tisch gelegt wird: unscharf herein, dann scharf */
 @keyframes aufklaren {
   from {

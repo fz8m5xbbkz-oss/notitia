@@ -46,6 +46,7 @@ const lesezeit = Math.max(1, Math.round(woerter / 200));
       <h1>{essay.data.title}</h1>
     </header>
     <Content />
+    <p class="schluss" aria-hidden="true">⁂</p>
   </article>
 </Basis>
 
@@ -117,6 +118,15 @@ const lesezeit = Math.max(1, Math.round(woerter / 200));
 
   article :global(em) {
     font-style: italic;
+  }
+
+  /* Asterismus als Schlusszeichen — klassische Druckertradition */
+  .schluss {
+    text-align: center;
+    color: var(--akzent);
+    font-size: 1.2rem;
+    margin: 3rem 0 0;
+    user-select: none;
   }
 
   .fortschritt {

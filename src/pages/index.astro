@@ -1,9 +1,11 @@
 ---
 import Basis from '../layouts/Basis.astro';
+import Vignette from '../components/Vignette.astro';
 import { Content as Manifest } from '../inhalte/start.md';
 ---
 
 <Basis titel="notitia">
+  <Vignette motiv="siegel" breite={68} />
   <div class="manifest">
     <Manifest />
   </div>

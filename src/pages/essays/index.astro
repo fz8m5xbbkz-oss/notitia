@@ -1,5 +1,6 @@
 ---
 import Basis from '../../layouts/Basis.astro';
+import Vignette from '../../components/Vignette.astro';
 import { getCollection } from 'astro:content';
 import { ladeSubstackFeed } from '../../lib/substack';
 
@@ -33,6 +34,7 @@ const formatDatum = (datum: Date) =>
 ---
 
 <Basis titel="Essays — notitia">
+  <Vignette motiv="feder" />
   <h1>Essays</h1>
   <p class="intro">Ein Essay pro Monat. Philosophie aus dem Inneren der Verwaltung.</p>
   {strom.length === 0 ? (

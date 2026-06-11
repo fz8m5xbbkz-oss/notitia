@@ -1,5 +1,6 @@
 ---
 import Basis from '../layouts/Basis.astro';
+import Vignette from '../components/Vignette.astro';
 import { quellen, typReihenfolge, typLabel } from '../data/quellen.js';
 
 // Quellen nach Typ gruppieren, in definierter Reihenfolge
@@ -16,6 +17,7 @@ const gruppen = typReihenfolge
   titel="Quellen — notitia"
   beschreibung="Bücher, Aufsätze und Primärtexte, auf die sich die Essays von notitia stützen."
 >
+  <Vignette motiv="archiv" />
   <h1 data-reveal>Quellen</h1>
 
   <p data-reveal style="--reveal-delay: 80ms">

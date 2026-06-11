@@ -154,6 +154,10 @@ astro.config.mjs                 site-URL + trailingSlash: always + Sitemap
 - **Wordmark:** klein und aufrecht, ohne kursive Spielereien
   (hat seit Juni 2026 eine Buchstaben-Welle beim Hover)
 - Keine Hero-Bilder, keine bunten Cards, keine großen Display-Schriften
+- **Vignetten (Juni 2026):** selbst gezeichneter SVG-Buchschmuck (`Vignette.astro`),
+  feine Strichzeichnungen in Tinte/Akzent, ein Motiv pro Seite (Siegel, Feder, Baum,
+  Bücher, Karteikarte, Säule), zeichnen sich beim Laden selbst (Keyframe `zeichnen`);
+  ⁂ als Schlusszeichen unter jedem Essay. Weiterhin keine Fotos, keine Stockbilder.
 - **Reader Mode:** auf mobilen Geräten (≤640px) Header/Footer ausgeblendet,
   `← Essays`-Link direkt im Artikel
 - **Dark Mode:** „dunkles Papier" (`#211d17`/`#e6dfd0`, Akzent aufgehellt `#93a565`),

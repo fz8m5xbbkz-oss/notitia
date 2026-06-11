@@ -1,5 +1,6 @@
 ---
 import Basis from '../layouts/Basis.astro';
+import Vignette from '../components/Vignette.astro';
 import { aktuell, empfohlen } from '../data/lektuere.js';
 ---
 
@@ -7,6 +8,7 @@ import { aktuell, empfohlen } from '../data/lektuere.js';
   titel="Lektüre — notitia"
   beschreibung="Was ich gerade lese — und was ich uneingeschränkt empfehle."
 >
+  <Vignette motiv="buecher" />
   <h1 data-reveal>Lektüre</h1>
 
   <p data-reveal style="--reveal-delay: 80ms">
