@@ -24,6 +24,8 @@ const kanonisch = new URL(Astro.url.pathname, Astro.site).toString();
           ? gespeichert === 'dunkel'
           : matchMedia('(prefers-color-scheme: dark)').matches;
         if (dunkel) document.documentElement.dataset.farbschema = 'dunkel';
+        // Ohne JS bleiben data-reveal-Elemente sichtbar — Klasse schaltet das Verstecken frei
+        document.documentElement.classList.add('js');
       })();
     </script>
     <meta name="description" content={beschreibung} />
@@ -53,5 +55,26 @@ const kanonisch = new URL(Astro.url.pathname, Astro.site).toString();
       <slot />
     </main>
     <Footer />
+    <script>
+      // Scroll-Reveal: data-reveal-Elemente erscheinen, sobald sie ins Bild scrollen
+      const versteckte = document.querySelectorAll('[data-reveal]');
+      const ruhig = matchMedia('(prefers-reduced-motion: reduce)').matches;
+      if (!ruhig && 'IntersectionObserver' in window) {
+        const beobachter = new IntersectionObserver(
+          (eintraege) => {
+            for (const eintrag of eintraege) {
+              if (eintrag.isIntersecting) {
+                eintrag.target.classList.add('sichtbar');
+                beobachter.unobserve(eintrag.target);
+              }
+            }
+          },
+          { rootMargin: '0px 0px -8% 0px', threshold: 0.1 }
+        );
+        versteckte.forEach((el) => beobachter.observe(el));
+      } else {
+        versteckte.forEach((el) => el.classList.add('sichtbar'));
+      }
+    </script>
   </body>
 </html>

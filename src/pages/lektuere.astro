@@ -7,18 +7,18 @@ import { aktuell, empfohlen } from '../data/lektuere.js';
   titel="Lektüre — notitia"
   beschreibung="Was ich gerade lese — und was ich uneingeschränkt empfehle."
 >
-  <h1>Lektüre</h1>
+  <h1 data-reveal>Lektüre</h1>
 
-  <p>
+  <p data-reveal style="--reveal-delay: 80ms">
     Was ich gerade lese, und was ich jedem empfehle, der an der Schnittstelle
     von Philosophie und Verwaltung denkt.
   </p>
 
   <section>
-    <h2>Gerade</h2>
+    <h2 data-reveal>Gerade</h2>
     <ol>
-      {aktuell.map((b) => (
-        <li>
+      {aktuell.map((b, i) => (
+        <li data-reveal style={`--reveal-delay: ${Math.min(i, 6) * 70}ms`}>
           <span class="autor">{b.autor ? `${b.autor}: ` : ''}</span>
           {b.url
             ? <a href={b.url} target="_blank" rel="noopener noreferrer"><em>{b.titel}</em></a>
@@ -32,10 +32,10 @@ import { aktuell, empfohlen } from '../data/lektuere.js';
   </section>
 
   <section>
-    <h2>Empfohlen</h2>
+    <h2 data-reveal>Empfohlen</h2>
     <ol>
-      {empfohlen.map((b) => (
-        <li>
+      {empfohlen.map((b, i) => (
+        <li data-reveal style={`--reveal-delay: ${Math.min(i, 6) * 70}ms`}>
           <span class="autor">{b.autor ? `${b.autor}: ` : ''}</span>
           {b.url
             ? <a href={b.url} target="_blank" rel="noopener noreferrer"><em>{b.titel}</em></a>

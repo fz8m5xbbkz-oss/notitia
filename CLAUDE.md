@@ -142,13 +142,20 @@ Neuen Essay anlegen: `node neuer-essay.mjs`
 - **Akzent:** gedecktes Olivgrün `#5b6b3e`
 - **Spaltenbreite:** schmal, 38rem (`--max-breite`)
 - **Wordmark:** klein und aufrecht, ohne kursive Spielereien
+  (hat seit Juni 2026 eine Buchstaben-Welle beim Hover)
 - Keine Hero-Bilder, keine bunten Cards, keine großen Display-Schriften
 - **Reader Mode:** auf mobilen Geräten (≤640px) Header/Footer ausgeblendet,
   `← Essays`-Link direkt im Artikel
 - **Dark Mode:** „dunkles Papier" (`#211d17`/`#e6dfd0`, Akzent aufgehellt `#93a565`),
   Toggle im Header, System-Präferenz als Default, Wahl in `localStorage` (`farbschema`)
-- **Bewegung:** ein Keyframe (`einblenden`), Artikel-Fade-in + gestaffelte Essay-Liste,
-  globaler `prefers-reduced-motion`-Schutz in `global.css` — kein Bounce, keine Scroll-Reveals
+- **Bewegung (verspielt — auf Luis' Wunsch Juni 2026, vorher bewusst zurückhaltend):**
+  Feder-Easing `--feder` (leichtes Überschwingen), Keyframes `einblenden` + `aufklaren`
+  (Blur-in), Scroll-Reveals via `[data-reveal]` + IntersectionObserver (Script in
+  `Basis.astro`), Wordmark-Buchstabenwelle beim Hover, zirkulärer Dark-Mode-Wipe
+  (View Transition API, mit Fallback), Hover-Pfeile in Essay-Liste und CTAs,
+  federnde Footer-Knöpfe, wellige Link-Unterstreichung beim Hover.
+  Globaler `prefers-reduced-motion`-Schutz in `global.css` bleibt bestehen.
+  **Der Essay-Lesetext selbst bleibt ruhig** — Animationen nur an Titel/Meta/Navigation.
 
 ## Stand der Dinge (Mai 2026)
 

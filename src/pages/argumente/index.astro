@@ -7,16 +7,16 @@ import { argumente } from '../../data/argumente.js';
   titel="Argumente — notitia"
   beschreibung="Argumentationsstrukturen der Essays — als Baumdiagramm."
 >
-  <h1>Argumente</h1>
+  <h1 data-reveal>Argumente</h1>
 
-  <p>
+  <p data-reveal style="--reveal-delay: 80ms">
     Die Argumentationsstruktur jedes Essays — für den, der nicht nur lesen,
     sondern nachvollziehen will.
   </p>
 
   <ul>
-    {argumente.map((a) => (
-      <li>
+    {argumente.map((a, i) => (
+      <li data-reveal style={`--reveal-delay: ${160 + Math.min(i, 8) * 70}ms`}>
         <a href={`/argumente/${a.slug}`}>{a.titel}</a>
       </li>
     ))}

@@ -64,11 +64,22 @@ const sozial = [
     font-size: 0.75rem;
     text-transform: uppercase;
     letter-spacing: 0.08em;
-    transition: border-color 0.15s, color 0.15s;
+    transition:
+      border-color 0.15s,
+      color 0.15s,
+      transform 0.35s var(--feder),
+      box-shadow 0.35s var(--feder);
   }
 
   .knopf:hover {
     color: var(--ink);
-    border-color: var(--ink);
+    border-color: var(--akzent);
+    transform: translateY(-3px) rotate(-1deg);
+    box-shadow: 0 3px 0 var(--akzent);
+  }
+
+  .knopf:active {
+    transform: translateY(0) rotate(0deg) scale(0.96);
+    box-shadow: none;
   }
 </style>

@@ -16,19 +16,19 @@ const gruppen = typReihenfolge
   titel="Quellen — notitia"
   beschreibung="Bücher, Aufsätze und Primärtexte, auf die sich die Essays von notitia stützen."
 >
-  <h1>Quellen</h1>
+  <h1 data-reveal>Quellen</h1>
 
-  <p>
+  <p data-reveal style="--reveal-delay: 80ms">
     Alle Texte, die in den Essays eine Rolle spielen — zur Orientierung
     für den, der tiefer lesen will.
   </p>
 
   {gruppen.map(({ label, eintraege }) => (
     <section>
-      <h2>{label}</h2>
+      <h2 data-reveal>{label}</h2>
       <ol>
-        {eintraege.map((q) => (
-          <li>
+        {eintraege.map((q, i) => (
+          <li data-reveal style={`--reveal-delay: ${Math.min(i, 6) * 70}ms`}>
             <span class="autor">{q.autor ? `${q.autor}: ` : ''}</span>
             {q.url
               ? <a href={q.url} target="_blank" rel="noopener noreferrer"><em>{q.titel}</em></a>

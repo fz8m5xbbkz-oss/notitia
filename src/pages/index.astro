@@ -4,12 +4,14 @@ import { Content as Manifest } from '../inhalte/start.md';
 ---
 
 <Basis titel="notitia">
-  <Manifest />
+  <div class="manifest">
+    <Manifest />
+  </div>
 
   <nav class="cta">
-    <a href="/essays">Essays lesen →</a>
+    <a href="/essays">Essays lesen <span class="pfeil">→</span></a>
     <a href="https://luisfzl.substack.com" target="_blank" rel="noopener noreferrer">
-      Newsletter abonnieren →
+      Newsletter abonnieren <span class="pfeil">→</span>
     </a>
   </nav>
 
@@ -23,6 +25,18 @@ import { Content as Manifest } from '../inhalte/start.md';
 </Basis>
 
 <style>
+  /* Manifest kaskadiert Absatz für Absatz herein */
+  .manifest > :global(*) {
+    animation: aufklaren 0.6s ease-out both;
+  }
+
+  .manifest > :global(:nth-child(1)) { animation-delay: 60ms; }
+  .manifest > :global(:nth-child(2)) { animation-delay: 160ms; }
+  .manifest > :global(:nth-child(3)) { animation-delay: 260ms; }
+  .manifest > :global(:nth-child(4)) { animation-delay: 360ms; }
+  .manifest > :global(:nth-child(5)) { animation-delay: 460ms; }
+  .manifest > :global(:nth-child(n + 6)) { animation-delay: 560ms; }
+
   .cta {
     margin-top: 2rem;
     display: flex;
@@ -30,9 +44,11 @@ import { Content as Manifest } from '../inhalte/start.md';
     gap: 0.5rem;
     font-family: var(--schrift-ui);
     font-size: 0.95rem;
+    animation: aufklaren 0.6s ease-out 620ms both;
   }
 
   .cta a {
+    align-self: flex-start;
     color: var(--akzent);
     text-decoration: underline;
     text-decoration-color: var(--linie);
@@ -41,5 +57,14 @@ import { Content as Manifest } from '../inhalte/start.md';
 
   .cta a:hover {
     text-decoration-color: var(--akzent);
+  }
+
+  .pfeil {
+    display: inline-block;
+    transition: transform 0.35s var(--feder);
+  }
+
+  .cta a:hover .pfeil {
+    transform: translateX(6px);
   }
 </style>

@@ -58,6 +58,12 @@ const lesezeit = Math.max(1, Math.round(woerter / 200));
     color: var(--grau);
     text-decoration: none;
     margin-bottom: 2rem;
+    transition: transform 0.35s var(--feder), color 0.15s ease;
+  }
+
+  .zurueck:hover {
+    color: var(--ink);
+    transform: translateX(-5px);
   }
 
   @media (max-width: 640px) {
@@ -74,12 +80,17 @@ const lesezeit = Math.max(1, Math.round(woerter / 200));
     margin-bottom: 2rem;
   }
 
+  .kopf h1 {
+    animation: aufklaren 0.7s ease-out 80ms both;
+  }
+
   .meta {
     font-family: var(--schrift-ui);
     font-size: 0.85rem;
     color: var(--grau);
     margin: 0 0 0.5rem;
     letter-spacing: 0.02em;
+    animation: einblenden 0.5s ease-out 250ms both;
   }
 
   .meta a {
@@ -115,6 +126,7 @@ const lesezeit = Math.max(1, Math.round(woerter / 200));
     width: 100%;
     height: 2px;
     background: var(--akzent);
+    box-shadow: 0 0 6px var(--akzent);
     transform: scaleX(0);
     transform-origin: left;
     z-index: 10;

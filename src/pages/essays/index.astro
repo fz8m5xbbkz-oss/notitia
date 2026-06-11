@@ -42,7 +42,7 @@ const formatDatum = (datum: Date) =>
       {strom.map((eintrag, i) => {
         const extern = eintrag.art === 'substack';
         return (
-          <li style={`animation-delay: ${Math.min(i, 8) * 45}ms`}>
+          <li style={`animation-delay: ${Math.min(i, 10) * 60}ms`}>
             <a
               href={eintrag.url}
               {...(extern ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
@@ -61,10 +61,15 @@ const formatDatum = (datum: Date) =>
 </Basis>
 
 <style>
+  h1 {
+    animation: aufklaren 0.6s ease-out both;
+  }
+
   .intro {
     color: var(--grau);
     font-style: italic;
     margin: 0 0 2rem;
+    animation: aufklaren 0.6s ease-out 100ms both;
   }
 
   .liste {
@@ -76,7 +81,7 @@ const formatDatum = (datum: Date) =>
   .liste li {
     padding: 1rem 0;
     border-bottom: 1px solid var(--linie);
-    animation: einblenden 0.4s ease-out both;
+    animation: einblenden 0.5s var(--feder) both;
   }
 
   .liste li:last-child {
@@ -84,15 +89,48 @@ const formatDatum = (datum: Date) =>
   }
 
   .liste a {
+    position: relative;
     text-decoration: none;
     color: var(--ink);
     display: flex;
     flex-direction: column;
     gap: 0.25rem;
+    transition: transform 0.35s var(--feder);
+  }
+
+  /* Beim Hover rutscht der Eintrag nach rechts, ein Pfeil taucht links auf */
+  .liste a::before {
+    content: '→';
+    position: absolute;
+    left: -1.5rem;
+    top: 0.1rem;
+    color: var(--akzent);
+    opacity: 0;
+    transform: translateX(-8px);
+    transition: opacity 0.25s ease, transform 0.35s var(--feder);
+  }
+
+  .liste a:hover {
+    transform: translateX(10px);
+  }
+
+  .liste a:hover::before {
+    opacity: 1;
+    transform: none;
   }
 
   .liste a:hover .titel {
     color: var(--akzent);
+  }
+
+  @media (max-width: 640px) {
+    .liste a::before {
+      display: none;
+    }
+
+    .liste a:hover {
+      transform: none;
+    }
   }
 
   .titel {

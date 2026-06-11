@@ -6,10 +6,16 @@ const links = [
   { href: '/quellen', text: 'Quellen' },
   { href: '/ueber', text: 'Über' },
 ];
+
+const wordmark = 'notitia'.split('');
 ---
 
 <header>
-  <a href="/" class="wordmark">notitia</a>
+  <a href="/" class="wordmark" aria-label="notitia — Startseite">
+    {wordmark.map((buchstabe, i) => (
+      <span aria-hidden="true" style={`--i: ${i}`}>{buchstabe}</span>
+    ))}
+  </a>
   <nav>
     {links.map(({ href, text }) => <a href={href}>{text}</a>)}
     <button class="schema-knopf" aria-label="Farbschema wechseln">
@@ -26,8 +32,9 @@ const links = [
 
 <script>
   // Manuelle Wahl überschreibt die System-Präferenz und bleibt gespeichert
-  const knopf = document.querySelector('.schema-knopf');
-  knopf?.addEventListener('click', () => {
+  const knopf = document.querySelector<HTMLButtonElement>('.schema-knopf');
+
+  function wechsle() {
     const dunkel = document.documentElement.dataset.farbschema === 'dunkel';
     if (dunkel) {
       delete document.documentElement.dataset.farbschema;
@@ -36,6 +43,44 @@ const links = [
       document.documentElement.dataset.farbschema = 'dunkel';
       localStorage.setItem('farbschema', 'dunkel');
     }
+  }
+
+  knopf?.addEventListener('click', () => {
+    const ruhig = matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (ruhig || !document.startViewTransition) {
+      wechsle();
+      return;
+    }
+
+    // Zirkulärer Wipe: das neue Farbschema breitet sich vom Knopf aus über die Seite aus
+    const r = knopf.getBoundingClientRect();
+    const x = r.left + r.width / 2;
+    const y = r.top + r.height / 2;
+    const radius = Math.hypot(
+      Math.max(x, innerWidth - x),
+      Math.max(y, innerHeight - y)
+    );
+
+    document.documentElement.classList.add('schema-wechsel');
+    const uebergang = document.startViewTransition(wechsle);
+    uebergang.ready.then(() => {
+      document.documentElement.animate(
+        {
+          clipPath: [
+            `circle(0px at ${x}px ${y}px)`,
+            `circle(${radius}px at ${x}px ${y}px)`,
+          ],
+        },
+        {
+          duration: 450,
+          easing: 'ease-in-out',
+          pseudoElement: '::view-transition-new(root)',
+        }
+      );
+    });
+    uebergang.finished.finally(() =>
+      document.documentElement.classList.remove('schema-wechsel')
+    );
   });
 </script>
 
@@ -61,6 +106,19 @@ const links = [
     line-height: 1;
   }
 
+  /* Buchstaben-Welle: jeder Buchstabe hebt gestaffelt ab und fächert leicht auf */
+  .wordmark span {
+    display: inline-block;
+    transition:
+      transform 0.4s var(--feder) calc(var(--i) * 30ms),
+      color 0.25s ease calc(var(--i) * 30ms);
+  }
+
+  .wordmark:hover span {
+    transform: translateY(-5px) rotate(calc((var(--i) - 3) * 2deg));
+    color: var(--akzent);
+  }
+
   nav {
     display: flex;
     gap: 1.25rem;
@@ -69,10 +127,13 @@ const links = [
   }
 
   nav a {
+    display: inline-block;
     color: var(--grau);
     text-decoration: none;
     position: relative;
-    transition: color 0.15s ease;
+    transition:
+      color 0.15s ease,
+      transform 0.35s var(--feder);
   }
 
   nav a::after {
@@ -90,6 +151,7 @@ const links = [
 
   nav a:hover {
     color: var(--ink);
+    transform: translateY(-2px);
   }
 
   nav a:hover::after {
@@ -98,7 +160,8 @@ const links = [
 
   @media (prefers-reduced-motion: reduce) {
     nav a,
-    nav a::after {
+    nav a::after,
+    .wordmark span {
       transition: none;
     }
   }
@@ -113,10 +176,16 @@ const links = [
     color: var(--grau);
     cursor: pointer;
     align-self: center;
+    transition: transform 0.4s var(--feder), color 0.2s ease;
   }
 
   .schema-knopf:hover {
     color: var(--ink);
+    transform: rotate(15deg) scale(1.15);
+  }
+
+  .schema-knopf:active {
+    transform: scale(0.85);
   }
 
   .schema-knopf svg {
