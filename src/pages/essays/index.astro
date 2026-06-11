@@ -39,10 +39,10 @@ const formatDatum = (datum: Date) =>
     <p>Noch keine Essays.</p>
   ) : (
     <ul class="liste">
-      {strom.map((eintrag) => {
+      {strom.map((eintrag, i) => {
         const extern = eintrag.art === 'substack';
         return (
-          <li>
+          <li style={`animation-delay: ${Math.min(i, 8) * 45}ms`}>
             <a
               href={eintrag.url}
               {...(extern ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
@@ -76,6 +76,7 @@ const formatDatum = (datum: Date) =>
   .liste li {
     padding: 1rem 0;
     border-bottom: 1px solid var(--linie);
+    animation: einblenden 0.4s ease-out both;
   }
 
   .liste li:last-child {
@@ -96,6 +97,7 @@ const formatDatum = (datum: Date) =>
 
   .titel {
     font-size: 1.15rem;
+    transition: color 0.15s ease;
   }
 
   .meta {

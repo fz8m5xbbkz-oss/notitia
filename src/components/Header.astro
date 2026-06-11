@@ -12,8 +12,32 @@ const links = [
   <a href="/" class="wordmark">notitia</a>
   <nav>
     {links.map(({ href, text }) => <a href={href}>{text}</a>)}
+    <button class="schema-knopf" aria-label="Farbschema wechseln">
+      <svg class="mond" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
+      </svg>
+      <svg class="sonne" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <circle cx="12" cy="12" r="4" />
+        <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41" />
+      </svg>
+    </button>
   </nav>
 </header>
+
+<script>
+  // Manuelle Wahl überschreibt die System-Präferenz und bleibt gespeichert
+  const knopf = document.querySelector('.schema-knopf');
+  knopf?.addEventListener('click', () => {
+    const dunkel = document.documentElement.dataset.farbschema === 'dunkel';
+    if (dunkel) {
+      delete document.documentElement.dataset.farbschema;
+      localStorage.setItem('farbschema', 'hell');
+    } else {
+      document.documentElement.dataset.farbschema = 'dunkel';
+      localStorage.setItem('farbschema', 'dunkel');
+    }
+  });
+</script>
 
 <style>
   header {
@@ -77,5 +101,42 @@ const links = [
     nav a::after {
       transition: none;
     }
+  }
+
+  .schema-knopf {
+    position: relative;
+    width: 24px;
+    height: 24px;
+    padding: 0;
+    border: none;
+    background: none;
+    color: var(--grau);
+    cursor: pointer;
+    align-self: center;
+  }
+
+  .schema-knopf:hover {
+    color: var(--ink);
+  }
+
+  .schema-knopf svg {
+    position: absolute;
+    inset: 4px;
+    transition: opacity 0.2s ease, transform 0.3s ease;
+  }
+
+  .schema-knopf .sonne {
+    opacity: 0;
+    transform: rotate(-45deg) scale(0.8);
+  }
+
+  :global(html[data-farbschema='dunkel']) .schema-knopf .mond {
+    opacity: 0;
+    transform: rotate(45deg) scale(0.8);
+  }
+
+  :global(html[data-farbschema='dunkel']) .schema-knopf .sonne {
+    opacity: 1;
+    transform: none;
   }
 </style>

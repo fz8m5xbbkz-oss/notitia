@@ -16,6 +16,16 @@ const kanonisch = new URL(Astro.url.pathname, Astro.site).toString();
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width" />
+    <script is:inline>
+      // Muss vor dem ersten Paint laufen, sonst flackert die Seite beim Laden hell auf
+      (function () {
+        var gespeichert = localStorage.getItem('farbschema');
+        var dunkel = gespeichert
+          ? gespeichert === 'dunkel'
+          : matchMedia('(prefers-color-scheme: dark)').matches;
+        if (dunkel) document.documentElement.dataset.farbschema = 'dunkel';
+      })();
+    </script>
     <meta name="description" content={beschreibung} />
     <meta name="google-site-verification" content="obr4TfpPoqxxoENkMkBbSC6NvdY7PJ75ZJf47q4Guaw" />
     <link rel="canonical" href={kanonisch} />

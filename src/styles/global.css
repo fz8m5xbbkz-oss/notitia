@@ -34,6 +34,16 @@
   --max-breite: 38rem;
 }
 
+/* Dunkles Papier — warm, kein hartes Schwarz. Akzent aufgehellt für Kontrast. */
+html[data-farbschema='dunkel'] {
+  --paper: #211d17;
+  --paper-dark: #2a251d;
+  --ink: #e6dfd0;
+  --ink-soft: #9b9483;
+  --akzent: #93a565;
+  --linie: rgba(230, 223, 208, 0.16);
+}
+
 /* ============ RESET / BASE ============ */
 * {
   box-sizing: border-box;
@@ -45,6 +55,7 @@ html {
   font-family: var(--schrift-text);
   font-size: 18px;
   line-height: 1.6;
+  transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 body {
@@ -82,6 +93,34 @@ a {
 
 a:hover {
   text-decoration-thickness: 2px;
+}
+
+/* Helle Körnung auf dunklem Papier — die dunkle Variante wäre unsichtbar */
+html[data-farbschema='dunkel'] body {
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='240' height='240'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0.85 0 0 0 0 0.8 0 0 0 0 0.7 0 0 0 0.04 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+}
+
+/* ============ BEWEGUNG ============ */
+@keyframes einblenden {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* Globaler Schutz: bei reduzierter Bewegung keine Animationen, nirgends */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
 }
 
 /* ============ READER MODE ============ */

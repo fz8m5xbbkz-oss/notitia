@@ -145,6 +145,10 @@ Neuen Essay anlegen: `node neuer-essay.mjs`
 - Keine Hero-Bilder, keine bunten Cards, keine großen Display-Schriften
 - **Reader Mode:** auf mobilen Geräten (≤640px) Header/Footer ausgeblendet,
   `← Essays`-Link direkt im Artikel
+- **Dark Mode:** „dunkles Papier" (`#211d17`/`#e6dfd0`, Akzent aufgehellt `#93a565`),
+  Toggle im Header, System-Präferenz als Default, Wahl in `localStorage` (`farbschema`)
+- **Bewegung:** ein Keyframe (`einblenden`), Artikel-Fade-in + gestaffelte Essay-Liste,
+  globaler `prefers-reduced-motion`-Schutz in `global.css` — kein Bounce, keine Scroll-Reveals
 
 ## Stand der Dinge (Mai 2026)
 
