@@ -21,9 +21,14 @@ const datum = essay.data.date.toLocaleDateString('de-DE', {
 
 const feldEntry = await getEntry('felder', essay.data.feld);
 const feld = feldEntry ? { name: feldEntry.data.title } : null;
+
+// 200 Wörter/Minute, aufgerundet, mindestens 1
+const woerter = (essay.body ?? '').split(/\s+/).filter(Boolean).length;
+const lesezeit = Math.max(1, Math.round(woerter / 200));
 ---
 
 <Basis titel={`${essay.data.title} — notitia`} leserModus={true}>
+  <div class="fortschritt" aria-hidden="true"></div>
   <article>
     <a href="/essays" class="zurueck">← Essays</a>
     <header class="kopf">
@@ -35,6 +40,8 @@ const feld = feldEntry ? { name: feldEntry.data.title } : null;
             <span>{feld.name}</span>
           </>
         )}
+        <span aria-hidden="true"> · </span>
+        <span>{lesezeit} Min. Lesezeit</span>
       </p>
       <h1>{essay.data.title}</h1>
     </header>
@@ -96,4 +103,30 @@ const feld = feldEntry ? { name: feldEntry.data.title } : null;
   article :global(em) {
     font-style: italic;
   }
+
+  .fortschritt {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 2px;
+    background: var(--akzent);
+    transform: scaleX(0);
+    transform-origin: left;
+    z-index: 10;
+  }
 </style>
+
+<script>
+  // Skaliert den Balken proportional zur Scroll-Position — passiv, kein Layout-Thrashing
+  const balken = document.querySelector('.fortschritt') as HTMLElement | null;
+  if (balken) {
+    const zeichne = () => {
+      const html = document.documentElement;
+      const max = html.scrollHeight - html.clientHeight;
+      balken.style.transform = `scaleX(${max > 0 ? html.scrollTop / max : 0})`;
+    };
+    addEventListener('scroll', zeichne, { passive: true });
+    zeichne();
+  }
+</script>

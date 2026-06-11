@@ -47,9 +47,35 @@ const links = [
   nav a {
     color: var(--grau);
     text-decoration: none;
+    position: relative;
+    transition: color 0.15s ease;
+  }
+
+  nav a::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    bottom: -3px;
+    width: 100%;
+    height: 1px;
+    background: var(--akzent);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.2s ease;
   }
 
   nav a:hover {
     color: var(--ink);
+  }
+
+  nav a:hover::after {
+    transform: scaleX(1);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    nav a,
+    nav a::after {
+      transition: none;
+    }
   }
 </style>
