@@ -1,6 +1,7 @@
 ---
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
+import { ClientRouter } from 'astro:transitions';
 import '../styles/global.css';
 
 const {
@@ -24,7 +25,6 @@ const kanonisch = new URL(Astro.url.pathname, Astro.site).toString();
           ? gespeichert === 'dunkel'
           : matchMedia('(prefers-color-scheme: dark)').matches;
         if (dunkel) document.documentElement.dataset.farbschema = 'dunkel';
-        // Ohne JS bleiben data-reveal-Elemente sichtbar — Klasse schaltet das Verstecken frei
         document.documentElement.classList.add('js');
       })();
     </script>
@@ -48,33 +48,199 @@ const kanonisch = new URL(Astro.url.pathname, Astro.site).toString();
     <meta name="twitter:description" content={beschreibung} />
 
     <title>{titel}</title>
+
+    <!-- Seitenübergänge: Astro Client Router (View Transitions) -->
+    <ClientRouter />
   </head>
   <body class:list={[{ 'reader-modus': leserModus }]}>
+    <!-- Tinte-Cursor: kleiner olivgrüner Nachzug-Punkt auf Desktop -->
+    <div class="tinte-cursor" aria-hidden="true"></div>
+
     <Header />
     <main>
       <slot />
     </main>
     <Footer />
+
     <script>
-      // Scroll-Reveal: data-reveal-Elemente erscheinen, sobald sie ins Bild scrollen
-      const versteckte = document.querySelectorAll('[data-reveal]');
-      const ruhig = matchMedia('(prefers-reduced-motion: reduce)').matches;
-      if (!ruhig && 'IntersectionObserver' in window) {
-        const beobachter = new IntersectionObserver(
-          (eintraege) => {
-            for (const eintrag of eintraege) {
-              if (eintrag.isIntersecting) {
-                eintrag.target.classList.add('sichtbar');
-                beobachter.unobserve(eintrag.target);
+      // ── Scroll-Reveal ──────────────────────────────────────────────────────
+      function initReveal() {
+        const versteckte = document.querySelectorAll('[data-reveal]');
+        const ruhig = matchMedia('(prefers-reduced-motion: reduce)').matches;
+        if (!ruhig && 'IntersectionObserver' in window) {
+          const beobachter = new IntersectionObserver(
+            (eintraege) => {
+              for (const eintrag of eintraege) {
+                if (eintrag.isIntersecting) {
+                  eintrag.target.classList.add('sichtbar');
+                  beobachter.unobserve(eintrag.target);
+                }
               }
-            }
-          },
-          { rootMargin: '0px 0px -8% 0px', threshold: 0.1 }
-        );
-        versteckte.forEach((el) => beobachter.observe(el));
-      } else {
-        versteckte.forEach((el) => el.classList.add('sichtbar'));
+            },
+            { rootMargin: '0px 0px -8% 0px', threshold: 0.1 }
+          );
+          versteckte.forEach((el) => beobachter.observe(el));
+        } else {
+          versteckte.forEach((el) => el.classList.add('sichtbar'));
+        }
       }
+
+      // ── Tinte-Cursor ───────────────────────────────────────────────────────
+      // Nachzug-Effekt: der Punkt folgt dem Cursor mit leichtem Verzug (Lerp)
+      function initCursor() {
+        const ruhig = matchMedia('(prefers-reduced-motion: reduce)').matches;
+        const touch = matchMedia('(hover: none)').matches;
+        if (ruhig || touch) return;
+
+        const cursor = document.querySelector('.tinte-cursor') as HTMLElement | null;
+        if (!cursor) return;
+
+        let mx = -100, my = -100, cx = -100, cy = -100;
+        let sichtbar = false;
+
+        document.addEventListener('mousemove', (e) => {
+          mx = e.clientX;
+          my = e.clientY;
+          if (!sichtbar) {
+            cursor.style.opacity = '1';
+            sichtbar = true;
+          }
+        }, { passive: true });
+
+        document.addEventListener('mouseleave', () => {
+          cursor.style.opacity = '0';
+          sichtbar = false;
+        });
+
+        // Interaktive Elemente: Cursor vergrößert sich leicht
+        document.addEventListener('mouseover', (e) => {
+          const ziel = (e.target as Element).closest('a, button');
+          if (ziel) cursor.classList.add('aktiv');
+        });
+        document.addEventListener('mouseout', (e) => {
+          const ziel = (e.target as Element).closest('a, button');
+          if (ziel) cursor.classList.remove('aktiv');
+        });
+
+        const lerp = (a: number, b: number, t: number) => a + (b - a) * t;
+        const tick = () => {
+          cx = lerp(cx, mx, 0.12);
+          cy = lerp(cy, my, 0.12);
+          cursor.style.transform = `translate(${cx}px, ${cy}px)`;
+          requestAnimationFrame(tick);
+        };
+        requestAnimationFrame(tick);
+      }
+
+      // ── Magnetische Buttons ────────────────────────────────────────────────
+      // Footer-Knöpfe ziehen leicht zum Mauszeiger hin
+      function initMagnet() {
+        const ruhig = matchMedia('(prefers-reduced-motion: reduce)').matches;
+        const touch = matchMedia('(hover: none)').matches;
+        if (ruhig || touch) return;
+
+        document.querySelectorAll<HTMLElement>('.knopf').forEach((knopf) => {
+          knopf.addEventListener('mousemove', (e) => {
+            const r = knopf.getBoundingClientRect();
+            const dx = e.clientX - (r.left + r.width / 2);
+            const dy = e.clientY - (r.top + r.height / 2);
+            knopf.style.transform = `translate(${dx * 0.25}px, ${dy * 0.25 - 3}px) rotate(-1deg)`;
+            knopf.style.boxShadow = `${dx * -0.05}px 3px 0 var(--akzent)`;
+          });
+          knopf.addEventListener('mouseleave', () => {
+            knopf.style.transform = '';
+            knopf.style.boxShadow = '';
+          });
+        });
+      }
+
+      // Nach jedem View-Transition-Navigation neu initialisieren
+      initReveal();
+      initCursor();
+      initMagnet();
+
+      document.addEventListener('astro:after-swap', () => {
+        initReveal();
+        initMagnet();
+      });
     </script>
   </body>
 </html>
+
+<style is:global>
+  /* ── Seitenübergang: Seite gleitet beim Navigieren aus/ein ── */
+  @keyframes seite-rein {
+    from { opacity: 0; transform: translateY(6px); }
+    to   { opacity: 1; transform: none; }
+  }
+  @keyframes seite-raus {
+    from { opacity: 1; transform: none; }
+    to   { opacity: 0; transform: translateY(-4px); }
+  }
+
+  ::view-transition-old(main-content) {
+    animation: seite-raus 0.2s ease-in forwards;
+  }
+  ::view-transition-new(main-content) {
+    animation: seite-rein 0.35s ease-out forwards;
+  }
+
+  /* Den Seitenübergang nur auf den main-Bereich anwenden */
+  main {
+    view-transition-name: main-content;
+  }
+
+  /* Dark-Mode-Wipe bleibt separat auf root — keine Interferenz */
+  ::view-transition-old(root),
+  ::view-transition-new(root) {
+    animation: none;
+    mix-blend-mode: normal;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    ::view-transition-old(main-content),
+    ::view-transition-new(main-content) {
+      animation: none;
+    }
+  }
+
+  /* ── Tinte-Cursor ──────────────────────────────────────────── */
+  .tinte-cursor {
+    pointer-events: none;
+    position: fixed;
+    top: -6px;
+    left: -6px;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: var(--akzent);
+    opacity: 0;
+    z-index: 9999;
+    will-change: transform;
+    transition:
+      opacity 0.3s ease,
+      width 0.25s var(--feder),
+      height 0.25s var(--feder),
+      top 0.25s var(--feder),
+      left 0.25s var(--feder),
+      background 0.2s ease;
+    mix-blend-mode: multiply;
+  }
+
+  html[data-farbschema='dunkel'] .tinte-cursor {
+    mix-blend-mode: screen;
+  }
+
+  .tinte-cursor.aktiv {
+    width: 24px;
+    height: 24px;
+    top: -12px;
+    left: -12px;
+    background: var(--akzent);
+    opacity: 0.5;
+  }
+
+  @media (hover: none) {
+    .tinte-cursor { display: none; }
+  }
+</style>
