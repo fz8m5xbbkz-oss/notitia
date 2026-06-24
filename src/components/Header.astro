@@ -34,8 +34,6 @@ const wordmark = 'notitia'.split('');
 
 <script>
   // Manuelle Wahl überschreibt die System-Präferenz und bleibt gespeichert
-  const knopf = document.querySelector<HTMLButtonElement>('.schema-knopf');
-
   function wechsle() {
     const dunkel = document.documentElement.dataset.farbschema === 'dunkel';
     if (dunkel) {
@@ -47,7 +45,7 @@ const wordmark = 'notitia'.split('');
     }
   }
 
-  knopf?.addEventListener('click', () => {
+  function schemaWechsel(knopf: Element) {
     const ruhig = matchMedia('(prefers-reduced-motion: reduce)').matches;
     if (ruhig || !document.startViewTransition) {
       wechsle();
@@ -83,6 +81,13 @@ const wordmark = 'notitia'.split('');
     uebergang.finished.finally(() =>
       document.documentElement.classList.remove('schema-wechsel')
     );
+  }
+
+  // Delegation auf document: überlebt die ClientRouter-Seitenwechsel,
+  // weil document persistiert — der Knopf selbst wird beim Swap getauscht
+  document.addEventListener('click', (e) => {
+    const knopf = (e.target as Element).closest('.schema-knopf');
+    if (knopf) schemaWechsel(knopf);
   });
 </script>
 

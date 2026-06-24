@@ -53,8 +53,10 @@ const kanonisch = new URL(Astro.url.pathname, Astro.site).toString();
     <ClientRouter />
   </head>
   <body class:list={[{ 'reader-modus': leserModus }]}>
-    <!-- Tinte-Cursor: kleiner olivgrüner Nachzug-Punkt auf Desktop -->
-    <div class="tinte-cursor" aria-hidden="true"></div>
+    <!-- Tinte-Cursor: kleiner olivgrüner Nachzug-Punkt auf Desktop.
+         transition:persist hält denselben Knoten über Seitenwechsel hinweg,
+         sonst friert der Cursor nach dem Navigieren ein. -->
+    <div class="tinte-cursor" aria-hidden="true" transition:persist></div>
 
     <Header />
     <main>
@@ -63,6 +65,20 @@ const kanonisch = new URL(Astro.url.pathname, Astro.site).toString();
     <Footer />
 
     <script>
+      // ── Farbschema nach Seitenwechsel neu setzen ───────────────────────────
+      // ClientRouter ersetzt beim Swap die <html>-Attribute durch die der
+      // statischen Seite — data-farbschema und die js-Klasse gehen sonst verloren,
+      // der Dark Mode würde bei jeder Navigation auf hell zurückspringen.
+      function setzeFarbschema() {
+        const gespeichert = localStorage.getItem('farbschema');
+        const dunkel = gespeichert
+          ? gespeichert === 'dunkel'
+          : matchMedia('(prefers-color-scheme: dark)').matches;
+        if (dunkel) document.documentElement.dataset.farbschema = 'dunkel';
+        else delete document.documentElement.dataset.farbschema;
+        document.documentElement.classList.add('js');
+      }
+
       // ── Scroll-Reveal ──────────────────────────────────────────────────────
       function initReveal() {
         const versteckte = document.querySelectorAll('[data-reveal]');
@@ -154,12 +170,16 @@ const kanonisch = new URL(Astro.url.pathname, Astro.site).toString();
         });
       }
 
-      // Nach jedem View-Transition-Navigation neu initialisieren
+      // Erstes Laden
       initReveal();
       initCursor();
       initMagnet();
 
+      // Nach jedem Seitenwechsel: Theme zurücksetzen (vor dem Paint) und die
+      // an getauschte Elemente gebundenen Effekte neu initialisieren.
+      // Der Cursor persistiert (transition:persist) und bleibt aktiv.
       document.addEventListener('astro:after-swap', () => {
+        setzeFarbschema();
         initReveal();
         initMagnet();
       });
@@ -190,11 +210,11 @@ const kanonisch = new URL(Astro.url.pathname, Astro.site).toString();
     view-transition-name: main-content;
   }
 
-  /* Dark-Mode-Wipe bleibt separat auf root — keine Interferenz */
-  ::view-transition-old(root),
-  ::view-transition-new(root) {
-    animation: none;
-    mix-blend-mode: normal;
+  /* Beim Dark-Mode-Wipe darf main NICHT als eigene Ebene mitlaufen — sonst
+     springt der Inhalt sofort ins neue Schema statt vom Kreis erfasst zu werden.
+     (Die root-Regel mit animation:none steht bereits in global.css.) */
+  html.schema-wechsel main {
+    view-transition-name: none;
   }
 
   @media (prefers-reduced-motion: reduce) {
