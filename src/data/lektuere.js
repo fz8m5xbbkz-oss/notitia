@@ -16,30 +16,18 @@
 
 export const aktuell = [
   {
-    autor: 'Aristoteles',
-    titel: 'Nikomachische Ethik',
-    jahr: 'ca. 350 v. Chr.',
-    notiz: 'Grundlage für den ersten Essay — Eudaimonia als Maßstab guten Lebens.',
+    autor: 'Gysi, Gregor',
+    titel: 'Ein Leben ist zu wenig. Die Autobiographie',
+    jahr: 2017,
   },
   {
-    autor: 'Spaemann, Robert',
-    titel: 'Glück und Wohlwollen',
-    jahr: 1989,
-    notiz: 'Spaemann liest Aristoteles gegen den Zeitgeist.',
+    autor: 'Nagel, Thomas',
+    titel: 'Was bedeutet das alles? Eine ganz kurze Einführung in die Philosophie',
+    jahr: 1987,
   },
 ];
 
-export const empfohlen = [
-  {
-    autor: 'Arendt, Hannah',
-    titel: 'Vita activa oder Vom tätigen Leben',
-    jahr: 1958,
-    notiz: 'Denkt Handeln, Herstellen und Arbeiten neu — unvermeidlich für jemanden, der in einer Behörde denkt.',
-  },
-  {
-    autor: 'Weber, Max',
-    titel: 'Wirtschaft und Gesellschaft',
-    jahr: 1922,
-    notiz: 'Das Standardwerk zur Bürokratietheorie. Schwer, aber keine Abkürzung.',
-  },
-];
+// Noch leer — hier stehen nur Bücher, die du selbst gelesen hast und
+// uneingeschränkt weiterempfiehlst. Die Sektion blendet sich aus, solange
+// die Liste leer ist (siehe lektuere.astro).
+export const empfohlen = [];

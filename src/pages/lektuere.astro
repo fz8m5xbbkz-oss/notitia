@@ -12,8 +12,9 @@ import { aktuell, empfohlen } from '../data/lektuere.js';
   <h1 data-reveal>Lektüre</h1>
 
   <p data-reveal style="--reveal-delay: 80ms">
-    Was ich gerade lese, und was ich jedem empfehle, der an der Schnittstelle
-    von Philosophie und Verwaltung denkt.
+    Was ich gerade lese{empfohlen.length > 0
+      ? ', und was ich jedem empfehle, der an der Schnittstelle von Philosophie und Verwaltung denkt'
+      : ''}.
   </p>
 
   <section>
@@ -21,34 +22,32 @@ import { aktuell, empfohlen } from '../data/lektuere.js';
     <ol>
       {aktuell.map((b, i) => (
         <li data-reveal style={`--reveal-delay: ${Math.min(i, 6) * 70}ms`}>
-          <span class="autor">{b.autor ? `${b.autor}: ` : ''}</span>
-          {b.url
+          <span class="autor">{b.autor ? `${b.autor}: ` : ''}</span>{b.url
             ? <a href={b.url} target="_blank" rel="noopener noreferrer"><em>{b.titel}</em></a>
             : <em>{b.titel}</em>
-          }
-          {b.jahr && <span class="meta">, {b.jahr}</span>}
+          }{b.jahr && <span class="meta">, {b.jahr}</span>}
           {b.notiz && <p class="notiz">{b.notiz}</p>}
         </li>
       ))}
     </ol>
   </section>
 
-  <section>
-    <h2 data-reveal>Empfohlen</h2>
-    <ol>
-      {empfohlen.map((b, i) => (
-        <li data-reveal style={`--reveal-delay: ${Math.min(i, 6) * 70}ms`}>
-          <span class="autor">{b.autor ? `${b.autor}: ` : ''}</span>
-          {b.url
-            ? <a href={b.url} target="_blank" rel="noopener noreferrer"><em>{b.titel}</em></a>
-            : <em>{b.titel}</em>
-          }
-          {b.jahr && <span class="meta">, {b.jahr}</span>}
-          {b.notiz && <p class="notiz">{b.notiz}</p>}
-        </li>
-      ))}
-    </ol>
-  </section>
+  {empfohlen.length > 0 && (
+    <section>
+      <h2 data-reveal>Empfohlen</h2>
+      <ol>
+        {empfohlen.map((b, i) => (
+          <li data-reveal style={`--reveal-delay: ${Math.min(i, 6) * 70}ms`}>
+            <span class="autor">{b.autor ? `${b.autor}: ` : ''}</span>{b.url
+              ? <a href={b.url} target="_blank" rel="noopener noreferrer"><em>{b.titel}</em></a>
+              : <em>{b.titel}</em>
+            }{b.jahr && <span class="meta">, {b.jahr}</span>}
+            {b.notiz && <p class="notiz">{b.notiz}</p>}
+          </li>
+        ))}
+      </ol>
+    </section>
+  )}
 </Basis>
 
 <style>
