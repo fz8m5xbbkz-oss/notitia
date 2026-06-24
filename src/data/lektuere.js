@@ -1,10 +1,12 @@
 /**
  * Lektüreliste — notitia
  *
- * Zwei Listen:
+ * Vier Listen (jede Sektion blendet sich aus, solange sie leer ist):
  *
- *   aktuell    — was du gerade liest (hält die Seite lebendig)
- *   empfohlen  — Bücher, die du uneingeschränkt weiterempfiehlst
+ *   aktuell       — was du gerade liest (hält die Seite lebendig)
+ *   geplant       — was als Nächstes auf dem Stapel liegt
+ *   abgeschlossen — bereits gelesen, das Archiv
+ *   empfohlen     — Bücher, die du uneingeschränkt weiterempfiehlst
  *
  * Felder pro Eintrag:
  *   autor      — z. B. 'Aristoteles' oder 'Arendt, Hannah'
@@ -27,7 +29,12 @@ export const aktuell = [
   },
 ];
 
+// Was als Nächstes auf dem Stapel liegt.
+export const geplant = [];
+
+// Bereits gelesen — das Archiv.
+export const abgeschlossen = [];
+
 // Noch leer — hier stehen nur Bücher, die du selbst gelesen hast und
-// uneingeschränkt weiterempfiehlst. Die Sektion blendet sich aus, solange
-// die Liste leer ist (siehe lektuere.astro).
+// uneingeschränkt weiterempfiehlst.
 export const empfohlen = [];
