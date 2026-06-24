@@ -2,32 +2,10 @@
 import Basis from '../../layouts/Basis.astro';
 import Vignette from '../../components/Vignette.astro';
 import { getCollection } from 'astro:content';
-import { ladeSubstackFeed } from '../../lib/substack';
-
-type StromEintrag = {
-  art: 'essay' | 'substack';
-  title: string;
-  datum: Date;
-  url: string;
-};
 
 const essays = await getCollection('essays');
-const substack = await ladeSubstackFeed();
-
-const strom: StromEintrag[] = [
-  ...essays.map((e) => ({
-    art: 'essay' as const,
-    title: e.data.title,
-    datum: e.data.date,
-    url: `/essays/${e.id}/`,
-  })),
-  ...substack.map((s) => ({
-    art: 'substack' as const,
-    title: s.title,
-    datum: s.datum,
-    url: s.url,
-  })),
-].sort((a, b) => b.datum.valueOf() - a.datum.valueOf());
+const sortiert = essays
+  .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
 
 const formatDatum = (datum: Date) =>
   datum.toLocaleDateString('de-DE', { day: '2-digit', month: 'long', year: 'numeric' });
@@ -37,27 +15,23 @@ const formatDatum = (datum: Date) =>
   <Vignette motiv="feder" />
   <h1>Essays</h1>
   <p class="intro">Ein Essay pro Monat. Philosophie aus dem Inneren der Verwaltung.</p>
-  {strom.length === 0 ? (
+  {sortiert.length === 0 ? (
     <p>Noch keine Essays.</p>
   ) : (
     <ul class="liste">
-      {strom.map((eintrag, i) => {
-        const extern = eintrag.art === 'substack';
-        return (
-          <li style={`animation-delay: ${Math.min(i, 10) * 60}ms`}>
-            <a
-              href={eintrag.url}
-              {...(extern ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
-            >
-              <span class="titel">{eintrag.title}</span>
-              <span class="meta">
-                <span>{formatDatum(eintrag.datum)}</span>
-                {extern && <span class="ort">· auf Substack ↗</span>}
-              </span>
+      {sortiert.map((essay, i) => (
+        <li style={`animation-delay: ${Math.min(i, 10) * 60}ms`}>
+          <a href={`/essays/${essay.id}/`} class="essay-link">
+            <span class="titel">{essay.data.title}</span>
+            <span class="meta">{formatDatum(essay.data.date)}</span>
+          </a>
+          {essay.data.substack_url && (
+            <a class="substack-link" href={essay.data.substack_url} target="_blank" rel="noopener noreferrer">
+              auch auf Substack ↗
             </a>
-          </li>
-        );
-      })}
+          )}
+        </li>
+      ))}
     </ul>
   )}
 </Basis>
@@ -90,7 +64,8 @@ const formatDatum = (datum: Date) =>
     border-bottom: none;
   }
 
-  .liste a {
+  /* Hauptlink: Titel + Datum */
+  .essay-link {
     position: relative;
     text-decoration: none;
     color: var(--ink);
@@ -100,8 +75,7 @@ const formatDatum = (datum: Date) =>
     transition: transform 0.35s var(--feder);
   }
 
-  /* Beim Hover rutscht der Eintrag nach rechts, ein Pfeil taucht links auf */
-  .liste a::before {
+  .essay-link::before {
     content: '→';
     position: absolute;
     left: -1.5rem;
@@ -112,25 +86,25 @@ const formatDatum = (datum: Date) =>
     transition: opacity 0.25s ease, transform 0.35s var(--feder);
   }
 
-  .liste a:hover {
+  .essay-link:hover {
     transform: translateX(10px);
   }
 
-  .liste a:hover::before {
+  .essay-link:hover::before {
     opacity: 1;
     transform: none;
   }
 
-  .liste a:hover .titel {
+  .essay-link:hover .titel {
     color: var(--akzent);
   }
 
   @media (max-width: 640px) {
-    .liste a::before {
+    .essay-link::before {
       display: none;
     }
 
-    .liste a:hover {
+    .essay-link:hover {
       transform: none;
     }
   }
@@ -146,7 +120,18 @@ const formatDatum = (datum: Date) =>
     color: var(--grau);
   }
 
-  .ort {
-    margin-left: 0.4rem;
+  /* Substack-Hinweis: kleiner, dezent, eigenständiger Link */
+  .substack-link {
+    display: inline-block;
+    margin-top: 0.2rem;
+    font-family: var(--schrift-ui);
+    font-size: 0.8rem;
+    color: var(--grau);
+    text-decoration: none;
+    transition: color 0.15s ease;
+  }
+
+  .substack-link:hover {
+    color: var(--akzent);
   }
 </style>
