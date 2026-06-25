@@ -4,7 +4,7 @@ date: 2026-06-20
 substack_url: "https://luisfzl.substack.com/p/synoikismos-in-rhodos"
 ---
 
-Im Jahr 408 v. Chr. verschmolzen Ialysos, Kamiros und Lindos freiwillig zu einer — und verloren dabei etwas, das Aristoteles 70 Jahre später in Worte fassen würde. Doch der Zusammenschluss passierte ohne Krieg oder äußere Einflüsse. Es war das aufgebenden bestehender und funktionierender Ordnungen und ein zusammenschmelzen von Gemeinwesen, wofür die Griechen das Wort Synoikismos verwenden. Ein radikaler Verwaltungsakt, der eine enorme Bedeutung in die Geschichte von Rhodos hatte. Doch wann ist es klug, eine funktionierende Ordnung zu zerstören, um eine neue zu bauen?
+Im Jahr 408 v. Chr. verschmolzen drei Städte zu einer — und verloren dabei etwas, das Aristoteles 70 Jahre später in Worte fassen würde. Doch der Zusammenschluss passierte ohne Krieg oder äußere Einflüsse. Es war das aufgebenden bestehender und funktionierender Ordnungen und ein zusammenschmelzen von Gemeinwesen, wofür die Griechen das Wort Synoikismos verwenden. Ein radikaler Verwaltungsakt, der eine enorme Bedeutung in die Geschichte von Rhodos hatte. Doch wann ist es klug, eine funktionierende Ordnung zu zerstören, um eine neue zu bauen?
 
 ## Aristoteles Warnung
 
