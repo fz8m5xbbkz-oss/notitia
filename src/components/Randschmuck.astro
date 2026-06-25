@@ -1,0 +1,140 @@
+---
+/**
+ * Randschmuck — zarte, sich selbst zeichnende Ranken in den leeren Seiten-
+ * rändern (nur breiter Desktop). Tinte/Oliv-Strichzeichnung im Stil der
+ * Vignetten, kein Foto. Sichtbar erst ab 1200px und nur auf Nicht-Touch-
+ * Geräten, damit die schmale Lesespalte und die Mobil-Ansicht unberührt
+ * bleiben. pointer-events: none, aria-hidden, prefers-reduced-motion-sicher
+ * (globaler Schutz in global.css stoppt die Bewegung).
+ *
+ * Dieselbe Ranke links und rechts; rechts wird per scaleX(-1) gespiegelt.
+ */
+const ranke = `
+  <path class="stamm" pathLength="1" d="M44 612 C 26 540 58 482 42 410 C 28 348 56 290 40 214 C 28 156 48 96 42 22" />
+  <path class="blatt" pathLength="1" d="M42 410 Q 54 392 74 400 Q 60 418 42 410 Z" />
+  <path class="blatt akzent" pathLength="1" d="M40 322 Q 26 306 8 316 Q 24 332 40 322 Z" />
+  <path class="blatt" pathLength="1" d="M40 214 Q 54 198 74 206 Q 60 224 40 214 Z" />
+  <path class="blatt akzent" pathLength="1" d="M42 120 Q 28 104 10 114 Q 26 130 42 120 Z" />
+  <circle class="knospe akzent" cx="42" cy="22" r="3.4" />
+  <circle class="knospe" cx="40" cy="266" r="2.2" />
+  <circle class="knospe" cx="42" cy="70" r="2.6" />
+`;
+---
+
+<div class="randschmuck" aria-hidden="true" transition:persist>
+  <div class="seite links">
+    <svg class="ranke" viewBox="0 0 80 620" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" set:html={ranke}></svg>
+    <span class="mote a"></span>
+    <span class="mote b"></span>
+  </div>
+  <div class="seite rechts">
+    <svg class="ranke" viewBox="0 0 80 620" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" set:html={ranke}></svg>
+    <span class="mote a"></span>
+    <span class="mote b"></span>
+  </div>
+</div>
+
+<style>
+  .randschmuck {
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    color: var(--ink);
+    display: none;
+  }
+
+  /* Nur auf breiten, nicht-berührungsgesteuerten Schirmen — Mobil/Tablet bleibt frei */
+  @media (min-width: 1200px) and (hover: hover) {
+    .randschmuck {
+      display: block;
+    }
+  }
+
+  .seite {
+    position: fixed;
+    bottom: -12px;
+    width: 84px;
+    height: min(72vh, 620px);
+  }
+
+  .seite.links {
+    left: clamp(1rem, 4.5vw, 5rem);
+  }
+
+  .seite.rechts {
+    right: clamp(1rem, 4.5vw, 5rem);
+    transform: scaleX(-1);
+  }
+
+  /* Wiegen: leichtes Pendeln um den unteren Ankerpunkt */
+  .ranke {
+    width: 100%;
+    height: 100%;
+    opacity: 0.5;
+    transform-origin: 50% 100%;
+    animation: wiegen 11s ease-in-out infinite alternate;
+  }
+
+  .seite.rechts .ranke {
+    animation-delay: -5.5s;
+  }
+
+  @keyframes wiegen {
+    from { transform: rotate(-1.3deg); }
+    to   { transform: rotate(1.3deg); }
+  }
+
+  /* Selbstzeichnen wie bei den Vignetten */
+  .stamm,
+  .blatt {
+    stroke-dasharray: 1;
+    stroke-dashoffset: 1;
+    animation: zeichnen 2.4s ease-out 0.25s forwards;
+  }
+
+  .blatt.akzent {
+    stroke: var(--akzent);
+  }
+
+  .knospe {
+    fill: currentColor;
+    stroke: none;
+    opacity: 0;
+    animation: erscheinen 0.9s ease-out 2s forwards;
+  }
+
+  .knospe.akzent {
+    fill: var(--akzent);
+  }
+
+  /* Aufsteigende Tinten-Punkte — ruhige Umgebungsbewegung */
+  .mote {
+    position: absolute;
+    bottom: 16%;
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background: var(--akzent);
+    opacity: 0;
+  }
+
+  .mote.a {
+    left: 28%;
+    animation: schweben 14s ease-in-out 1.5s infinite;
+  }
+
+  .mote.b {
+    left: 58%;
+    width: 4px;
+    height: 4px;
+    animation: schweben 19s ease-in-out 7s infinite;
+  }
+
+  @keyframes schweben {
+    0%   { transform: translateY(30px) scale(0.8); opacity: 0; }
+    15%  { opacity: 0.38; }
+    70%  { opacity: 0.32; }
+    100% { transform: translateY(-220px) scale(1); opacity: 0; }
+  }
+</style>
