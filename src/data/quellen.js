@@ -26,6 +26,22 @@ export const quellen = [
     notiz: 'Zitiert nach der Übersetzung von Ursula Wolf (Rowohlt, 2006)',
     essays: ['willkommen'],
   },
+  {
+    autor: 'Aristoteles',
+    titel: 'Politik',
+    jahr: 'ca. 330 v. Chr.',
+    typ: 'primaertext',
+    notiz: 'Buch II zur Einheit und Vielheit der Polis (1261a), Buch VII zur richtigen Größe der Polis (1326a–b)',
+    essays: ['synoikismos-in-rhodos'],
+  },
+  {
+    autor: 'Diodor',
+    titel: 'Historische Bibliothek',
+    jahr: 'ca. 30 v. Chr.',
+    typ: 'primaertext',
+    notiz: 'Buch 13,75 — der Synoikismos von Rhodos (408/407 v. Chr.)',
+    essays: ['synoikismos-in-rhodos'],
+  },
 
   // ── Sekundärliteratur ─────────────────────────────────────────────────────
   {

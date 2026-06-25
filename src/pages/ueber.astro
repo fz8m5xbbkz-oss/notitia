@@ -33,6 +33,19 @@ import Vignette from '../components/Vignette.astro';
     Kontakt: <a href="mailto:denkfeld@outlook.de">denkfeld@outlook.de</a>.
   </p>
 
+  <h2 data-reveal>Was du hier findest</h2>
+
+  <dl class="orientierung" data-reveal>
+    <dt><a href="/essays/">Essays</a></dt>
+    <dd>Das Herzstück: ein längerer Gedanke pro Monat, zu Ende gedacht.</dd>
+    <dt><a href="/argumente/">Argumente</a></dt>
+    <dd>Die Argumentationsstruktur jedes Essays als Diagramm — für den, der nicht nur lesen, sondern nachvollziehen will.</dd>
+    <dt><a href="/lektuere/">Lektüre</a></dt>
+    <dd>Ein laufendes Leseprotokoll: was gerade auf dem Tisch liegt, was geplant ist, was abgeschlossen wurde.</dd>
+    <dt><a href="/quellen/">Quellen</a></dt>
+    <dd>Alle Primärtexte und Bücher, auf die sich die Essays stützen — zum Weiterlesen.</dd>
+  </dl>
+
   <h2 data-reveal>Kolophon</h2>
 
   <p data-reveal>
@@ -46,3 +59,30 @@ import Vignette from '../components/Vignette.astro';
     selbst gehostet. Akzentfarbe ist ein gedecktes Olivgrün auf warmem Papierbeige.
   </p>
 </Basis>
+
+<style>
+  .orientierung {
+    margin: 1rem 0 0;
+  }
+
+  .orientierung dt {
+    margin-top: 1.1rem;
+    font-size: 1.1rem;
+  }
+
+  .orientierung dt a {
+    color: var(--ink);
+    text-decoration: none;
+    transition: color 0.15s ease;
+  }
+
+  .orientierung dt a:hover {
+    color: var(--akzent);
+  }
+
+  .orientierung dd {
+    margin: 0.15rem 0 0;
+    color: var(--ink-soft);
+    line-height: 1.5;
+  }
+</style>

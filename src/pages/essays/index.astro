@@ -2,6 +2,7 @@
 import Basis from '../../layouts/Basis.astro';
 import Vignette from '../../components/Vignette.astro';
 import { getCollection } from 'astro:content';
+import { lesezeit, auszug } from '../../lib/text.ts';
 
 const essays = await getCollection('essays');
 const sortiert = essays
@@ -23,7 +24,8 @@ const formatDatum = (datum: Date) =>
         <li style={`animation-delay: ${Math.min(i, 10) * 60}ms`}>
           <a href={`/essays/${essay.id}/`} class="essay-link">
             <span class="titel">{essay.data.title}</span>
-            <span class="meta">{formatDatum(essay.data.date)}</span>
+            <span class="meta">{formatDatum(essay.data.date)} · {lesezeit(essay.body)} Min. Lesezeit</span>
+            <span class="auszug">{auszug(essay.body, 150)}</span>
           </a>
           {essay.data.substack_url && (
             <a class="substack-link" href={essay.data.substack_url} target="_blank" rel="noopener noreferrer">
@@ -118,6 +120,13 @@ const formatDatum = (datum: Date) =>
     font-family: var(--schrift-ui);
     font-size: 0.85rem;
     color: var(--grau);
+  }
+
+  /* Auszug: erster Satz des Essays, dezent unter der Meta-Zeile */
+  .auszug {
+    margin-top: 0.35rem;
+    color: var(--ink-soft);
+    line-height: 1.5;
   }
 
   /* Substack-Hinweis: kleiner, dezent, eigenständiger Link */

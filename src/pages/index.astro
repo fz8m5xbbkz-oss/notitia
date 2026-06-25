@@ -2,6 +2,16 @@
 import Basis from '../layouts/Basis.astro';
 import Vignette from '../components/Vignette.astro';
 import { Content as Manifest } from '../inhalte/start.md';
+import { getCollection } from 'astro:content';
+import { aktuell } from '../data/lektuere.js';
+import { lesezeit, auszug } from '../lib/text.ts';
+
+// Neuester Essay für den Teaser
+const essays = await getCollection('essays');
+const neuester = essays.sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf())[0];
+
+const formatDatum = (datum: Date) =>
+  datum.toLocaleDateString('de-DE', { day: '2-digit', month: 'long', year: 'numeric' });
 ---
 
 <Basis titel="notitia">
@@ -17,11 +27,45 @@ import { Content as Manifest } from '../inhalte/start.md';
     </a>
   </nav>
 
+  {neuester && (
+    <section class="block" data-reveal>
+      <h2 class="block-titel">Neuester Essay</h2>
+      <a class="teaser" href={`/essays/${neuester.id}/`}>
+        <span class="t-meta">
+          {formatDatum(neuester.data.date)} · {lesezeit(neuester.body)} Min. Lesezeit
+        </span>
+        <span class="t-titel">{neuester.data.title}</span>
+        <span class="t-auszug">{auszug(neuester.body, 200)}</span>
+        <span class="t-mehr">Weiterlesen <span class="pfeil">→</span></span>
+      </a>
+    </section>
+  )}
+
+  {aktuell.length > 0 && (
+    <section class="block" data-reveal>
+      <h2 class="block-titel">Gerade auf dem Tisch</h2>
+      <ul class="lese">
+        {aktuell.map((b) => (
+          <li>
+            <span class="l-autor">{b.autor ? `${b.autor}: ` : ''}</span><em>{b.titel}</em>
+          </li>
+        ))}
+      </ul>
+      <a class="block-link" href="/lektuere/">Ganze Lektüreliste <span class="pfeil">→</span></a>
+    </section>
+  )}
+
+  <section class="block" data-reveal>
+    <h2 class="block-titel">Stöbern</h2>
+    <ul class="stoebern">
+      <li><a href="/argumente/"><span class="s-name">Argumente</span><span class="s-bei">die Struktur hinter jedem Essay, als Diagramm</span></a></li>
+      <li><a href="/quellen/"><span class="s-name">Quellen</span><span class="s-bei">worauf sich die Gedanken stützen</span></a></li>
+      <li><a href="/ueber/"><span class="s-name">Über</span><span class="s-bei">wer hier schreibt — und warum</span></a></li>
+    </ul>
+  </section>
+
   {/*
     Bluesky-Notizbuch entfernt (Stand: Restrukturierung Mai 2026).
-    Falls du einen einzelnen kuratierten Gedanken einbauen willst,
-    fuege hier eine Markdown-Datei wie src/inhalte/notiz.md ein und importiere sie:
-      import { Content as Notiz } from '../inhalte/notiz.md';
     Bisheriger Bluesky-Code ist in der Git-Historie auffindbar (Commit 920de62 und davor).
   */}
 </Basis>
@@ -68,5 +112,139 @@ import { Content as Manifest } from '../inhalte/start.md';
 
   .cta a:hover .pfeil {
     transform: translateX(6px);
+  }
+
+  /* ── Blöcke unter dem Manifest ──────────────────────────────── */
+  .block {
+    margin-top: 3rem;
+    padding-top: 2rem;
+    border-top: 1px solid var(--linie);
+  }
+
+  .block-titel {
+    font-family: var(--schrift-ui);
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--grau);
+    margin: 0 0 1rem;
+  }
+
+  /* Teaser des neuesten Essays */
+  .teaser {
+    display: block;
+    text-decoration: none;
+    color: var(--ink);
+  }
+
+  .t-meta {
+    display: block;
+    font-family: var(--schrift-ui);
+    font-size: 0.8rem;
+    color: var(--grau);
+    margin-bottom: 0.3rem;
+  }
+
+  .t-titel {
+    display: block;
+    font-size: 1.35rem;
+    font-weight: 600;
+    line-height: 1.25;
+    transition: color 0.15s ease;
+  }
+
+  .teaser:hover .t-titel {
+    color: var(--akzent);
+  }
+
+  .t-auszug {
+    display: block;
+    margin: 0.6rem 0 0.7rem;
+    color: var(--ink);
+    line-height: 1.55;
+  }
+
+  .t-mehr {
+    font-family: var(--schrift-ui);
+    font-size: 0.85rem;
+    color: var(--akzent);
+  }
+
+  .teaser:hover .t-mehr .pfeil {
+    transform: translateX(6px);
+  }
+
+  /* Gerade auf dem Tisch */
+  .lese {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 0.9rem;
+  }
+
+  .lese li {
+    line-height: 1.5;
+    margin-bottom: 0.4rem;
+  }
+
+  .l-autor {
+    font-weight: 600;
+  }
+
+  .block-link {
+    font-family: var(--schrift-ui);
+    font-size: 0.85rem;
+    color: var(--akzent);
+    text-decoration: none;
+  }
+
+  .block-link:hover .pfeil {
+    transform: translateX(6px);
+  }
+
+  /* Stöbern */
+  .stoebern {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  .stoebern li + li {
+    border-top: 1px solid var(--linie);
+  }
+
+  .stoebern a {
+    display: flex;
+    flex-direction: column;
+    gap: 0.1rem;
+    padding: 0.75rem 0;
+    text-decoration: none;
+    color: var(--ink);
+    transition: transform 0.35s var(--feder);
+  }
+
+  .stoebern a:hover {
+    transform: translateX(8px);
+  }
+
+  .s-name {
+    font-size: 1.1rem;
+    transition: color 0.15s ease;
+  }
+
+  .stoebern a:hover .s-name {
+    color: var(--akzent);
+  }
+
+  .s-bei {
+    font-family: var(--schrift-ui);
+    font-size: 0.85rem;
+    color: var(--grau);
+  }
+
+  @media (max-width: 640px) {
+    .stoebern a:hover {
+      transform: none;
+    }
   }
 </style>

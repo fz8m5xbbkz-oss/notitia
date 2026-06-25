@@ -1,6 +1,7 @@
 ---
 import Basis from '../layouts/Basis.astro';
 import Vignette from '../components/Vignette.astro';
+import { getCollection } from 'astro:content';
 import { quellen, typReihenfolge, typLabel } from '../data/quellen.js';
 
 // Quellen nach Typ gruppieren, in definierter Reihenfolge
@@ -11,6 +12,10 @@ const gruppen = typReihenfolge
     eintraege: quellen.filter((q) => q.typ === typ),
   }))
   .filter((g) => g.eintraege.length > 0);
+
+// Slug → Essaytitel, um Quellen mit „erwähnt in" zu verknüpfen
+const essays = await getCollection('essays');
+const essayTitel = new Map(essays.map((e) => [e.id, e.data.title]));
 ---
 
 <Basis
@@ -31,15 +36,19 @@ const gruppen = typReihenfolge
       <ol>
         {eintraege.map((q, i) => (
           <li data-reveal style={`--reveal-delay: ${Math.min(i, 6) * 70}ms`}>
-            <span class="autor">{q.autor ? `${q.autor}: ` : ''}</span>
-            {q.url
+            <span class="autor">{q.autor ? `${q.autor}: ` : ''}</span>{q.url
               ? <a href={q.url} target="_blank" rel="noopener noreferrer"><em>{q.titel}</em></a>
               : <em>{q.titel}</em>
-            }
-            {q.untertitel && <span class="untertitel">. {q.untertitel}</span>}
-            {q.jahr && <span class="meta">, {q.jahr}</span>}
-            {q.verlag && <span class="meta">. {q.verlag}</span>}
-            {q.notiz && <span class="notiz"> — {q.notiz}</span>}
+            }{q.untertitel && <span class="untertitel">. {q.untertitel}</span>}{q.jahr && <span class="meta">, {q.jahr}</span>}{q.verlag && <span class="meta">. {q.verlag}</span>}{q.notiz && <span class="notiz"> — {q.notiz}</span>}
+            {q.essays && q.essays.some((s) => essayTitel.has(s)) && (
+              <span class="erwaehnt">
+                erwähnt in {q.essays.filter((s) => essayTitel.has(s)).map((s, i, arr) => (
+                  <>
+                    <a href={`/essays/${s}/`}>{essayTitel.get(s)}</a>{i < arr.length - 1 ? ', ' : ''}
+                  </>
+                ))}
+              </span>
+            )}
           </li>
         ))}
       </ol>
@@ -76,5 +85,24 @@ const gruppen = typReihenfolge
     font-style: italic;
     color: var(--ink-soft);
     font-size: 0.9rem;
+  }
+
+  /* Querverweis auf den Essay, in dem die Quelle vorkommt */
+  .erwaehnt {
+    display: block;
+    margin-top: 0.2rem;
+    font-family: var(--schrift-ui);
+    font-size: 0.8rem;
+    color: var(--grau);
+  }
+
+  .erwaehnt a {
+    color: var(--grau);
+    text-decoration: underline;
+    text-decoration-color: var(--linie);
+  }
+
+  .erwaehnt a:hover {
+    color: var(--akzent);
   }
 </style>
