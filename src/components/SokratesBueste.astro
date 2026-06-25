@@ -1,0 +1,110 @@
+---
+/**
+ * SokratesBüste — handgezeichnete Tinten-Linienzeichnung (kein Foto, keine
+ * Stockgrafik). Zeichnet sich beim Laden selbst wie die Vignetten; danach
+ * wandern die Pupillen langsam hin und her ("grübelnder Sokrates").
+ * prefers-reduced-motion-sicher über den globalen Schutz in global.css.
+ */
+const { breite = 168 } = Astro.props;
+---
+
+<figure class="sok" aria-hidden="true" style={`--b: ${breite}px`}>
+  <svg viewBox="0 0 220 270" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+    <!-- Kahler Kopf, Haarkranz, Ohren -->
+    <path class="s g1" pathLength="1" d="M72 96 C 66 46 96 26 110 26 C 124 26 154 46 148 96" />
+    <path class="s g1" pathLength="1" d="M72 96 C 58 94 50 107 57 121" />
+    <path class="s g1" pathLength="1" d="M57 121 C 52 114 55 106 63 107" />
+    <path class="s g1" pathLength="1" d="M148 96 C 162 94 170 107 163 121" />
+    <path class="s g1" pathLength="1" d="M163 121 C 168 114 165 106 157 107" />
+    <path class="s g1" pathLength="1" d="M60 116 C 50 116 48 132 58 134" />
+    <path class="s g1" pathLength="1" d="M160 116 C 170 116 172 132 162 134" />
+
+    <!-- Brauen, Augen, Nase -->
+    <path class="s g2" pathLength="1" d="M80 104 C 88 98 100 98 106 104" />
+    <path class="s g2" pathLength="1" d="M114 104 C 120 98 132 98 140 104" />
+    <path class="s g2" pathLength="1" d="M82 114 C 90 109 100 109 105 114 C 99 119 89 119 82 114 Z" />
+    <path class="s g2" pathLength="1" d="M115 114 C 120 109 130 109 138 114 C 131 119 121 119 115 114 Z" />
+    <path class="s g2" pathLength="1" d="M110 106 C 108 120 103 130 100 138 C 105 145 115 145 120 138 C 117 130 112 120 110 106" />
+    <path class="s g2" pathLength="1" d="M101 137 C 103 140 106 140 108 137" />
+    <path class="s g2" pathLength="1" d="M112 137 C 114 140 117 140 119 137" />
+
+    <!-- Schnauzbart -->
+    <path class="s g2" pathLength="1" d="M92 147 C 104 155 116 155 128 147" />
+
+    <!-- Voller, fließender Bart -->
+    <path class="s g3" pathLength="1" d="M66 126 C 50 162 56 206 110 230 C 164 206 170 162 154 126" />
+    <path class="s g3" pathLength="1" d="M86 150 C 78 174 82 200 98 222" />
+    <path class="s g3" pathLength="1" d="M99 153 C 94 178 98 204 108 226" />
+    <path class="s g3" pathLength="1" d="M110 154 C 110 180 110 205 110 228" />
+    <path class="s g3" pathLength="1" d="M121 153 C 126 178 122 204 112 226" />
+    <path class="s g3" pathLength="1" d="M134 150 C 142 174 138 200 122 222" />
+
+    <!-- Hals, Schultern, Gewand -->
+    <path class="s g3" pathLength="1" d="M96 228 C 94 234 92 238 90 243" />
+    <path class="s g3" pathLength="1" d="M124 228 C 126 234 128 238 134 243" />
+    <path class="s g3" pathLength="1" d="M64 252 C 72 240 82 237 90 241 L 130 241 C 138 237 148 240 156 252" />
+    <path class="s g3 akzent" pathLength="1" d="M102 243 C 100 247 98 251 96 254" />
+    <path class="s g3 akzent" pathLength="1" d="M118 243 C 120 247 122 251 124 254" />
+
+    <!-- Pupillen: erscheinen spät und wandern dann langsam -->
+    <circle class="pupille" cx="93" cy="114" r="2.4" />
+    <circle class="pupille" cx="127" cy="114" r="2.4" />
+  </svg>
+  <figcaption>Σωκράτης</figcaption>
+</figure>
+
+<style>
+  .sok {
+    margin: 0 auto 1.75rem;
+    width: var(--b);
+    max-width: 60%;
+    color: var(--ink);
+    text-align: center;
+  }
+
+  .sok svg {
+    width: 100%;
+    height: auto;
+    display: block;
+  }
+
+  /* Selbstzeichnen wie bei den Vignetten, gestaffelt nach Gruppe */
+  .s {
+    stroke-dasharray: 1;
+    stroke-dashoffset: 1;
+    animation: zeichnen 1.6s ease-out forwards;
+  }
+
+  .g1 { animation-delay: 0.15s; }
+  .g2 { animation-delay: 0.85s; }
+  .g3 { animation-delay: 1.4s; }
+
+  .akzent {
+    stroke: var(--akzent);
+  }
+
+  /* Pupillen: erst einblenden, dann langsames Grübeln (Blick wandert) */
+  .pupille {
+    fill: currentColor;
+    stroke: none;
+    opacity: 0;
+    transform-box: fill-box;
+    transform-origin: center;
+    animation:
+      erscheinen 0.6s ease-out 2.1s forwards,
+      gruebeln 6s ease-in-out 2.7s infinite alternate;
+  }
+
+  @keyframes gruebeln {
+    from { transform: translateX(-1.6px); }
+    to   { transform: translateX(1.6px); }
+  }
+
+  figcaption {
+    margin-top: 0.5rem;
+    font-family: var(--schrift-ui);
+    font-size: 0.8rem;
+    letter-spacing: 0.08em;
+    color: var(--grau);
+  }
+</style>
