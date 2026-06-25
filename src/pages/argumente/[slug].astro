@@ -28,34 +28,57 @@ const eintrag = argumente.find((a) => a.slug === slug);
   </p>
 </Basis>
 
-<!-- Mermaid von CDN, kein npm install -->
-<script type="module">
+<!-- Mermaid von CDN, kein npm install. is:inline hält den CDN-Import von Vite
+     fern; gezeichnet wird über astro:page-load — sonst läuft das Skript bei
+     View-Transition-Navigation nicht und das Diagramm bliebe leer. -->
+<script is:inline type="module">
   import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs';
 
-  // Farben aus den CSS-Variablen lesen, damit das Diagramm im Dark Mode lesbar bleibt
-  const stil = getComputedStyle(document.documentElement);
-  const papier = stil.getPropertyValue('--paper').trim();
-  const tinte = stil.getPropertyValue('--ink').trim();
-  const akzent = stil.getPropertyValue('--akzent').trim();
+  function zeichneMermaid() {
+    const knoten = document.querySelectorAll('.mermaid');
+    if (!knoten.length) return;
 
-  mermaid.initialize({
-    startOnLoad: true,
-    theme: 'base',
-    themeVariables: {
-      background: papier,
-      primaryColor: papier,
-      primaryBorderColor: akzent,
-      primaryTextColor: tinte,
-      lineColor: akzent,
-      edgeLabelBackground: papier,
-      fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif',
-      fontSize: '14px',
-    },
-  });
+    // Farben aus den CSS-Variablen lesen, damit das Diagramm im Dark Mode lesbar bleibt
+    const stil = getComputedStyle(document.documentElement);
+    mermaid.initialize({
+      startOnLoad: false,
+      theme: 'base',
+      themeVariables: {
+        background: stil.getPropertyValue('--paper').trim(),
+        primaryColor: stil.getPropertyValue('--paper').trim(),
+        primaryBorderColor: stil.getPropertyValue('--akzent').trim(),
+        primaryTextColor: stil.getPropertyValue('--ink').trim(),
+        lineColor: stil.getPropertyValue('--akzent').trim(),
+        edgeLabelBackground: stil.getPropertyValue('--paper').trim(),
+        fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif',
+        fontSize: '14px',
+      },
+    });
 
-  // Nach einem Schema-Wechsel mit neuen Farben neu zeichnen (Mermaid cached das Theme)
-  const knopf = document.querySelector('.schema-knopf');
-  knopf?.addEventListener('click', () => setTimeout(() => location.reload(), 500));
+    // Quelltext sichern und zurücksetzen, damit auch ein erneutes Zeichnen
+    // (z. B. nach Farbschema-Wechsel) sauber neu rendert
+    knoten.forEach((n) => {
+      if (!n.dataset.quelle) n.dataset.quelle = n.textContent;
+      n.removeAttribute('data-processed');
+      n.innerHTML = n.dataset.quelle;
+    });
+
+    mermaid.run({ nodes: Array.from(knoten) });
+  }
+
+  // Erstes Laden direkt ...
+  zeichneMermaid();
+
+  // ... und bei jeder weiteren Navigation neu zeichnen. Die Listener nur einmal
+  // binden — document überlebt die ClientRouter-Seitenwechsel.
+  if (!window.__mermaidGebunden) {
+    window.__mermaidGebunden = true;
+    document.addEventListener('astro:page-load', zeichneMermaid);
+    // Farbschema-Wechsel: mit neuen Farben neu zeichnen, ohne Reload
+    document.addEventListener('click', (e) => {
+      if (e.target.closest('.schema-knopf')) setTimeout(zeichneMermaid, 180);
+    });
+  }
 </script>
 
 <style>
