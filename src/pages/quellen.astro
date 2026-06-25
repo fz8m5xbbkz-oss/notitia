@@ -30,6 +30,12 @@ const essayTitel = new Map(essays.map((e) => [e.id, e.data.title]));
     für den, der tiefer lesen will.
   </p>
 
+  {gruppen.length === 0 && (
+    <p class="leer" data-reveal style="--reveal-delay: 160ms">
+      Noch keine Einträge — das Verzeichnis wächst mit den Essays.
+    </p>
+  )}
+
   {gruppen.map(({ label, eintraege }) => (
     <section>
       <h2 data-reveal>{label}</h2>
@@ -104,5 +110,10 @@ const essayTitel = new Map(essays.map((e) => [e.id, e.data.title]));
 
   .erwaehnt a:hover {
     color: var(--akzent);
+  }
+
+  .leer {
+    color: var(--ink-soft);
+    font-style: italic;
   }
 </style>
