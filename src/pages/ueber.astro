@@ -1,88 +1,23 @@
 ---
 import Basis from '../layouts/Basis.astro';
 import SokratesBueste from '../components/SokratesBueste.astro';
+import { Content } from '../inhalte/ueber.md';
 ---
 
 <Basis titel="Über — notitia">
   <SokratesBueste />
-  <h1 data-reveal>Über</h1>
-
-  <p data-reveal style="--reveal-delay: 80ms">
-    Ich bin Luis. Ab September 2026 studiere ich Allgemeine Verwaltung an der
-    Landesdirektion Sachsen — und ich lese nebenbei zu viel Philosophie.
-  </p>
-
-  <p data-reveal style="--reveal-delay: 160ms">
-    <strong>notitia</strong> ist mein Versuch, beides zusammenzudenken:
-    Was passiert, wenn man Kant liest und gleichzeitig Bescheide schreibt?
-    Was sagt Aristoteles über Bürokratie? Was lehrt der Staat über Freiheit?
-    Philosophie — nicht als Hobby neben der Verwaltung, sondern als Denkwerkzeug darin.
-  </p>
-
-  <p data-reveal style="--reveal-delay: 240ms">
-    Jeden Monat erscheint ein Essay. Kein Kommentar zum Tagesgeschehen.
-    Kein Content-Marketing. Nur ein Gedanke, der mich wirklich beschäftigt
-    hat — zu Ende gedacht.
-  </p>
-
-  <p data-reveal style="--reveal-delay: 320ms">
-    Längere Stücke erscheinen zuerst auf
-    <a href="https://luisfzl.substack.com" target="_blank" rel="noopener noreferrer">Substack</a>.
-    Notizen auf
-    <a href="https://bsky.app/profile/luis-57.bsky.social" target="_blank" rel="noopener noreferrer">Bluesky</a>.
-    Kontakt: <a href="mailto:denkfeld@outlook.de">denkfeld@outlook.de</a>.
-  </p>
-
-  <h2 data-reveal>Was du hier findest</h2>
-
-  <dl class="orientierung" data-reveal>
-    <dt><a href="/essays/">Essays</a></dt>
-    <dd>Das Herzstück: ein längerer Gedanke pro Monat, zu Ende gedacht.</dd>
-    <dt><a href="/argumente/">Argumente</a></dt>
-    <dd>Die Argumentationsstruktur jedes Essays als Diagramm — für den, der nicht nur lesen, sondern nachvollziehen will.</dd>
-    <dt><a href="/lektuere/">Lektüre</a></dt>
-    <dd>Ein laufendes Leseprotokoll: was gerade auf dem Tisch liegt, was geplant ist, was abgeschlossen wurde.</dd>
-    <dt><a href="/quellen/">Quellen</a></dt>
-    <dd>Alle Primärtexte und Bücher, auf die sich die Essays stützen — zum Weiterlesen.</dd>
-  </dl>
-
-  <h2 data-reveal>Kolophon</h2>
-
-  <p data-reveal>
-    Diese Seite ist mit <a href="https://astro.build" target="_blank" rel="noopener noreferrer">Astro</a> gebaut,
-    in Markdown geschrieben und auf Vercel gehostet. Es gibt keine Datenbank,
-    kein CMS, keine Tracker, keine Werbe-Skripte und kein Cookie-Banner.
-  </p>
-
-  <p data-reveal style="--reveal-delay: 80ms">
-    Die Lesetypografie ist <em>Source Serif 4</em> (Adobe, SIL Open Font License),
-    selbst gehostet. Akzentfarbe ist ein gedecktes Olivgrün auf warmem Papierbeige.
-  </p>
+  <div class="inhalt">
+    <Content />
+  </div>
 </Basis>
 
 <style>
-  .orientierung {
-    margin: 1rem 0 0;
+  .inhalt {
+    animation: aufklaren 0.6s ease-out both;
   }
 
-  .orientierung dt {
-    margin-top: 1.1rem;
-    font-size: 1.1rem;
-  }
-
-  .orientierung dt a {
-    color: var(--ink);
-    text-decoration: none;
-    transition: color 0.15s ease;
-  }
-
-  .orientierung dt a:hover {
-    color: var(--akzent);
-  }
-
-  .orientierung dd {
-    margin: 0.15rem 0 0;
-    color: var(--ink-soft);
-    line-height: 1.5;
+  /* Erste Überschrift (Seitentitel) etwas vom Bild abrücken */
+  .inhalt :global(h1) {
+    margin-top: 0;
   }
 </style>
