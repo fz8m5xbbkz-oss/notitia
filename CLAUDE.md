@@ -26,7 +26,7 @@ liest er sie automatisch und ist sofort auf Stand. Bitte vor jeder substantielle
 | **GitHub-Repo** | https://github.com/fz8m5xbbkz-oss/notitia |
 | **Substack** | https://luisfzl.substack.com |
 | **Bluesky** | https://bsky.app/profile/luis-57.bsky.social |
-| **Kontakt-Mail** | denkfeld@outlook.de |
+| **Kontakt-Mail** | luisfrenzel@gmx.net (öffentlich, auf /ueber) |
 | **Git-Identität** | `Luis` / `denkfeld@outlook.de` |
 
 ## Tech-Stack
@@ -38,7 +38,8 @@ liest er sie automatisch und ist sofort auf Stand. Bitte vor jeder substantielle
 - **Keine Datenbank, kein CMS, keine Tracker, keine Cookie-Banner, kein
   Newsletter-Popup**
 - **Eingebaute Integrationen:** `@astrojs/sitemap`, `@astrojs/rss`, `marked`
-- **Substack-Feed:** fetch-basiert (kein rss-parser — Cloudflare-Kompatibilität)
+- **Substack:** kein Feed-Mixing mehr (Juni 2026 entfernt) — Essays verlinken
+  einzeln über `substack_url` im Frontmatter („auch auf Substack ↗")
 - **Auto-Push:** SSH-Key eingerichtet, post-commit-Hook pusht automatisch
 
 ## Verzeichnis-Struktur (wichtigste Stellen)
@@ -46,29 +47,44 @@ liest er sie automatisch und ist sofort auf Stand. Bitte vor jeder substantielle
 ```
 src/
 ├── pages/
-│   ├── index.astro              Startseite (Manifest + CTAs)
-│   ├── ueber.astro              Über-Seite mit Manifest + Kolophon
-│   ├── lektuere.astro           Lektüreliste (Gerade / Empfohlen)
-│   ├── quellen.astro            Quellenverzeichnis
-│   ├── rss.xml.ts               RSS-Feed (Volltext, fetch-basiert)
-│   └── essays/
-│       ├── index.astro          Liste, mischt lokale Essays + Substack-RSS
-│       └── [slug].astro         Dynamisches Routing pro Essay (leserModus=true)
+│   ├── index.astro              Startseite (Manifest + CTAs + Teaser neuester
+│   │                             Essay + „Gerade auf dem Tisch" + Stöbern)
+│   ├── ueber.astro              Über-Seite (rendert inhalte/ueber.md + Sokrates)
+│   ├── lektuere.astro           Leseprotokoll (Gerade/Geplant/Abgeschlossen/
+│   │                             Empfohlen; leere Sektionen blenden sich aus)
+│   ├── quellen.astro            Quellenverzeichnis (nach Typ gruppiert,
+│   │                             „erwähnt in"-Querverweise auf Essays)
+│   ├── rss.xml.ts               RSS-Feed (Volltext via @astrojs/rss + marked)
+│   ├── essays/
+│   │   ├── index.astro          Liste (nur lokale Essays + Auszug + Lesezeit)
+│   │   └── [slug].astro         Essay-Seite (leserModus=true, Fortschrittsbalken)
+│   └── argumente/
+│       ├── index.astro          Liste der Argument-Karten
+│       └── [slug].astro         Mermaid-Baumdiagramm (CDN, kein npm install;
+│                                 rendert über astro:page-load, is:inline)
 ├── content/
 │   ├── essays/*.md              Essays (Frontmatter: nur title + date Pflicht,
 │   │                             feld default philosophie-ethik, optional substack_url)
 │   └── felder/*.md              Philosophie-Felder (nur noch philosophie-ethik aktiv)
 ├── data/
-│   ├── lektuere.js              Bücherliste (aktuell / empfohlen)
-│   └── quellen.js               Quellenverzeichnis
-├── inhalte/start.md             Manifest-Text der Startseite
+│   ├── argumente.js             Argument-Karten (Mermaid-Syntax, von Hand gepflegt)
+│   ├── lektuere.js              GENERIERT aus Obsidian (nicht von Hand bearbeiten)
+│   └── quellen.js               GENERIERT aus Obsidian (nicht von Hand bearbeiten)
+├── inhalte/
+│   ├── start.md                 Manifest-Text der Startseite
+│   └── ueber.md                 GENERIERT aus Obsidian (nicht von Hand bearbeiten)
 ├── components/
-│   ├── Header.astro             Wordmark + Nav (Essays, Lektüre, Quellen, Über)
-│   └── Footer.astro             Copyright + Buttons (Newsletter, Bluesky)
-├── layouts/Basis.astro          HTML-Hülle inkl. Meta, OpenGraph, leserModus-Prop
+│   ├── Header.astro             Wordmark + Nav (Essays, Argumente, Lektüre,
+│   │                             Quellen, Über) + Dark-Mode-Toggle
+│   ├── Footer.astro             Copyright + Buttons (Newsletter, Bluesky)
+│   ├── Vignette.astro           SVG-Buchschmuck, ein Motiv pro Seite
+│   ├── SokratesBueste.astro     gezeichneter Sokrates auf /ueber
+│   └── Randschmuck.astro        Ranken in den Seitenrändern (nur Desktop ≥1200px)
+├── layouts/Basis.astro          HTML-Hülle inkl. Meta, OpenGraph, leserModus-Prop,
+│                                 ClientRouter, Tinte-Cursor, Scroll-Reveals
 ├── lib/
-│   └── substack.ts              RSS-Fetch via fetch() — KEIN rss-parser
-└── styles/global.css            Tokens, Reset, Reader-Mode-CSS
+│   └── text.ts                  Lesezeit + Auszug (geteilt von Start/Essay-Liste)
+└── styles/global.css            Tokens, Reset, Dark Mode, Reader-Mode-CSS
 
 public/
 └── fonts/                       Source Serif 4 (variable, Roman + Italic)
@@ -104,8 +120,19 @@ astro.config.mjs                 site-URL + trailingSlash: always + Sitemap
 1. Notiz im Vault-Ordner `03 - Nebenprojekte/notitia Essays/` schreiben
    (erste Zeile `# Titel`; Anleitung liegt als `_Anleitung.md` im Ordner)
 2. Wenn fertig: Eigenschaft `status: fertig` setzen
-3. `npm run publizieren` — zeigt neue/geänderte Essays, fragt einmal nach,
-   committet (Hook pusht, Vercel deployt)
+   (optional `slug:` im Frontmatter, falls URL ≠ Titel bleiben soll —
+   z. B. hält `slug: willkommen` die URL von „Warum dieses notitia" stabil)
+3. `npm run publizieren` — zeigt neue/geänderte Essays UND Seiten, fragt
+   einmal nach, committet (Hook pusht, Vercel deployt).
+   Alias `notitia` (in ~/.zshrc) geht von überall.
+
+**Feste Seiten — ebenfalls aus Obsidian (seit Juni 2026):**
+
+Ordner `03 - Nebenprojekte/notitia Seiten/` mit `Über.md`, `Lektüre.md`,
+`Quellen.md` (+ `_Anleitung.md`). Kein `status: fertig` nötig — geänderte
+Seiten erscheinen beim nächsten `npm run publizieren` im Bestätigungsschritt.
+Über = freies Markdown; Lektüre/Quellen = Listen unter festen Überschriften,
+werden zu `src/data/lektuere.js` / `quellen.js` generiert.
 
 **Nebenweg — direkt im Repo:**
 
@@ -140,8 +167,10 @@ astro.config.mjs                 site-URL + trailingSlash: always + Sitemap
 - **Kein Newsletter-Formular im Footer.** Nur zwei Buttons: „Newsletter" + „Bluesky".
 - **Kein Magazin-Editorial-Layout.** Einmal gebaut, nach Luis-Feedback zurückgerollt.
   Nicht nochmal versuchen, außer Luis fragt explizit.
-- **Kein rss-parser.** Durch fetch-basierte Implementierung ersetzt —
-  rss-parser ist inkompatibel mit Cloudflare Workers / Edge-Runtimes.
+- **Kein rss-parser.** Falls je wieder Fremd-Feeds gelesen werden: fetch +
+  Regex statt npm-Paket (rss-parser ist inkompatibel mit Edge-Runtimes;
+  die alte fetch-Implementierung liegt in der Git-Historie, `src/lib/substack.ts`
+  wurde im Juli 2026 als toter Code entfernt).
 
 ## Design (eingespielt, nicht ohne Rücksprache ändern)
 
@@ -171,25 +200,30 @@ astro.config.mjs                 site-URL + trailingSlash: always + Sitemap
   Globaler `prefers-reduced-motion`-Schutz in `global.css` bleibt bestehen.
   **Der Essay-Lesetext selbst bleibt ruhig** — Animationen nur an Titel/Meta/Navigation.
 
-## Stand der Dinge (Mai 2026)
+## Stand der Dinge (Juli 2026)
 
 ### Live und gut
 
-- 6 Routen: `/`, `/essays`, `/essays/willkommen`, `/lektuere`, `/quellen`, `/ueber`
-- `/rss.xml` — Volltext-Feed, fetch-basiert
-- Substack-RSS wird beim Build in `/essays` einsortiert
-- Sitemap, robots.txt, OG-Tags aktiv
+- 10 Routen: `/`, `/essays` (+2 Essays), `/argumente` (+2 Karten),
+  `/lektuere`, `/quellen`, `/ueber`
+- `/rss.xml` — Volltext-Feed (via `@astrojs/rss` + `marked`)
+- Sitemap, robots.txt (Vercel-URL), OG-Tags aktiv
 - SSH-Key + post-commit-Hook: jeder Commit pusht automatisch
+- Obsidian-Publishing für Essays UND Seiten (Über, Lektüre, Quellen)
+- Dark Mode, View Transitions, Reader Mode mobil, Vignetten, Sokrates,
+  Randschmuck — alles verifiziert auf Mobil + Desktop, hell + dunkel
 - THESIS.md + AUDIENCE.md im Repo
 
 ### Offen
 
 - **THESIS.md**: den einen Satz schreiben (was notitia glaubt, das sonst niemand glaubt)
 - **Search Console**: neue Property für `notitia-eta.vercel.app` anlegen,
-  Verification-Tag (`UzhefoeozfShCbWZqVo5oWkuAWSCY5Msd4gjdooc1r4`) ist bereits
+  Verification-Tag (`obr4TfpPoqxxoENkMkBbSC6NvdY7PJ75ZJf47q4Guaw`) ist bereits
   in `src/layouts/Basis.astro` hinterlegt
-- **Altdateien im Repo-Root**: `bluesky_banner_magnolia.svg`, `magnolia_bluesky_banner.png`,
-  `git add.docx` — noch nicht entfernt
+- **Lose Dateien im Repo-Root** (unversioniert, nicht live): `rc.dmg`,
+  `social-banner.png/svg`, `social-profilbild.png/svg`,
+  `notitia_publishing_plan.html`, `obsidian-sync.skill` — Luis fragen,
+  was davon weg kann
 
 ### Verlauf der Namensgebung (zur Orientierung)
 
