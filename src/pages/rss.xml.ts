@@ -13,7 +13,7 @@ export async function GET(context: APIContext) {
 
   return rss({
     title: 'notitia',
-    description: 'Philosophie aus dem Inneren der Verwaltung. Ein Essay pro Monat.',
+    description: 'Philosophie aus dem Inneren der Verwaltung. Jeden Sonntag ein Essay.',
     site: context.site!,
     customData: '<language>de</language>',
     items: await Promise.all(

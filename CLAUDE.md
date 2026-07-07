@@ -15,8 +15,9 @@ liest er sie automatisch und ist sofort auf Stand. Bitte vor jeder substantielle
 - **Kontext:** Luis beginnt im September 2026 ein Studium der Allgemeinen Verwaltung
   an der Landesdirektion Sachsen. Die Seite ist sein Versuch, Philosophie und
   Verwaltungspraxis zusammenzudenken.
-- **Produkt:** Ein monatlicher Essay. **Substack ist der primäre Kanal**,
-  notitia das öffentliche Archiv.
+- **Produkt:** Ein wöchentlicher Essay, jeden Sonntag (seit Juli 2026, vorher
+  monatlich). **Substack ist der primäre Kanal**, notitia das öffentliche
+  Archiv.
 
 ## Adressen / Konten
 

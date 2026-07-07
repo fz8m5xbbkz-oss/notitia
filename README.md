@@ -1,7 +1,7 @@
 # notitia
 
 Philosophie aus dem Inneren der Verwaltung.
-Ein monatliches Essay-Journal von Luis — gehostet auf [notitia-eta.vercel.app](https://notitia-eta.vercel.app).
+Ein wöchentliches Essay-Journal von Luis — gehostet auf [notitia-eta.vercel.app](https://notitia-eta.vercel.app).
 
 ## Stack
 
