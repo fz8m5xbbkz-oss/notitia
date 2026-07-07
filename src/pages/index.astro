@@ -131,11 +131,23 @@ const formatDatum = (datum: Date) =>
     margin: 0 0 1rem;
   }
 
-  /* Teaser des neuesten Essays */
+  /* Teaser des neuesten Essays — kippt beim Hover leicht in die Tiefe,
+     wie ein angehobenes Blatt Papier */
   .teaser {
     display: block;
     text-decoration: none;
     color: var(--ink);
+    transition: transform 0.45s var(--feder);
+  }
+
+  .teaser:hover {
+    transform: perspective(800px) rotateX(2deg) rotateY(-1.5deg) translateY(-3px);
+  }
+
+  @media (hover: none) {
+    .teaser:hover {
+      transform: none;
+    }
   }
 
   .t-meta {
@@ -220,11 +232,14 @@ const formatDatum = (datum: Date) =>
     padding: 0.75rem 0;
     text-decoration: none;
     color: var(--ink);
+    transform-origin: left center;
     transition: transform 0.35s var(--feder);
   }
 
+  /* Hover: schiebt nach rechts und hebt die Zeile wie eine Buchseite an der
+     Kante an (rotateY um die linke Achse) */
   .stoebern a:hover {
-    transform: translateX(8px);
+    transform: perspective(600px) translateX(8px) rotateY(-4deg);
   }
 
   .s-name {
@@ -242,7 +257,8 @@ const formatDatum = (datum: Date) =>
     color: var(--grau);
   }
 
-  @media (max-width: 640px) {
+  /* Touch-Geräte (auch Tablets): kein Hover-Kippen — :hover klebt dort nach Tap */
+  @media (hover: none) {
     .stoebern a:hover {
       transform: none;
     }
