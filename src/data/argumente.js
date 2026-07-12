@@ -15,6 +15,34 @@
 
 export const argumente = [
   {
+    slug: 'dafuer-bin-ich-nicht-zustaendig',
+    titel: 'Dafür bin ich nicht zuständig',
+    diagramm: `
+flowchart TD
+  T["These: 'Dafür bin ich nicht zuständig'\nist wörtlich Platons Gerechtigkeitsformel —\ndoch Ordnung und Gerechtigkeit sind\nnicht dasselbe"]
+
+  A1["Szene: Die Frau am Schalter sagt\n'Dafür bin ich nicht zuständig' —\nPlaton hätte genickt"]
+  A2["Platon, Politeia 433a: Jeder tut das\nSeine und mischt sich nicht in fremde\nAufgaben ein — das ist Gerechtigkeit"]
+  A3["Arendt: die 'Herrschaft des Niemand' —\nin der Bürokratie handeln Strukturen,\nnicht Personen"]
+
+  P1["Politeia 443c–e: Gerechtigkeit betrifft\nnicht nur das äußere Wirken, sondern\ndie innere Tätigkeit der Seele"]
+  P2["Die Frau hat äußerlich richtig\ngehandelt — hat sie auch innerlich\nrichtig gehandelt?"]
+
+  E1["Elbe: Das ist verschleierte\nPersonalherrschaft — hinter dem Niemand\nsitzt immer jemand"]
+
+  S["Schluss: Ordnung und Gerechtigkeit\nsind nicht dasselbe — Platons\nPointe gilt noch"]
+
+  T --> A1
+  A1 --> A2
+  A2 --> P1
+  P1 --> P2
+  T --> A3
+  A3 -.-> E1
+  P2 --> S
+  E1 -.-> S
+`,
+  },
+  {
     slug: 'synoikismos-in-rhodos',
     titel: 'Synoikismos in Rhodos',
     diagramm: `
