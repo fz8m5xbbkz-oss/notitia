@@ -29,9 +29,9 @@ export const quellen = [
       "dafuer-bin-ich-nicht-zustaendig"
     ],
     "notiz": "Hannah Arendts Konzept der „Herrschaft des Niemand\", im Essay wörtlich zitiert",
-    "jahr": "https://www.kritiknetz.de/images/stories/texte/Elbe_Arendt_Herrschaft_des_Niemand.pdf",
     "autor": "Elbe, Ingo",
-    "titel": "[„das Böse, das von Niemanden begangen wurde\"]",
+    "titel": "„das Böse, das von Niemanden begangen wurde\"",
+    "url": "https://www.kritiknetz.de/images/stories/texte/Elbe_Arendt_Herrschaft_des_Niemand.pdf",
     "typ": "aufsatz"
   }
 ];
