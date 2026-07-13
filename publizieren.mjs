@@ -30,7 +30,7 @@ const __dir = dirname(fileURLToPath(import.meta.url));
 const VAULT_BASIS = join(
   process.env.HOME,
   'Library/Mobile Documents/iCloud~md~obsidian/Documents/Luis',
-  '03 - Nebenprojekte'
+  '06 - notitia'
 );
 const ESSAY_VAULT = join(VAULT_BASIS, 'notitia Essays');
 const SEITEN_VAULT = join(VAULT_BASIS, 'notitia Seiten');
@@ -105,9 +105,10 @@ function parseEintrag(zeile) {
     s = s.slice(0, dash).trim();
   }
 
-  // Jahr in (…) am Ende
+  // Jahr in (…) am Ende — aber nicht, wenn das die schließende Klammer
+  // eines Markdown-Links [Titel](url) ist (URLs enthalten immer „://")
   const mJahr = s.match(/\s*\(([^)]+)\)\s*$/);
-  if (mJahr) {
+  if (mJahr && !mJahr[1].includes('://')) {
     const j = mJahr[1].trim();
     e.jahr = /^\d+$/.test(j) ? Number(j) : j;
     s = s.slice(0, mJahr.index).trim();
