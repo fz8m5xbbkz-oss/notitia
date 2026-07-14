@@ -1,0 +1,85 @@
+---
+// Siegel.astro — Konzept 1b: Geprägtes Wachssiegel
+// Reines CSS, kein JS. Drückt sich bei Hover ein, tiefer bei :active,
+// federt mit --feder zurück. Nutzt nur bestehende Tokens.
+//
+// Verwendung:  <Siegel />  oder  <Siegel zeichen="⁂" />
+const { zeichen = 'n' } = Astro.props;
+---
+
+<button type="button" class="siegel" aria-label="Siegel">
+  <span class="siegel-zeichen">{zeichen}</span>
+</button>
+
+<style>
+  .siegel {
+    cursor: pointer;
+    border: none;
+    padding: 0;
+    width: 7rem;
+    height: 7rem;
+    border-radius: 50%;
+    background: var(--paper-dark);
+    /* Prägung: Licht oben, Schatten unten, weicher Wurf auf dem Papier */
+    box-shadow:
+      inset 0 2px 3px rgba(255, 255, 255, 0.55),
+      inset 0 -3px 5px rgba(26, 26, 26, 0.22),
+      0 6px 14px rgba(26, 26, 26, 0.25),
+      0 1px 3px rgba(26, 26, 26, 0.2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition:
+      transform 0.45s var(--feder),
+      box-shadow 0.45s var(--feder);
+  }
+
+  .siegel:hover {
+    transform: scale(0.965) translateY(1px);
+    box-shadow:
+      inset 0 3px 6px rgba(26, 26, 26, 0.28),
+      inset 0 -1px 2px rgba(255, 255, 255, 0.4),
+      0 2px 5px rgba(26, 26, 26, 0.2);
+  }
+
+  .siegel:active {
+    transform: scale(0.93) translateY(2px);
+    box-shadow:
+      inset 0 4px 9px rgba(26, 26, 26, 0.34),
+      0 1px 2px rgba(26, 26, 26, 0.15);
+  }
+
+  .siegel-zeichen {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 5.25rem;
+    height: 5.25rem;
+    border-radius: 50%;
+    border: 1.5px solid rgba(26, 26, 26, 0.35);
+    font: italic 600 2.9rem/1 var(--schrift-text);
+    color: var(--ink);
+    /* Prägeschrift: Lichtkante oben, Schattenkante unten */
+    text-shadow:
+      0 1px 0 rgba(255, 255, 255, 0.5),
+      0 -1px 1px rgba(26, 26, 26, 0.3);
+  }
+
+  /* Dunkles Papier: Lichtkanten abschwächen, Wachs bleibt matt */
+  :global(html[data-farbschema='dunkel']) .siegel {
+    box-shadow:
+      inset 0 2px 3px rgba(230, 223, 208, 0.12),
+      inset 0 -3px 5px rgba(0, 0, 0, 0.4),
+      0 6px 14px rgba(0, 0, 0, 0.45),
+      0 1px 3px rgba(0, 0, 0, 0.35);
+  }
+  :global(html[data-farbschema='dunkel']) .siegel-zeichen {
+    border-color: rgba(230, 223, 208, 0.3);
+    text-shadow:
+      0 1px 0 rgba(230, 223, 208, 0.15),
+      0 -1px 1px rgba(0, 0, 0, 0.5);
+  }
+
+  /* Reduced motion erledigt der globale Guard in global.css
+     (Transitions auf 0.01ms) — Zustände bleiben erhalten, nur ohne Feder. */
+</style>

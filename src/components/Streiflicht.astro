@@ -1,0 +1,78 @@
+---
+// Streiflicht — Konzept 1e: Licht auf der Körnung
+// Ein fast unmerklicher Lichtschein, der mit der Scrollposition wandert —
+// kein Element bewegt sich, nur die Beleuchtung des Papiers.
+// Bewusste Dehnung der „keine Gradients"-Regel als Licht, nicht als Dekor
+// (mit Luis am 06.07.2026 entschieden).
+//
+// transition:persist hält den Knoten über ClientRouter-Swaps; astro:page-load
+// setzt das Licht nach jeder Navigation neu (Scrollposition springt dann).
+---
+
+<div class="streiflicht" aria-hidden="true" transition:persist="streiflicht"></div>
+
+<style>
+  .streiflicht {
+    position: fixed;
+    inset: -20%;
+    pointer-events: none;
+    z-index: 0;
+    /* Intensität 0.018: unter der bewussten Wahrnehmungsschwelle */
+    background: radial-gradient(
+      ellipse 60% 80% at var(--licht-x, 30%) 30%,
+      rgba(255, 252, 240, 0.018) 0%,
+      rgba(255, 252, 240, 0) 55%,
+      rgba(26, 26, 26, 0.006) 100%
+    );
+  }
+
+  /* Dunkles Papier: Lichtquelle wärmer und noch schwächer */
+  :global(html[data-farbschema='dunkel']) .streiflicht {
+    background: radial-gradient(
+      ellipse 60% 80% at var(--licht-x, 30%) 30%,
+      rgba(230, 223, 208, 0.012) 0%,
+      rgba(230, 223, 208, 0) 55%,
+      rgba(0, 0, 0, 0.01) 100%
+    );
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .streiflicht {
+      --licht-x: 30%; /* Licht steht fest */
+    }
+  }
+</style>
+
+<script>
+  // Scrollposition → Lichtposition, rAF-throttled.
+  const reduziert = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  if (!reduziert && !(window as any).__streiflicht) {
+    (window as any).__streiflicht = true;
+
+    let ticking = false;
+
+    const setzen = () => {
+      ticking = false;
+      const licht = document.querySelector<HTMLElement>('.streiflicht');
+      if (!licht) return;
+      const max = document.documentElement.scrollHeight - innerHeight;
+      const anteil = max > 0 ? scrollY / max : 0;
+      licht.style.setProperty('--licht-x', `${10 + anteil * 80}%`);
+    };
+
+    addEventListener(
+      'scroll',
+      () => {
+        if (!ticking) {
+          ticking = true;
+          requestAnimationFrame(setzen);
+        }
+      },
+      { passive: true }
+    );
+
+    document.addEventListener('astro:page-load', setzen);
+    setzen();
+  }
+</script>

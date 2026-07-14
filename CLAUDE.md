@@ -118,7 +118,7 @@ astro.config.mjs                 site-URL + trailingSlash: always + Sitemap
 
 **Hauptweg — Schreiben in Obsidian (seit Juni 2026):**
 
-1. Notiz im Vault-Ordner `03 - Nebenprojekte/notitia Essays/` schreiben
+1. Notiz im Vault-Ordner `06 - notitia/notitia Essays/` schreiben
    (erste Zeile `# Titel`; Anleitung liegt als `_Anleitung.md` im Ordner)
 2. Wenn fertig: Eigenschaft `status: fertig` setzen
    (optional `slug:` im Frontmatter, falls URL ≠ Titel bleiben soll —
@@ -129,7 +129,7 @@ astro.config.mjs                 site-URL + trailingSlash: always + Sitemap
 
 **Feste Seiten — ebenfalls aus Obsidian (seit Juni 2026):**
 
-Ordner `03 - Nebenprojekte/notitia Seiten/` mit `Über.md`, `Lektüre.md`,
+Ordner `06 - notitia/notitia Seiten/` mit `Über.md`, `Lektüre.md`,
 `Quellen.md` (+ `_Anleitung.md`). Kein `status: fertig` nötig — geänderte
 Seiten erscheinen beim nächsten `npm run publizieren` im Bestätigungsschritt.
 Über = freies Markdown; Lektüre/Quellen = Listen unter festen Überschriften,

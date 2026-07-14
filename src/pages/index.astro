@@ -1,6 +1,6 @@
 ---
 import Basis from '../layouts/Basis.astro';
-import Vignette from '../components/Vignette.astro';
+import Siegel from '../components/Siegel.astro';
 import { Content as Manifest } from '../inhalte/start.md';
 import { getCollection } from 'astro:content';
 import { aktuell } from '../data/lektuere.js';
@@ -15,7 +15,9 @@ const formatDatum = (datum: Date) =>
 ---
 
 <Basis titel="notitia">
-  <Vignette motiv="siegel" breite={68} />
+  <div class="siegel-halter">
+    <Siegel />
+  </div>
   <div class="manifest">
     <Manifest />
   </div>
@@ -71,6 +73,14 @@ const formatDatum = (datum: Date) =>
 </Basis>
 
 <style>
+  /* Siegel sitzt zentriert an der Stelle der früheren Siegel-Vignette */
+  .siegel-halter {
+    display: flex;
+    justify-content: center;
+    margin: 0 auto 1.75rem;
+    animation: erscheinen 0.8s ease-out both;
+  }
+
   /* Manifest kaskadiert Absatz für Absatz herein */
   .manifest > :global(*) {
     animation: aufklaren 0.6s ease-out both;

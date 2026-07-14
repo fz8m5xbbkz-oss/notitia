@@ -4,14 +4,13 @@
 
 ---
 
-**[PLATZHALTER — Luis, bitte ausfüllen]**
-
-Was glaubt notitia, das sonst fast niemand in der deutschen Öffentlichkeit glaubt?
-
-Beispiel-Richtung (nicht final):
-> "Wer den Staat wirklich verstehen will, muss Philosophie studieren — nicht Politikwissenschaft."
-
-Schreib hier deinen Satz hin. Alles andere — Kategorien, Struktur, Tonalität — wird daran gemessen.
+**Jeder Bescheid entscheidet eine Frage, an der sich die Philosophie seit zweitausend Jahren abarbeitet.**
 
 ---
-*Erstellt: 2026-05-21 | Format: Thiel-ADR*
+
+Was notitia glaubt, das in der deutschen Öffentlichkeit fast niemand glaubt: Die Verwaltung gilt als der geistlose Teil des Staates. Dabei ist sie der Ort, an dem seine ältesten Fragen tatsächlich entschieden werden, jeden Tag, in Paragraphen übersetzt, von Leuten, die keine Zeit haben, es zu bemerken.
+
+Der Satz definiert den Kern (Philosophie + Verwaltung). An ihm wird alles Weitere gemessen: Themenwahl, Aufbau, Ton.
+
+---
+*Erstellt: 2026-05-21 · Thesis gesetzt: 2026-07-14 · Format: Thiel-ADR*

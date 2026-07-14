@@ -4,86 +4,145 @@
  * Strichzeichnungen in Tinte (currentColor) + Akzent, zeichnen sich beim
  * Laden selbst (Keyframes `zeichnen`/`erscheinen` in global.css).
  * Keine Fotos, keine Stockbilder — bewusste Entscheidung, siehe CLAUDE.md.
+ *
+ * Papierschichten (Konzept 1a der 3D-Exploration, Juli 2026): jedes Motiv
+ * liegt in 2–3 Lagen mit echter Tiefe (translateZ); auf Desktop neigt sich
+ * der Stapel sanft zur Maus (max ±12°, nur pointer:fine) und federt mit
+ * --feder zurück. Das Selbstzeichnen läuft pro Lage unverändert weiter.
  */
 const { motiv, breite = 60 } = Astro.props;
 ---
 
-<div class="vignette" aria-hidden="true">
-  {motiv === 'siegel' && (
-    <svg viewBox="0 0 64 64" width={breite} height={breite} fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-      <circle class="s" pathLength="1" cx="32" cy="32" r="26" />
-      <circle class="gestrichelt" cx="32" cy="32" r="21" />
-      <line class="s" pathLength="1" x1="25" y1="24" x2="39" y2="24" />
-      <line class="s" pathLength="1" x1="28" y1="27" x2="28" y2="38" />
-      <line class="s" pathLength="1" x1="32" y1="27" x2="32" y2="38" />
-      <line class="s" pathLength="1" x1="36" y1="27" x2="36" y2="38" />
-      <line class="s" pathLength="1" x1="25" y1="41" x2="39" y2="41" />
-    </svg>
-  )}
+<div class="vignette tiefe-zone" aria-hidden="true" style={`width: ${breite}px`}>
+  <div class="tiefe-stapel">
+    {motiv === 'siegel' && (
+      <svg class="lage lage-mitte" viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+        <circle class="s" pathLength="1" cx="32" cy="32" r="26" />
+        <circle class="gestrichelt" cx="32" cy="32" r="21" />
+        <line class="s" pathLength="1" x1="25" y1="24" x2="39" y2="24" />
+        <line class="s" pathLength="1" x1="28" y1="27" x2="28" y2="38" />
+        <line class="s" pathLength="1" x1="32" y1="27" x2="32" y2="38" />
+        <line class="s" pathLength="1" x1="36" y1="27" x2="36" y2="38" />
+        <line class="s" pathLength="1" x1="25" y1="41" x2="39" y2="41" />
+      </svg>
+    )}
 
-  {motiv === 'feder' && (
-    <svg viewBox="0 0 64 64" width={breite} height={breite} fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-      <path class="s" pathLength="1" d="M47 10 C51 17 48 27 40 34 C35 38 29 42 24 45 C28 34 35 19 47 10 Z" />
-      <path class="s" pathLength="1" d="M47 10 C39 19 30 31 24 45" />
-      <line class="s" pathLength="1" x1="24" y1="45" x2="20" y2="50" />
-      <path class="s akzent" pathLength="1" d="M13 54 Q18 50 23 54 T 33 54" />
-    </svg>
-  )}
+    {motiv === 'feder' && (
+      <>
+        <svg class="lage lage-mitte" viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+          <path class="s" pathLength="1" d="M47 10 C51 17 48 27 40 34 C35 38 29 42 24 45 C28 34 35 19 47 10 Z" />
+          <path class="s" pathLength="1" d="M47 10 C39 19 30 31 24 45" />
+        </svg>
+        <svg class="lage lage-vorne" viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+          <line class="s" pathLength="1" x1="24" y1="45" x2="20" y2="50" />
+          <path class="s akzent" pathLength="1" d="M13 54 Q18 50 23 54 T 33 54" />
+        </svg>
+      </>
+    )}
 
-  {motiv === 'baum' && (
-    <svg viewBox="0 0 64 64" width={breite} height={breite} fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-      <circle class="s akzent" pathLength="1" cx="32" cy="14" r="5" />
-      <line class="s" pathLength="1" x1="32" y1="19" x2="32" y2="27" />
-      <line class="s" pathLength="1" x1="20" y1="27" x2="44" y2="27" />
-      <line class="s" pathLength="1" x1="20" y1="27" x2="20" y2="33" />
-      <line class="s" pathLength="1" x1="44" y1="27" x2="44" y2="33" />
-      <circle class="s" pathLength="1" cx="20" cy="38" r="5" />
-      <circle class="s" pathLength="1" cx="44" cy="38" r="5" />
-    </svg>
-  )}
+    {motiv === 'baum' && (
+      <>
+        <svg class="lage lage-hinten" viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+          <line class="s" pathLength="1" x1="32" y1="19" x2="32" y2="27" />
+          <line class="s" pathLength="1" x1="20" y1="27" x2="44" y2="27" />
+          <line class="s" pathLength="1" x1="20" y1="27" x2="20" y2="33" />
+          <line class="s" pathLength="1" x1="44" y1="27" x2="44" y2="33" />
+        </svg>
+        <svg class="lage lage-mitte" viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+          <circle class="s" pathLength="1" cx="20" cy="38" r="5" />
+          <circle class="s" pathLength="1" cx="44" cy="38" r="5" />
+        </svg>
+        <svg class="lage lage-vorne" viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+          <circle class="s akzent" pathLength="1" cx="32" cy="14" r="5" />
+        </svg>
+      </>
+    )}
 
-  {motiv === 'buecher' && (
-    <svg viewBox="0 0 64 64" width={breite} height={breite} fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-      <rect class="s" pathLength="1" x="14" y="43" width="36" height="8" rx="1.5" />
-      <rect class="s" pathLength="1" x="18" y="35" width="30" height="8" rx="1.5" />
-      <rect class="s" pathLength="1" x="16" y="27" width="26" height="8" rx="1.5" />
-      <line class="s akzent" pathLength="1" x1="27" y1="27" x2="27" y2="21" />
-    </svg>
-  )}
+    {motiv === 'buecher' && (
+      <>
+        <svg class="lage lage-mitte" viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+          <rect class="s" pathLength="1" x="14" y="43" width="36" height="8" rx="1.5" />
+          <rect class="s" pathLength="1" x="18" y="35" width="30" height="8" rx="1.5" />
+          <rect class="s" pathLength="1" x="16" y="27" width="26" height="8" rx="1.5" />
+        </svg>
+        <svg class="lage lage-vorne" viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+          <line class="s akzent" pathLength="1" x1="27" y1="27" x2="27" y2="21" />
+        </svg>
+      </>
+    )}
 
-  {motiv === 'archiv' && (
-    <svg viewBox="0 0 64 64" width={breite} height={breite} fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-      <path class="s" pathLength="1" d="M12 22 H22 V16 H36 V22 H52 V48 H12 Z" />
-      <line class="s akzent" pathLength="1" x1="18" y1="30" x2="40" y2="30" />
-      <line class="s" pathLength="1" x1="18" y1="36" x2="46" y2="36" />
-      <line class="s" pathLength="1" x1="18" y1="42" x2="42" y2="42" />
-    </svg>
-  )}
+    {motiv === 'archiv' && (
+      <>
+        <svg class="lage lage-mitte" viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+          <path class="s" pathLength="1" d="M12 22 H22 V16 H36 V22 H52 V48 H12 Z" />
+        </svg>
+        <svg class="lage lage-vorne" viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+          <line class="s akzent" pathLength="1" x1="18" y1="30" x2="40" y2="30" />
+          <line class="s" pathLength="1" x1="18" y1="36" x2="46" y2="36" />
+          <line class="s" pathLength="1" x1="18" y1="42" x2="42" y2="42" />
+        </svg>
+      </>
+    )}
 
-  {motiv === 'saeule' && (
-    <svg viewBox="0 0 64 64" width={breite} height={breite} fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-      <line class="s" pathLength="1" x1="18" y1="13" x2="46" y2="13" />
-      <circle class="s" pathLength="1" cx="21" cy="18" r="3.5" />
-      <circle class="s" pathLength="1" cx="43" cy="18" r="3.5" />
-      <line class="s" pathLength="1" x1="24.5" y1="18" x2="39.5" y2="18" />
-      <line class="s" pathLength="1" x1="25" y1="23" x2="25" y2="47" />
-      <line class="s akzent" pathLength="1" x1="32" y1="24" x2="32" y2="46" />
-      <line class="s" pathLength="1" x1="39" y1="23" x2="39" y2="47" />
-      <line class="s" pathLength="1" x1="22" y1="49" x2="42" y2="49" />
-      <line class="s" pathLength="1" x1="18" y1="53" x2="46" y2="53" />
-    </svg>
-  )}
+    {motiv === 'saeule' && (
+      <svg class="lage lage-mitte" viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+        <line class="s" pathLength="1" x1="18" y1="13" x2="46" y2="13" />
+        <circle class="s" pathLength="1" cx="21" cy="18" r="3.5" />
+        <circle class="s" pathLength="1" cx="43" cy="18" r="3.5" />
+        <line class="s" pathLength="1" x1="24.5" y1="18" x2="39.5" y2="18" />
+        <line class="s" pathLength="1" x1="25" y1="23" x2="25" y2="47" />
+        <line class="s akzent" pathLength="1" x1="32" y1="24" x2="32" y2="46" />
+        <line class="s" pathLength="1" x1="39" y1="23" x2="39" y2="47" />
+        <line class="s" pathLength="1" x1="22" y1="49" x2="42" y2="49" />
+        <line class="s" pathLength="1" x1="18" y1="53" x2="46" y2="53" />
+      </svg>
+    )}
+  </div>
 </div>
 
 <style>
   .vignette {
-    display: flex;
-    justify-content: center;
+    display: block;
     margin: 0 auto 1.75rem;
     color: var(--grau);
   }
 
-  /* Draw-on: jede Linie zeichnet sich beim Laden selbst */
+  /* ── Papierschichten ────────────────────────────────────────── */
+  .tiefe-zone {
+    perspective: 900px;
+  }
+
+  .tiefe-stapel {
+    position: relative;
+    transform-style: preserve-3d;
+    transition: transform 0.6s var(--feder);
+  }
+
+  .lage {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: auto;
+  }
+
+  /* Die mittlere Lage gibt dem Stapel seine Größe */
+  .lage-mitte {
+    position: relative;
+    transform: translateZ(0);
+    filter: drop-shadow(0 3px 3px rgba(26, 26, 26, 0.18));
+  }
+
+  .lage-hinten {
+    transform: translateZ(-28px);
+    opacity: 0.35;
+  }
+
+  .lage-vorne {
+    transform: translateZ(26px);
+    filter: drop-shadow(0 6px 6px rgba(26, 26, 26, 0.22));
+  }
+
+  /* ── Draw-on: jede Linie zeichnet sich beim Laden selbst ────── */
   .s {
     stroke-dasharray: 1;
     stroke-dashoffset: 1;
@@ -115,3 +174,38 @@ const { motiv, breite = 60 } = Astro.props;
     }
   }
 </style>
+
+<script>
+  // Neigung zur Maus — nur Desktop (pointer: fine), nur ohne reduced motion.
+  // Re-Init nach jedem ClientRouter-Swap; dataset-Flag verhindert Doppel-Bindung.
+  const reduziert = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const feinzeiger = matchMedia('(pointer: fine)').matches;
+
+  function initTiefe() {
+    if (reduziert || !feinzeiger) return;
+
+    document.querySelectorAll<HTMLElement>('.tiefe-zone').forEach((zone) => {
+      if (zone.dataset.tiefe) return;
+      zone.dataset.tiefe = '1';
+
+      const stapel = zone.querySelector<HTMLElement>('.tiefe-stapel');
+      if (!stapel) return;
+
+      zone.addEventListener('pointermove', (e) => {
+        const r = zone.getBoundingClientRect();
+        const x = (e.clientX - r.left) / r.width - 0.5;
+        const y = (e.clientY - r.top) / r.height - 0.5;
+        stapel.style.transition = 'transform 0.15s ease-out';
+        stapel.style.transform = `rotateY(${x * 12}deg) rotateX(${-y * 12}deg)`;
+      });
+
+      zone.addEventListener('pointerleave', () => {
+        stapel.style.transition = 'transform 0.6s var(--feder)';
+        stapel.style.transform = 'none';
+      });
+    });
+  }
+
+  initTiefe();
+  document.addEventListener('astro:page-load', initTiefe);
+</script>

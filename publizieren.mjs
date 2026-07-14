@@ -220,9 +220,36 @@ function genQuellen(body) {
   );
 }
 
+/**
+ * argumente.js aus den gesammelten ```mermaid-Blöcken der Essays bauen.
+ * Reihenfolge: neuester Essay zuerst (wie in der Argumente-Übersicht).
+ */
+function genArgumente(liste) {
+  const sortiert = [...liste].sort((a, b) =>
+    String(b.datum).localeCompare(String(a.datum))
+  );
+  const karten = sortiert
+    .map(
+      (k) =>
+        `  {\n` +
+        `    slug: ${JSON.stringify(k.slug)},\n` +
+        `    titel: ${JSON.stringify(k.titel)},\n` +
+        `    diagramm: ${JSON.stringify('\n' + k.diagramm + '\n')},\n` +
+        `  },`
+    )
+    .join('\n');
+  return (
+    '// AUTOMATISCH GENERIERT aus den ```mermaid-Blöcken der Essay-Notizen\n' +
+    '// via `npm run publizieren`. Nicht von Hand bearbeiten — Änderungen hier\n' +
+    '// werden beim nächsten Publizieren überschrieben.\n' +
+    `\nexport const argumente = [\n${karten}\n];\n`
+  );
+}
+
 // ── Essays sammeln ──────────────────────────────────────────────────────────
 
 const kandidaten = []; // { art, label, ziel, inhalt, url }
+const argumentListe = []; // { slug, titel, diagramm, datum } — für argumente.js
 
 if (existsSync(ESSAY_VAULT)) {
   for (const datei of readdirSync(ESSAY_VAULT)) {
@@ -235,16 +262,30 @@ if (existsSync(ESSAY_VAULT)) {
     const h1 = body.match(/^\s*#\s+(.+)$/m);
     const titel = daten.title || h1?.[1].trim() || basename(datei, '.md');
 
-    const text = bereinige(body.replace(/^\s*#\s+.+\r?\n+/, ''));
-    if (!text) {
-      console.log(`· „${titel}" ist noch leer — übersprungen.`);
-      continue;
-    }
-
     // Slug: Frontmatter `slug:` gewinnt (hält die URL stabil, auch wenn der
     // Titel anders lautet als der Dateiname), sonst aus dem Titel abgeleitet.
     const slug = slugify(daten.slug || titel);
     const datum = daten.date || new Date().toISOString().split('T')[0];
+
+    // Argument-Diagramm: der erste ```mermaid-Block der Notiz wird zur
+    // Argument-Karte und aus dem Essay-Text entfernt (samt einer davor
+    // stehenden „## Argument"-Zeile, falls vorhanden).
+    const mMermaid = body.match(/```mermaid\r?\n([\s\S]*?)```/);
+    const diagramm = mMermaid ? mMermaid[1].trim() : null;
+    if (diagramm) argumentListe.push({ slug, titel, diagramm, datum });
+
+    let essayRoh = body;
+    if (diagramm) {
+      essayRoh = essayRoh
+        .replace(/[ \t]*#{1,6}[ \t]*Argument[ \t]*\r?\n+/gi, '')
+        .replace(/```mermaid\r?\n[\s\S]*?```\r?\n?/g, '');
+    }
+
+    const text = bereinige(essayRoh.replace(/^\s*#\s+.+\r?\n+/, ''));
+    if (!text) {
+      console.log(`· „${titel}" ist noch leer — übersprungen.`);
+      continue;
+    }
 
     const frontmatter = [
       '---',
@@ -264,6 +305,25 @@ if (existsSync(ESSAY_VAULT)) {
       ziel,
       inhalt,
       url: `https://notitia-eta.vercel.app/essays/${slug}/`,
+    });
+  }
+}
+
+// ── Argument-Karten aus den Essays generieren ───────────────────────────────
+// Nur wenn mindestens ein fertiger Essay einen ```mermaid-Block hat — sonst
+// bleibt eine evtl. noch von Hand gepflegte argumente.js unangetastet.
+if (argumentListe.length > 0) {
+  const zielArg = join(__dir, 'src/data/argumente.js');
+  const inhaltArg = genArgumente(argumentListe);
+  if (!(existsSync(zielArg) && readFileSync(zielArg, 'utf-8') === inhaltArg)) {
+    kandidaten.push({
+      art: existsSync(zielArg) ? 'aktualisiert' : 'neu',
+      label: 'Argumente (aus Essays)',
+      ziel: zielArg,
+      inhalt: inhaltArg,
+      url: 'https://notitia-eta.vercel.app/argumente/',
+      seite: true,
+      name: 'Argumente',
     });
   }
 }

@@ -2,6 +2,7 @@
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
 import Randschmuck from '../components/Randschmuck.astro';
+import Streiflicht from '../components/Streiflicht.astro';
 import { ClientRouter } from 'astro:transitions';
 import '../styles/global.css';
 
@@ -58,6 +59,7 @@ const kanonisch = new URL(Astro.url.pathname, Astro.site).toString();
          transition:persist hält denselben Knoten über Seitenwechsel hinweg,
          sonst friert der Cursor nach dem Navigieren ein. -->
     <div class="tinte-cursor" aria-hidden="true" transition:persist></div>
+    <Streiflicht />
     <Randschmuck />
 
     <Header />
@@ -190,26 +192,35 @@ const kanonisch = new URL(Astro.url.pathname, Astro.site).toString();
 </html>
 
 <style is:global>
-  /* ── Seitenübergang: Seite gleitet beim Navigieren aus/ein ── */
-  @keyframes seite-rein {
-    from { opacity: 0; transform: translateY(6px); }
-    to   { opacity: 1; transform: none; }
-  }
-  @keyframes seite-raus {
-    from { opacity: 1; transform: none; }
-    to   { opacity: 0; transform: translateY(-4px); }
+  /* ── Seitenübergang: Blatt auf den Tisch legen (Konzept 1d) ──
+     Das neue <main> kippt leicht herein und legt sich auf den Tisch —
+     die physische Fortsetzung von `aufklaren`. Das alte Blatt verschwindet
+     ohne eigene Animation darunter (kein Crossfade). */
+  @keyframes blatt-auflegen {
+    from {
+      opacity: 0;
+      transform: perspective(1000px) rotateX(-10deg) translateY(24px);
+      filter: blur(5px);
+    }
+    to {
+      opacity: 1;
+      transform: none;
+      filter: none;
+    }
   }
 
-  ::view-transition-old(main-content) {
-    animation: seite-raus 0.2s ease-in forwards;
+  ::view-transition-old(blatt) {
+    animation: none;
+    opacity: 0;
   }
-  ::view-transition-new(main-content) {
-    animation: seite-rein 0.35s ease-out forwards;
+  ::view-transition-new(blatt) {
+    animation: blatt-auflegen 0.65s var(--feder) both;
+    transform-origin: 50% 100%;
   }
 
   /* Den Seitenübergang nur auf den main-Bereich anwenden */
   main {
-    view-transition-name: main-content;
+    view-transition-name: blatt;
   }
 
   /* Beim Dark-Mode-Wipe darf main NICHT als eigene Ebene mitlaufen — sonst
@@ -220,8 +231,8 @@ const kanonisch = new URL(Astro.url.pathname, Astro.site).toString();
   }
 
   @media (prefers-reduced-motion: reduce) {
-    ::view-transition-old(main-content),
-    ::view-transition-new(main-content) {
+    ::view-transition-old(blatt),
+    ::view-transition-new(blatt) {
       animation: none;
     }
   }
