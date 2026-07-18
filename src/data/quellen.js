@@ -25,7 +25,10 @@ export const quellen = [
     "typ": "buch"
   },
   {
-    "notiz": "Beiträge aus dem Fachbereich Allgemeine Verwaltung, Heft 17 (HWR Berlin); Redebeiträge und Thesen des 24. Glienicker Gesprächs",
+    "essays": [
+      "der-paragraphen-automat-und-die-maxime"
+    ],
+    "notiz": "Beiträge aus dem Fachbereich Allgemeine Verwaltung, Heft 17 (HWR Berlin); die im Essay zitierten Stimmen (Faust, Wüstner, Lege, Prümm) sind hierüber erschlossen",
     "jahr": 2013,
     "autor": "Lück-Schneider, Dagmar / Kirstein, Denis (Hrsg.)",
     "titel": "Verwaltungsethik – Selbstverständnis und Themenfelder in Lehre, Forschung und Praxis an den FHöD",
