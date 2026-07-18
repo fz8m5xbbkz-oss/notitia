@@ -25,6 +25,14 @@ export const quellen = [
     "typ": "buch"
   },
   {
+    "notiz": "Beiträge aus dem Fachbereich Allgemeine Verwaltung, Heft 17 (HWR Berlin); Redebeiträge und Thesen des 24. Glienicker Gesprächs",
+    "jahr": 2013,
+    "autor": "Lück-Schneider, Dagmar / Kirstein, Denis (Hrsg.)",
+    "titel": "Verwaltungsethik – Selbstverständnis und Themenfelder in Lehre, Forschung und Praxis an den FHöD",
+    "url": "https://www.hwr-berlin.de/fileadmin/portal/Dokumente/Fachbereiche-Institute/FB3/Forschung/FB-3-Heft-17.pdf",
+    "typ": "buch"
+  },
+  {
     "essays": [
       "dafuer-bin-ich-nicht-zustaendig"
     ],
