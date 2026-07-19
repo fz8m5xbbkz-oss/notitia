@@ -68,7 +68,7 @@ src/
 │   │                             feld default philosophie-ethik, optional substack_url)
 │   └── felder/*.md              Philosophie-Felder (nur noch philosophie-ethik aktiv)
 ├── data/
-│   ├── argumente.js             Argument-Karten (Mermaid-Syntax, von Hand gepflegt)
+│   ├── argumente.js             GENERIERT aus Obsidian (```mermaid-Block je Essay)
 │   ├── lektuere.js              GENERIERT aus Obsidian (nicht von Hand bearbeiten)
 │   └── quellen.js               GENERIERT aus Obsidian (nicht von Hand bearbeiten)
 ├── inhalte/
@@ -135,11 +135,10 @@ Seiten erscheinen beim nächsten `npm run publizieren` im Bestätigungsschritt.
 Über = freies Markdown; Lektüre/Quellen = Listen unter festen Überschriften,
 werden zu `src/data/lektuere.js` / `quellen.js` generiert.
 
-**Nebenweg — direkt im Repo:**
-
-1. `npm run neu` (fragt nur den Titel ab) oder Datei von Hand anlegen
-2. Schreiben, dann `git add ... && git commit` — post-commit-Hook pusht automatisch
-3. Vercel deployt in ~20 Sek, Sitemap/Routen aktualisieren sich automatisch
+**Kein Nebenweg mehr (seit Juli 2026):** Ins Repo schreibt niemand Inhalt
+von Hand — die Presse (`npm run publizieren`) ist der einzige Weg
+Vault → Repo. `neuer-essay.mjs` (`npm run neu`) stammt aus der Zeit davor
+und sollte nicht mehr benutzt werden.
 
 ## Arbeitsweise (Luis' Präferenzen)
 
@@ -205,26 +204,26 @@ werden zu `src/data/lektuere.js` / `quellen.js` generiert.
 
 ### Live und gut
 
-- 10 Routen: `/`, `/essays` (+2 Essays), `/argumente` (+2 Karten),
-  `/lektuere`, `/quellen`, `/ueber`
+- 14 Routen: `/`, `/essays` (+4 Essays), `/argumente` (+4 Karten),
+  `/lektuere`, `/quellen`, `/ueber` — Essays und Karten wachsen mit jedem
+  Sonntag automatisch mit
 - `/rss.xml` — Volltext-Feed (via `@astrojs/rss` + `marked`)
 - Sitemap, robots.txt (Vercel-URL), OG-Tags aktiv
 - SSH-Key + post-commit-Hook: jeder Commit pusht automatisch
-- Obsidian-Publishing für Essays UND Seiten (Über, Lektüre, Quellen)
-- Dark Mode, View Transitions, Reader Mode mobil, Vignetten, Sokrates,
-  Randschmuck — alles verifiziert auf Mobil + Desktop, hell + dunkel
-- THESIS.md + AUDIENCE.md im Repo
+- Obsidian-Publishing komplett: Essays, Seiten (Über, Lektüre, Quellen),
+  Argument-Karten (```mermaid-Block) und Wikilink-Auflösung zu internen
+  Links — ein `notitia`-Lauf transportiert alles
+- Dark Mode, View Transitions, Reader Mode mobil, Vignetten, Sokrates-Relief,
+  Randschmuck, 3D-Effekte — verifiziert auf Mobil + Desktop, hell + dunkel
+- THESIS.md gesetzt (14.07.2026: „Jeder Bescheid entscheidet eine Frage,
+  an der sich die Philosophie seit zweitausend Jahren abarbeitet.") +
+  AUDIENCE.md im Repo
 
 ### Offen
 
-- **THESIS.md**: den einen Satz schreiben (was notitia glaubt, das sonst niemand glaubt)
 - **Search Console**: neue Property für `notitia-eta.vercel.app` anlegen,
   Verification-Tag (`obr4TfpPoqxxoENkMkBbSC6NvdY7PJ75ZJf47q4Guaw`) ist bereits
   in `src/layouts/Basis.astro` hinterlegt
-- **Lose Dateien im Repo-Root** (unversioniert, nicht live): `rc.dmg`,
-  `social-banner.png/svg`, `social-profilbild.png/svg`,
-  `notitia_publishing_plan.html`, `obsidian-sync.skill` — Luis fragen,
-  was davon weg kann
 
 ### Verlauf der Namensgebung (zur Orientierung)
 

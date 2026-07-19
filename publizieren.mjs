@@ -12,8 +12,12 @@
  * (der post-commit-Hook pusht, Vercel deployt).
  *
  * Vault-Konventionen:
- *   - Essays: Dateien mit `_` am Anfang werden ignoriert; Wikilinks [[…]] →
- *     Text, %%Kommentare%% entfernt; Titel: `title:` > erste `#` > Dateiname.
+ *   - Essays: Dateien mit `_` am Anfang werden ignoriert; %%Kommentare%%
+ *     entfernt; Titel: `title:` > erste `#` > Dateiname.
+ *   - Wikilinks [[…]]: zeigt das Ziel auf einen Essay, der nach diesem Lauf
+ *     existiert (im Repo oder in diesem Lauf mit status:fertig), wird ein
+ *     interner Link /essays/<slug>/ daraus — sonst wie bisher reiner Text
+ *     (nie ein 404-Link).
  *   - Seiten: feste Dateinamen Über.md / Lektüre.md / Quellen.md.
  *     Über = freies Markdown. Lektüre/Quellen = Listen unter Überschriften
  *     (siehe _Anleitung.md im Seiten-Ordner).
@@ -63,13 +67,37 @@ function parseFrontmatter(text) {
   return { daten, body: text.slice(m[0].length) };
 }
 
-/** Obsidian-Syntax in normales Markdown übersetzen */
-function bereinige(body) {
+/** Wikilink-Ziel für den Map-Lookup normalisieren:
+ *  Pfad-Präfix („notitia Essays/Titel") und #Anker abschneiden. */
+function wikiZielName(ziel) {
+  let t = ziel.split('#')[0];
+  const slash = t.lastIndexOf('/');
+  if (slash !== -1) t = t.slice(slash + 1);
+  return t.trim();
+}
+
+const normKey = (s) => s.normalize('NFC').toLowerCase().trim();
+
+/**
+ * Obsidian-Syntax in normales Markdown übersetzen.
+ * `slugMap` (normalisierter Titel/Dateiname → Essay-Slug) löst Wikilinks zu
+ * internen Links auf; ohne Treffer bleibt das alte Verhalten: reiner Text.
+ * Wichtig: %%-Blöcke fliegen ZUERST raus — Werkstatt-Wikilinks werden nie
+ * zu Links, und die Mermaid-Extraktion passiert schon vor diesem Aufruf.
+ */
+function bereinige(body, slugMap = null) {
+  const ersetzeWikilink = (_, ziel, alias) => {
+    const name = wikiZielName(ziel);
+    const text = (alias || name).trim();
+    const slug = slugMap?.get(normKey(name));
+    return slug ? `[${text}](/essays/${slug}/)` : text;
+  };
+
   return body
     .replace(/%%[\s\S]*?%%/g, '') // Obsidian-Kommentare
     .replace(/!\[\[[^\]]+\]\]/g, '') // Einbettungen (Bilder etc.) — kommen nicht mit
-    .replace(/\[\[([^\]|]+)\|([^\]]+)\]\]/g, '$2') // [[Ziel|Text]] → Text
-    .replace(/\[\[([^\]]+)\]\]/g, '$1') // [[Ziel]] → Ziel
+    .replace(/\[\[([^\]|]+)\|([^\]]+)\]\]/g, ersetzeWikilink) // [[Ziel|Text]]
+    .replace(/\[\[([^\]]+)\]\]/g, (m, ziel) => ersetzeWikilink(m, ziel, null)) // [[Ziel]]
     .trim();
 }
 
@@ -246,6 +274,40 @@ function genArgumente(liste) {
   );
 }
 
+// ── Slug-Map für Wikilink-Auflösung ────────────────────────────────────────
+// Enthält nur Essays, die nach diesem Lauf wirklich eine Route haben:
+// (a) Vault-Notizen mit status:fertig, (b) bereits publizierte Repo-Essays.
+// Ideen/Entwürfe fehlen bewusst — deren Wikilinks bleiben Text, nie 404.
+
+const slugMap = new Map();
+
+function merkeSlug(schluessel, slug) {
+  if (schluessel) slugMap.set(normKey(schluessel), slug);
+}
+
+if (existsSync(ESSAY_ORDNER)) {
+  for (const datei of readdirSync(ESSAY_ORDNER)) {
+    if (!datei.endsWith('.md')) continue;
+    const slug = basename(datei, '.md');
+    const { daten } = parseFrontmatter(readFileSync(join(ESSAY_ORDNER, datei), 'utf-8'));
+    merkeSlug(slug, slug);
+    merkeSlug(daten.title, slug);
+  }
+}
+
+if (existsSync(ESSAY_VAULT)) {
+  for (const datei of readdirSync(ESSAY_VAULT)) {
+    if (!datei.endsWith('.md') || datei.startsWith('_')) continue;
+    const { daten, body } = parseFrontmatter(readFileSync(join(ESSAY_VAULT, datei), 'utf-8'));
+    if (daten.status !== 'fertig') continue;
+    const h1 = body.match(/^\s*#\s+(.+)$/m);
+    const titel = daten.title || h1?.[1].trim() || basename(datei, '.md');
+    const slug = slugify(daten.slug || titel);
+    merkeSlug(basename(datei, '.md'), slug); // Wikilinks zeigen auf den Dateinamen
+    merkeSlug(titel, slug);
+  }
+}
+
 // ── Essays sammeln ──────────────────────────────────────────────────────────
 
 const kandidaten = []; // { art, label, ziel, inhalt, url }
@@ -281,7 +343,7 @@ if (existsSync(ESSAY_VAULT)) {
         .replace(/```mermaid\r?\n[\s\S]*?```\r?\n?/g, '');
     }
 
-    const text = bereinige(essayRoh.replace(/^\s*#\s+.+\r?\n+/, ''));
+    const text = bereinige(essayRoh.replace(/^\s*#\s+.+\r?\n+/, ''), slugMap);
     if (!text) {
       console.log(`· „${titel}" ist noch leer — übersprungen.`);
       continue;
@@ -336,7 +398,7 @@ const SEITEN = [
     vault: 'Über.md',
     ziel: join(__dir, 'src/inhalte/ueber.md'),
     pfad: '/ueber/',
-    erzeuge: (body) => bereinige(body) + '\n',
+    erzeuge: (body) => bereinige(body, slugMap) + '\n',
   },
   {
     name: 'Lektüre',

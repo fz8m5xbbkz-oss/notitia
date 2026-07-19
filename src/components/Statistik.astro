@@ -1,0 +1,39 @@
+---
+/**
+ * Statistik — ein paar nackte Fakten über den Inhalt, kein Tracking.
+ * Zählt Essays, Wörter und Quellen zur Build-Zeit; keine Nutzerdaten,
+ * keine Cookies, kein Skript. Steht als Fortsetzung des Kolophons auf /ueber.
+ */
+import { getCollection } from 'astro:content';
+import { quellen } from '../data/quellen.js';
+
+const essays = await getCollection('essays');
+
+const anzahlEssays = essays.length;
+const wortzahl = essays.reduce(
+  (summe, e) => summe + (e.body ?? '').split(/\s+/).filter(Boolean).length,
+  0
+);
+const anzahlQuellen = quellen.length;
+
+const erstesDatum = essays.length
+  ? essays.reduce((frueh, e) => (e.data.date < frueh ? e.data.date : frueh), essays[0].data.date)
+  : null;
+const seit = erstesDatum?.toLocaleDateString('de-DE', { month: 'long', year: 'numeric' });
+
+const formatWortzahl = (n: number) =>
+  n >= 1000 ? `rund ${Math.round(n / 100) * 100}` : `${n}`;
+---
+
+<p class="statistik" data-reveal>
+  In Zahlen: {anzahlEssays} {anzahlEssays === 1 ? 'Essay' : 'Essays'}, {formatWortzahl(wortzahl)} Wörter,
+  {anzahlQuellen} {anzahlQuellen === 1 ? 'Quelle' : 'Quellen'}{seit && <> — seit {seit}</>}.
+</p>
+
+<style>
+  .statistik {
+    font-family: var(--schrift-ui);
+    font-size: 0.85rem;
+    color: var(--grau);
+  }
+</style>
