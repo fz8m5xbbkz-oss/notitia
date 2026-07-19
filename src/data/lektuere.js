@@ -1,4 +1,4 @@
-// AUTOMATISCH GENERIERT aus Obsidian (notitia Seiten/Lektüre.md)
+// AUTOMATISCH GENERIERT aus Obsidian (annotanda Seiten/Lektüre.md)
 // via `npm run publizieren`. Nicht von Hand bearbeiten — Änderungen hier
 // werden beim nächsten Publizieren überschrieben.
 

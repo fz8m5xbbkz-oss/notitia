@@ -4,7 +4,7 @@ import sitemap from '@astrojs/sitemap';
 
 // https://astro.build/config
 export default defineConfig({
-  site: 'https://notitia-eta.vercel.app',
+  site: 'https://www.annotanda.com',
   trailingSlash: 'always',
   integrations: [sitemap()],
 });

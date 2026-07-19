@@ -27,7 +27,7 @@ const woerter = (essay.body ?? '').split(/\s+/).filter(Boolean).length;
 const lesezeit = Math.max(1, Math.round(woerter / 200));
 ---
 
-<Basis titel={`${essay.data.title} — notitia`} leserModus={true}>
+<Basis titel={`${essay.data.title} — annotanda`} leserModus={true}>
   <div class="fortschritt" aria-hidden="true"></div>
   <article>
     <a href="/essays/" class="zurueck">← Essays</a>

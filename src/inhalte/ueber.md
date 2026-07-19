@@ -2,7 +2,7 @@
 
 Ich bin Luis. Ab September 2026 studiere ich Allgemeine Verwaltung. 
 
-**notitia** ist mein Versuch, Verwaltung und Philosophie zusammenzudenken — und dort, wo der Staat zur Machtfrage wird, auch die Politik. Was passiert, wenn man Kant liest und gleichzeitig Bescheide schreibt? Was sagt Aristoteles über Bürokratie? Was lehrt der Staat über Freiheit? Philosophie — nicht als Hobby neben der Verwaltung, sondern als Denkwerkzeug darin.
+**annotanda** ist mein Versuch, Verwaltung und Philosophie zusammenzudenken — und dort, wo der Staat zur Machtfrage wird, auch die Politik. Was passiert, wenn man Kant liest und gleichzeitig Bescheide schreibt? Was sagt Aristoteles über Bürokratie? Was lehrt der Staat über Freiheit? Philosophie — nicht als Hobby neben der Verwaltung, sondern als Denkwerkzeug darin.
 
 Jeden Sonntag erscheint ein Essay. Ein Gedanke, der mich wirklich beschäftigt hat — zu Ende gedacht.
 

@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /**
- * neuer-essay.mjs — notitia CLI
+ * neuer-essay.mjs — annotanda CLI
  *
  * Erstellt eine neue Essay-Datei in src/content/essays/. Eine Frage, fertig:
  *
@@ -34,7 +34,7 @@ function slugify(text) {
 const rl = createInterface({ input: process.stdin, output: process.stdout });
 const frage = (text) => new Promise((resolve) => rl.question(text, resolve));
 
-console.log('\n── notitia · neuer Essay ──────────────────────────────\n');
+console.log('\n── annotanda · neuer Essay ──────────────────────────────\n');
 
 const titel = (await frage('Titel: ')).trim();
 rl.close();

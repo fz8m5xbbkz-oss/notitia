@@ -20,7 +20,7 @@ export const argumente = [
   },
   {
     slug: "willkommen",
-    titel: "Warum dieses notitia",
+    titel: "Warum dieses annotanda",
     diagramm: "\nflowchart TD\n  T[\"These: Philosophie und Verwaltung<br>bedingen sich gegenseitig\"]\n\n  A1[\"Es gibt zwei Arten zu lernen:<br>was sich gut anfühlt<br>und was tatsächlich verändert\"]\n  A2[\"Verwaltung ist kein Gegensatz<br>zur Philosophie —<br>sie ist ihr Prüfstein\"]\n  A3[\"Die Irritation ist der Anfang<br>des Denkens\"]\n\n  P1[\"Aristoteles: Praxis<br>formt den Charakter\"]\n  P2[\"Studium Allgemeine Verwaltung<br>ab September 2026\"]\n  P3[\"Kant lesen und<br>Bescheide schreiben<br>ist kein Widerspruch\"]\n\n  T --> A1\n  T --> A2\n  T --> A3\n  A1 --> P1\n  A2 --> P2\n  A3 --> P3\n",
   },
 ];

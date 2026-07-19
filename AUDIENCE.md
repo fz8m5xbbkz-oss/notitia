@@ -4,12 +4,12 @@
 
 ---
 
-## notitia ist für:
+## annotanda ist für:
 
 - Den langsamen Leser, der Widerstand im Text als Zeichen von Substanz liest
 - Den Autodidakten mit bewussten Wissenslücken, der sie systematisch schließen will
 
-## notitia ist nicht für:
+## annotanda ist nicht für:
 
 - Den Meinungs-Konsumenten (will Reibung ohne Tiefe)
 - Den Such-Optimierer (sucht Antworten, nicht Fragen)

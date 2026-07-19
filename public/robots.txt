@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://notitia-eta.vercel.app/sitemap-index.xml
+Sitemap: https://www.annotanda.com/sitemap-index.xml

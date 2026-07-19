@@ -9,11 +9,11 @@ const links = [
   { href: '/ueber/', text: 'Über' },
 ];
 
-const wordmark = 'notitia'.split('');
+const wordmark = 'annotanda'.split('');
 ---
 
 <header>
-  <a href="/" class="wordmark" aria-label="notitia — Startseite">
+  <a href="/" class="wordmark" aria-label="annotanda — Startseite">
     {wordmark.map((buchstabe, i) => (
       <span aria-hidden="true" style={`--i: ${i}`}>{buchstabe}</span>
     ))}

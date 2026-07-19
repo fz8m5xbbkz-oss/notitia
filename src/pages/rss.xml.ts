@@ -12,7 +12,7 @@ export async function GET(context: APIContext) {
   );
 
   return rss({
-    title: 'notitia',
+    title: 'annotanda',
     description: 'Philosophie aus dem Inneren der Verwaltung. Jeden Sonntag ein Essay.',
     site: context.site!,
     customData: '<language>de</language>',

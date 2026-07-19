@@ -5,8 +5,8 @@
  *   npm run publizieren
  *
  * Liest aus dem Obsidian-Vault:
- *   - Essays   aus „notitia Essays" (nur `status: fertig`)
- *   - Seiten   aus „notitia Seiten" (Über, Lektüre, Quellen — ohne status)
+ *   - Essays   aus „annotanda Essays" (nur `status: fertig`)
+ *   - Seiten   aus „annotanda Seiten" (Über, Lektüre, Quellen — ohne status)
  *
  * Zeigt, was sich ändern würde, und committet erst nach Bestätigung
  * (der post-commit-Hook pusht, Vercel deployt).
@@ -34,10 +34,10 @@ const __dir = dirname(fileURLToPath(import.meta.url));
 const VAULT_BASIS = join(
   process.env.HOME,
   'Library/Mobile Documents/iCloud~md~obsidian/Documents/Luis',
-  '06 - notitia'
+  '06 - annotanda'
 );
-const ESSAY_VAULT = join(VAULT_BASIS, 'notitia Essays');
-const SEITEN_VAULT = join(VAULT_BASIS, 'notitia Seiten');
+const ESSAY_VAULT = join(VAULT_BASIS, 'annotanda Essays');
+const SEITEN_VAULT = join(VAULT_BASIS, 'annotanda Seiten');
 const ESSAY_ORDNER = join(__dir, 'src/content/essays');
 
 // ── Hilfsfunktionen ───────────────────────────────────────────────────────
@@ -68,7 +68,7 @@ function parseFrontmatter(text) {
 }
 
 /** Wikilink-Ziel für den Map-Lookup normalisieren:
- *  Pfad-Präfix („notitia Essays/Titel") und #Anker abschneiden. */
+ *  Pfad-Präfix („annotanda Essays/Titel") und #Anker abschneiden. */
 function wikiZielName(ziel) {
   let t = ziel.split('#')[0];
   const slash = t.lastIndexOf('/');
@@ -217,7 +217,7 @@ function parseQuellen(body) {
 // ── Generatoren für die Datendateien ───────────────────────────────────────
 
 const KOPF = (quelle) =>
-  `// AUTOMATISCH GENERIERT aus Obsidian (notitia Seiten/${quelle})\n` +
+  `// AUTOMATISCH GENERIERT aus Obsidian (annotanda Seiten/${quelle})\n` +
   `// via \`npm run publizieren\`. Nicht von Hand bearbeiten — Änderungen hier\n` +
   `// werden beim nächsten Publizieren überschrieben.\n`;
 
@@ -366,7 +366,7 @@ if (existsSync(ESSAY_VAULT)) {
       label: titel,
       ziel,
       inhalt,
-      url: `https://notitia-eta.vercel.app/essays/${slug}/`,
+      url: `https://www.annotanda.com/essays/${slug}/`,
     });
   }
 }
@@ -383,7 +383,7 @@ if (argumentListe.length > 0) {
       label: 'Argumente (aus Essays)',
       ziel: zielArg,
       inhalt: inhaltArg,
-      url: 'https://notitia-eta.vercel.app/argumente/',
+      url: 'https://www.annotanda.com/argumente/',
       seite: true,
       name: 'Argumente',
     });
@@ -429,7 +429,7 @@ for (const seite of SEITEN) {
     label: `Seite: ${seite.name}`,
     ziel: seite.ziel,
     inhalt,
-    url: `https://notitia-eta.vercel.app${seite.pfad}`,
+    url: `https://www.annotanda.com${seite.pfad}`,
     seite: true,
     name: seite.name,
   });
@@ -445,7 +445,7 @@ if (kandidaten.length === 0) {
 
 // ── Zeigen, fragen, veröffentlichen ────────────────────────────────────────
 
-console.log('\n── notitia · publizieren ──────────────────────────────\n');
+console.log('\n── annotanda · publizieren ──────────────────────────────\n');
 for (const k of kandidaten) {
   const marke = k.art === 'neu' ? '＋ neu        ' : '↻ aktualisiert';
   console.log(`  ${marke}  ${k.label}`);

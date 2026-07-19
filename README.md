@@ -1,7 +1,7 @@
-# notitia
+# annotanda
 
 Philosophie aus dem Inneren der Verwaltung.
-Ein wöchentliches Essay-Journal von Luis — gehostet auf [notitia-eta.vercel.app](https://notitia-eta.vercel.app).
+Ein wöchentliches Essay-Journal von Luis — gehostet auf [www.annotanda.com](https://www.annotanda.com).
 
 ## Stack
 

@@ -1,4 +1,4 @@
-// AUTOMATISCH GENERIERT aus Obsidian (notitia Seiten/Quellen.md)
+// AUTOMATISCH GENERIERT aus Obsidian (annotanda Seiten/Quellen.md)
 // via `npm run publizieren`. Nicht von Hand bearbeiten — Änderungen hier
 // werden beim nächsten Publizieren überschrieben.
 

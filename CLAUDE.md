@@ -1,4 +1,4 @@
-# notitia — Projekt-Kontext für Claude
+# annotanda — Projekt-Kontext für Claude
 
 Diese Datei ist die Übergabe-Akte: Wenn Claude Code im Projekt-Ordner gestartet wird,
 liest er sie automatisch und ist sofort auf Stand. Bitte vor jeder substantiellen
@@ -9,22 +9,23 @@ liest er sie automatisch und ist sofort auf Stand. Bitte vor jeder substantielle
 ## Wer und was
 
 - **Autor:** Luis Frenzel
-- **Projektname:** **notitia** (lateinisch: Kenntnis, Notiz, Aktenkenntnis)
+- **Projektname:** **annotanda** (lateinisch: „das Anzumerkende" — was
+  festgehalten werden muss; vorher notitia, umbenannt 19.07.2026)
 - **Positionierung:** „Philosophie aus dem Inneren der Verwaltung — ein öffentliches
   Denktagebuch."
 - **Kontext:** Luis beginnt im September 2026 ein Studium der Allgemeinen Verwaltung
   an der Landesdirektion Sachsen. Die Seite ist sein Versuch, Philosophie und
   Verwaltungspraxis zusammenzudenken.
 - **Produkt:** Ein wöchentlicher Essay, jeden Sonntag (seit Juli 2026, vorher
-  monatlich). **Substack ist der primäre Kanal**, notitia das öffentliche
+  monatlich). **Substack ist der primäre Kanal**, annotanda das öffentliche
   Archiv.
 
 ## Adressen / Konten
 
 | | |
 |---|---|
-| **Live-URL** | https://notitia-eta.vercel.app |
-| **GitHub-Repo** | https://github.com/fz8m5xbbkz-oss/notitia |
+| **Live-URL** | https://www.annotanda.com |
+| **GitHub-Repo** | https://github.com/fz8m5xbbkz-oss/annotanda |
 | **Substack** | https://luisfzl.substack.com |
 | **Bluesky** | https://bsky.app/profile/luis-57.bsky.social |
 | **Kontakt-Mail** | luisfrenzel@gmx.net (öffentlich, auf /ueber) |
@@ -93,7 +94,7 @@ public/
 neuer-essay.mjs                  CLI: npm run neu → leere Essay-Datei (nur Titel-Frage)
 publizieren.mjs                  CLI: npm run publizieren → Essays aus Obsidian
                                   importieren + nach Bestätigung committen/pushen
-THESIS.md                        Thiel-Direktive: ein Satz, was notitia glaubt
+THESIS.md                        Thiel-Direktive: ein Satz, was annotanda glaubt
 AUDIENCE.md                      Godin-Direktive: für wen / für wen nicht
 astro.config.mjs                 site-URL + trailingSlash: always + Sitemap
 ```
@@ -118,18 +119,18 @@ astro.config.mjs                 site-URL + trailingSlash: always + Sitemap
 
 **Hauptweg — Schreiben in Obsidian (seit Juni 2026):**
 
-1. Notiz im Vault-Ordner `06 - notitia/notitia Essays/` schreiben
+1. Notiz im Vault-Ordner `06 - annotanda/annotanda Essays/` schreiben
    (erste Zeile `# Titel`; Anleitung liegt als `_Anleitung.md` im Ordner)
 2. Wenn fertig: Eigenschaft `status: fertig` setzen
    (optional `slug:` im Frontmatter, falls URL ≠ Titel bleiben soll —
-   z. B. hält `slug: willkommen` die URL von „Warum dieses notitia" stabil)
+   z. B. hält `slug: willkommen` die URL von „Warum dieses annotanda" stabil)
 3. `npm run publizieren` — zeigt neue/geänderte Essays UND Seiten, fragt
    einmal nach, committet (Hook pusht, Vercel deployt).
-   Alias `notitia` (in ~/.zshrc) geht von überall.
+   Alias `annotanda` (in ~/.zshrc) geht von überall.
 
 **Feste Seiten — ebenfalls aus Obsidian (seit Juni 2026):**
 
-Ordner `06 - notitia/notitia Seiten/` mit `Über.md`, `Lektüre.md`,
+Ordner `06 - annotanda/annotanda Seiten/` mit `Über.md`, `Lektüre.md`,
 `Quellen.md` (+ `_Anleitung.md`). Kein `status: fertig` nötig — geänderte
 Seiten erscheinen beim nächsten `npm run publizieren` im Bestätigungsschritt.
 Über = freies Markdown; Lektüre/Quellen = Listen unter festen Überschriften,
@@ -212,7 +213,7 @@ und sollte nicht mehr benutzt werden.
 - SSH-Key + post-commit-Hook: jeder Commit pusht automatisch
 - Obsidian-Publishing komplett: Essays, Seiten (Über, Lektüre, Quellen),
   Argument-Karten (```mermaid-Block) und Wikilink-Auflösung zu internen
-  Links — ein `notitia`-Lauf transportiert alles
+  Links — ein `annotanda`-Lauf transportiert alles
 - Dark Mode, View Transitions, Reader Mode mobil, Vignetten, Sokrates-Relief,
   Randschmuck, 3D-Effekte — verifiziert auf Mobil + Desktop, hell + dunkel
 - THESIS.md gesetzt (14.07.2026: „Jeder Bescheid entscheidet eine Frage,
@@ -221,7 +222,7 @@ und sollte nicht mehr benutzt werden.
 
 ### Offen
 
-- **Search Console**: neue Property für `notitia-eta.vercel.app` anlegen,
+- **Search Console**: neue Property für `www.annotanda.com` anlegen,
   Verification-Tag (`obr4TfpPoqxxoENkMkBbSC6NvdY7PJ75ZJf47q4Guaw`) ist bereits
   in `src/layouts/Basis.astro` hinterlegt
 
@@ -230,7 +231,9 @@ und sollte nicht mehr benutzt werden.
 1. **denkfeld** (initial): „Selbstgesteuertes Lernen in fünf Feldern"
 2. **magnolia** (zwischenphase): Name ohne klare inhaltliche Bindung
 3. **quaestio** (Mai 2026): Latein für „Frage"
-4. **notitia** (final): Latein für „Kenntnis, Notiz, Aktenkenntnis"
+4. **notitia** (Mai–Juli 2026): Latein für „Kenntnis, Notiz, Aktenkenntnis"
+5. **annotanda** (seit 19.07.2026, mit eigener Domain www.annotanda.com):
+   Latein für „das Anzumerkende" — was festgehalten werden muss
 
 ## Wenn du nach Anweisung auf Luis schreibst
 
