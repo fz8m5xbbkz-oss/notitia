@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 520">
+    <!-- Marginalien-Kachel: verstreute Anmerkungszeichen, wie von früheren
+         Lektüren im Papier zurückgeblieben. Wird gekachelt und per CSS-Maske
+         eingefärbt — nur die Alpha-Werte zählen, daher schwarz. -->
+    <g font-family="Georgia, 'Iowan Old Style', 'Times New Roman', serif" fill="#000">
+        <text x="52" y="96" font-size="24" transform="rotate(-7 52 96)">⁂</text>
+        <text x="356" y="58" font-size="20" font-style="italic" transform="rotate(4 356 58)">nb.</text>
+        <text x="410" y="318" font-size="22" transform="rotate(-4 410 318)">§</text>
+        <text x="120" y="418" font-size="19" transform="rotate(6 120 418)">†</text>
+        <text x="298" y="486" font-size="18" font-style="italic" transform="rotate(-5 298 486)">vgl.</text>
+    </g>
+    <g fill="none" stroke="#000" stroke-width="1.6" stroke-linecap="round">
+        <!-- kurze Randstriche, wie mit Bleistift angerissen -->
+        <path d="M36 236 l30 -4" transform="rotate(-3 36 236)" />
+        <path d="M36 250 l24 -3" transform="rotate(-3 36 250)" />
+        <path d="M432 150 l-28 5" />
+        <!-- Unterstreich-Schlängel -->
+        <path d="M196 226 q10 -7 20 0 t20 0 t20 0" />
+        <!-- kleines Anmerkungs-Ringlein -->
+        <circle cx="452" cy="452" r="6" />
+    </g>
+</svg>

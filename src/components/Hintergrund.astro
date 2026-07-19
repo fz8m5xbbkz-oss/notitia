@@ -1,0 +1,68 @@
+---
+// Hintergrund — zwei ruhende Papier-Ebenen hinter allem Inhalt:
+//
+//   1. Marginalien: eine gekachelte Lage verstreuter Anmerkungszeichen
+//      (⁂, nb., §, Randstriche) — als wäre das Papier schon einmal
+//      gelesen und annotiert worden. Nur auf breiten Schirmen, damit
+//      die schmale Lesespalte auf Mobil sauber bleibt.
+//   2. Wasserzeichen: das annotanda-Siegel unten rechts, wie ins
+//      Papier geprägt.
+//
+// Beide SVGs liegen in /public/hintergrund/ und werden per CSS-Maske
+// mit var(--ink) eingefärbt — so folgen sie dem Farbschema von selbst.
+// Statisch, keine Bewegung; z-index -1 legt sie zwischen Papierkorn
+// und Text. pointer-events: none, aria-hidden.
+---
+
+<div class="hintergrund" aria-hidden="true" transition:persist="hintergrund">
+  <div class="marginalien"></div>
+  <div class="wasserzeichen"></div>
+</div>
+
+<style>
+  .hintergrund {
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
+  }
+
+  .marginalien {
+    display: none;
+    position: absolute;
+    inset: 0;
+    background: var(--ink);
+    opacity: 0.05;
+    -webkit-mask: url('/hintergrund/marginalien.svg') repeat top left / 30rem auto;
+    mask: url('/hintergrund/marginalien.svg') repeat top left / 30rem auto;
+  }
+
+  /* Nur auf breiten Schirmen — mobil bliebe davon nur Schmutz hinter dem Text */
+  @media (min-width: 900px) {
+    .marginalien {
+      display: block;
+    }
+  }
+
+  .wasserzeichen {
+    position: absolute;
+    right: clamp(-5rem, -3vw, -2rem);
+    bottom: -4.5rem;
+    width: min(52vw, 27rem);
+    aspect-ratio: 1;
+    background: var(--ink);
+    opacity: 0.07;
+    transform: rotate(-8deg);
+    -webkit-mask: url('/hintergrund/wasserzeichen.svg') no-repeat center / contain;
+    mask: url('/hintergrund/wasserzeichen.svg') no-repeat center / contain;
+  }
+
+  /* Dunkles Papier: helle Tinte braucht einen Hauch mehr Präsenz */
+  :global(html[data-farbschema='dunkel']) .marginalien {
+    opacity: 0.06;
+  }
+
+  :global(html[data-farbschema='dunkel']) .wasserzeichen {
+    opacity: 0.08;
+  }
+</style>

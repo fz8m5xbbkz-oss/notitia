@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 480">
+    <!-- Wasserzeichen-Siegel: wird per CSS-Maske eingefärbt (nur Alpha zählt),
+         daher schwarz gezeichnet. Motiv wie Favicon/Siegel: Doppelring,
+         gestrichelter Innenring, kursive a-Initiale, Umschrift oben/unten. -->
+    <g fill="none" stroke="#000" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="240" cy="240" r="214" stroke-width="3" />
+        <circle cx="240" cy="240" r="196" stroke-width="1.6" />
+        <circle cx="240" cy="240" r="128" stroke-width="2.2" stroke-dasharray="4 12" />
+    </g>
+
+    <!-- Umschrift: oben der Name, unten das lateinische Motto -->
+    <defs>
+        <path id="bogen-oben" d="M78 240 A162 162 0 0 1 402 240" />
+        <path id="bogen-unten" d="M78 240 A162 162 0 0 0 402 240" />
+    </defs>
+    <text font-family="Georgia, 'Iowan Old Style', 'Times New Roman', serif" font-size="34" letter-spacing="10" fill="#000">
+        <textPath href="#bogen-oben" startOffset="50%" text-anchor="middle">ANNOTANDA</textPath>
+    </text>
+    <text font-family="Georgia, 'Iowan Old Style', 'Times New Roman', serif" font-size="22" letter-spacing="6" fill="#000">
+        <textPath href="#bogen-unten" startOffset="50%" text-anchor="middle">· DAS ANZUMERKENDE ·</textPath>
+    </text>
+
+    <!-- Initiale und Asterismus -->
+    <text x="240" y="278" text-anchor="middle" font-family="Georgia, 'Iowan Old Style', 'Times New Roman', serif" font-style="italic" font-weight="600" font-size="150" fill="#000">a</text>
+    <text x="240" y="330" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-size="30" fill="#000">⁂</text>
+</svg>

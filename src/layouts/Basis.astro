@@ -3,6 +3,7 @@ import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
 import Randschmuck from '../components/Randschmuck.astro';
 import Streiflicht from '../components/Streiflicht.astro';
+import Hintergrund from '../components/Hintergrund.astro';
 import { ClientRouter } from 'astro:transitions';
 import '../styles/global.css';
 
@@ -59,6 +60,7 @@ const kanonisch = new URL(Astro.url.pathname, Astro.site).toString();
          transition:persist hält denselben Knoten über Seitenwechsel hinweg,
          sonst friert der Cursor nach dem Navigieren ein. -->
     <div class="tinte-cursor" aria-hidden="true" transition:persist></div>
+    <Hintergrund />
     <Streiflicht />
     <Randschmuck />
 
