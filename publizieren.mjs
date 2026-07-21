@@ -101,6 +101,29 @@ function bereinige(body, slugMap = null) {
     .trim();
 }
 
+/**
+ * Trägt `substack_url` in die Frontmatter einer Obsidian-Essay-Notiz ein.
+ * Die Notiz bleibt die Quelle der Wahrheit — stünde der Link nur im Repo,
+ * wäre er beim nächsten Lauf wieder überschrieben. Ein vorhandener (auch
+ * leerer) Schlüssel wird ersetzt, sonst wird die Zeile vor dem schließenden
+ * `---` eingefügt. Ohne Frontmatter passiert nichts — dann fehlte auch
+ * `status: fertig`, der Essay wäre gar nicht so weit gekommen.
+ */
+function setzeSubstackImVault(datei, url) {
+  const pfad = join(ESSAY_VAULT, datei);
+  const roh = readFileSync(pfad, 'utf-8');
+  const block = roh.match(/^---\r?\n[\s\S]*?\r?\n---/)?.[0];
+  if (!block) return false;
+
+  const zeile = `substack_url: "${url}"`;
+  const neuerBlock = /^substack_url:.*$/m.test(block)
+    ? block.replace(/^substack_url:.*$/m, zeile)
+    : block.replace(/(\r?\n)---$/, `$1${zeile}$1---`);
+
+  writeFileSync(pfad, neuerBlock + roh.slice(block.length), 'utf-8');
+  return true;
+}
+
 /** Findet eine Datei im Ordner unabhängig von Unicode-Normalisierung/Groß-Klein */
 function findeDatei(ordner, name) {
   if (!existsSync(ordner)) return null;
@@ -312,6 +335,7 @@ if (existsSync(ESSAY_VAULT)) {
 
 const kandidaten = []; // { art, label, ziel, inhalt, url }
 const argumentListe = []; // { slug, titel, diagramm, datum } — für argumente.js
+const fertigeEssays = []; // { datei, slug, titel, ziel, url, substackUrl, baueInhalt }
 
 if (existsSync(ESSAY_VAULT)) {
   for (const datei of readdirSync(ESSAY_VAULT)) {
@@ -349,24 +373,40 @@ if (existsSync(ESSAY_VAULT)) {
       continue;
     }
 
-    const frontmatter = [
-      '---',
-      `title: "${titel.replace(/"/g, '\\"')}"`,
-      `date: ${datum}`,
-      ...(daten.substack_url ? [`substack_url: "${daten.substack_url}"`] : []),
-      '---',
-    ].join('\n');
+    // Als Funktion, damit der Substack-Schritt weiter unten denselben Essay
+    // mit ergänztem Link noch einmal bauen kann.
+    const baueInhalt = (substackUrl) => {
+      const frontmatter = [
+        '---',
+        `title: "${titel.replace(/"/g, '\\"')}"`,
+        `date: ${datum}`,
+        ...(substackUrl ? [`substack_url: "${substackUrl}"`] : []),
+        '---',
+      ].join('\n');
+      return `${frontmatter}\n\n${text}\n`;
+    };
 
-    const inhalt = `${frontmatter}\n\n${text}\n`;
     const ziel = join(ESSAY_ORDNER, `${slug}.md`);
+    const url = `https://www.annotanda.com/essays/${slug}/`;
 
+    fertigeEssays.push({
+      datei,
+      slug,
+      titel,
+      ziel,
+      url,
+      substackUrl: daten.substack_url || null,
+      baueInhalt,
+    });
+
+    const inhalt = baueInhalt(daten.substack_url);
     if (existsSync(ziel) && readFileSync(ziel, 'utf-8') === inhalt) continue;
     kandidaten.push({
       art: existsSync(ziel) ? 'aktualisiert' : 'neu',
       label: titel,
       ziel,
       inhalt,
-      url: `https://www.annotanda.com/essays/${slug}/`,
+      url,
     });
   }
 }
@@ -437,7 +477,63 @@ for (const seite of SEITEN) {
 
 // ── Nichts zu tun? ──────────────────────────────────────────────────────────
 
+// Fertige Essays, bei denen der Substack-Link noch fehlt. Bewusst ALLE, nicht
+// nur die geänderten: der Normalfall ist „letzten Sonntag veröffentlicht, jetzt
+// drüben online" — da hat sich am Text nichts getan, nur der Link kommt dazu.
+const ohneSubstack = fertigeEssays.filter((e) => !e.substackUrl);
+
+if (kandidaten.length === 0 && ohneSubstack.length === 0) {
+  console.log('\nNichts zu veröffentlichen — keine fertigen, geänderten Essays');
+  console.log('und keine geänderten Seiten im Vault.\n');
+  process.exit(0);
+}
+
+const rl = createInterface({ input: process.stdin, output: process.stdout });
+const frage = (text) => new Promise((resolve) => rl.question(text, resolve));
+
+// ── Substack-Links eintragen ────────────────────────────────────────────────
+// Der Link geht zuerst in die Obsidian-Notiz (Quelle der Wahrheit), dann in die
+// Veröffentlichung — so muss publizieren nicht zweimal laufen.
+
+let vaultGeaendert = false;
+
+if (ohneSubstack.length > 0) {
+  console.log('\n── Substack ─────────────────────────────────────────────\n');
+  for (const e of ohneSubstack) console.log(`  ○ ohne Link   ${e.titel}`);
+
+  const jetzt = await frage(`\nLinks jetzt eintragen? [j/N] `);
+
+  if (jetzt.trim().toLowerCase() === 'j') {
+    for (const e of ohneSubstack) {
+      const eingabe = (await frage(`\n  „${e.titel}"\n  URL (Enter = überspringen): `)).trim();
+      if (!eingabe) continue;
+      if (!/^https?:\/\/\S+$/i.test(eingabe)) {
+        console.log('  ⚠ Sieht nicht nach einer URL aus — übersprungen.');
+        continue;
+      }
+
+      e.substackUrl = eingabe;
+      if (setzeSubstackImVault(e.datei, eingabe)) vaultGeaendert = true;
+
+      const inhalt = e.baueInhalt(eingabe);
+      const schonKandidat = kandidaten.find((k) => k.ziel === e.ziel);
+      if (schonKandidat) {
+        schonKandidat.inhalt = inhalt;
+      } else if (!(existsSync(e.ziel) && readFileSync(e.ziel, 'utf-8') === inhalt)) {
+        kandidaten.push({
+          art: existsSync(e.ziel) ? 'aktualisiert' : 'neu',
+          label: e.titel,
+          ziel: e.ziel,
+          inhalt,
+          url: e.url,
+        });
+      }
+    }
+  }
+}
+
 if (kandidaten.length === 0) {
+  rl.close();
   console.log('\nNichts zu veröffentlichen — keine fertigen, geänderten Essays');
   console.log('und keine geänderten Seiten im Vault.\n');
   process.exit(0);
@@ -451,14 +547,17 @@ for (const k of kandidaten) {
   console.log(`  ${marke}  ${k.label}`);
 }
 
-const rl = createInterface({ input: process.stdin, output: process.stdout });
-const antwort = await new Promise((resolve) =>
-  rl.question(`\nVeröffentlichen? Commit + Push + Vercel-Deploy folgen. [j/N] `, resolve)
-);
+const antwort = await frage(`\nVeröffentlichen? Commit + Push + Vercel-Deploy folgen. [j/N] `);
 rl.close();
 
 if (antwort.trim().toLowerCase() !== 'j') {
-  console.log('\nAbgebrochen — nichts wurde verändert.\n');
+  console.log('\nAbgebrochen — die Website bleibt unverändert.');
+  // Ehrlich bleiben: der Link steht dann schon in der Notiz, nur noch nicht online.
+  if (vaultGeaendert) {
+    console.log('Die eingetragenen Substack-Links stehen bereits in Obsidian —');
+    console.log('der nächste Lauf nimmt sie mit.');
+  }
+  console.log('');
   process.exit(0);
 }
 

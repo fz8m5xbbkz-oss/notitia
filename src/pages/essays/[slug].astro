@@ -47,6 +47,13 @@ const lesezeit = Math.max(1, Math.round(woerter / 200));
     </header>
     <Content />
     <p class="schluss" aria-hidden="true">⁂</p>
+    {essay.data.substack_url && (
+      <p class="substack">
+        <a href={essay.data.substack_url} target="_blank" rel="noopener noreferrer">
+          auch auf Substack ↗
+        </a>
+      </p>
+    )}
   </article>
 </Basis>
 
@@ -127,6 +134,28 @@ const lesezeit = Math.max(1, Math.round(woerter / 200));
     font-size: 1.2rem;
     margin: 3rem 0 0;
     user-select: none;
+  }
+
+  /* Substack-Hinweis unter dem Asterismus — dieselbe Sprache wie in der
+     Essay-Liste, nur zentriert unter dem Schlusszeichen. */
+  .substack {
+    text-align: center;
+    margin: 1.25rem 0 0;
+    font-family: var(--schrift-ui);
+    font-size: 0.85rem;
+  }
+
+  .substack a {
+    color: var(--grau);
+    text-decoration: none;
+    border-bottom: 1px solid var(--linie);
+    padding-bottom: 1px;
+    transition: color 0.15s ease, border-color 0.15s ease;
+  }
+
+  .substack a:hover {
+    color: var(--akzent);
+    border-color: var(--akzent);
   }
 
   .fortschritt {
