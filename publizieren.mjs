@@ -488,8 +488,35 @@ if (kandidaten.length === 0 && ohneSubstack.length === 0) {
   process.exit(0);
 }
 
+// Eigene Frage-Funktion statt rl.question: Bei mehreren Fragen hintereinander
+// verschluckt readline gepipte Eingaben (die Zeilen sind schon da, bevor die
+// zweite Frage überhaupt gestellt wird). Deshalb werden Zeilen gepuffert und
+// beantwortete Fragen bedienen sich daraus. Endet die Eingabe früher als die
+// Fragen (Strg-D, kurze Pipe), zählt das als leere Antwort — das Skript hängt
+// dann nicht, sondern nimmt die sichere Vorgabe (Nein/Überspringen).
 const rl = createInterface({ input: process.stdin, output: process.stdout });
-const frage = (text) => new Promise((resolve) => rl.question(text, resolve));
+
+const zeilenPuffer = [];
+const wartende = [];
+let eingabeBeendet = false;
+
+rl.on('line', (zeile) => {
+  const naechste = wartende.shift();
+  if (naechste) naechste(zeile);
+  else zeilenPuffer.push(zeile);
+});
+
+rl.on('close', () => {
+  eingabeBeendet = true;
+  while (wartende.length) wartende.shift()('');
+});
+
+const frage = (text) => {
+  process.stdout.write(text);
+  if (zeilenPuffer.length) return Promise.resolve(zeilenPuffer.shift());
+  if (eingabeBeendet) return Promise.resolve('');
+  return new Promise((resolve) => wartende.push(resolve));
+};
 
 // ── Substack-Links eintragen ────────────────────────────────────────────────
 // Der Link geht zuerst in die Obsidian-Notiz (Quelle der Wahrheit), dann in die
