@@ -34,6 +34,9 @@ const sektionen = [
               : <em>{b.titel}</em>
             }{b.jahr && <span class="meta">, {b.jahr}</span>}
             {b.notiz && <p class="notiz">{b.notiz}</p>}
+            {b.resuemee && (
+              <a class="resuemee-link" href={`/buecher/${b.resuemee}/`}>Resümee lesen →</a>
+            )}
           </li>
         ))}
       </ol>
@@ -71,5 +74,23 @@ const sektionen = [
     font-style: italic;
     color: var(--ink-soft);
     font-size: 0.9rem;
+  }
+
+  /* Link zum Resümee — dieselbe dezente Sprache wie „auch auf Substack".
+     Eigene Zeile (block), damit er auch ohne Notiz nicht hinter dem Jahr klebt. */
+  .resuemee-link {
+    display: block;
+    width: fit-content;
+    margin-top: 0.35rem;
+    font-family: var(--schrift-ui);
+    font-size: 0.8rem;
+    color: var(--grau);
+    text-decoration: none;
+    transition: color 0.15s ease, transform 0.35s var(--feder);
+  }
+
+  .resuemee-link:hover {
+    color: var(--akzent);
+    transform: translateX(4px);
   }
 </style>

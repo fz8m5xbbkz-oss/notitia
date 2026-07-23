@@ -24,7 +24,7 @@
  */
 
 import { createInterface } from 'node:readline';
-import { readdirSync, readFileSync, writeFileSync, existsSync } from 'node:fs';
+import { readdirSync, readFileSync, writeFileSync, existsSync, mkdirSync } from 'node:fs';
 import { join, dirname, basename } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { execFileSync } from 'node:child_process';
@@ -37,8 +37,10 @@ const VAULT_BASIS = join(
   '06 - annotanda'
 );
 const ESSAY_VAULT = join(VAULT_BASIS, 'annotanda Essays');
+const RESUEMEE_VAULT = join(VAULT_BASIS, 'annotanda Bücher');
 const SEITEN_VAULT = join(VAULT_BASIS, 'annotanda Seiten');
 const ESSAY_ORDNER = join(__dir, 'src/content/essays');
+const RESUEMEE_ORDNER = join(__dir, 'src/content/buecher');
 
 // ── Hilfsfunktionen ───────────────────────────────────────────────────────
 
@@ -102,15 +104,16 @@ function bereinige(body, slugMap = null) {
 }
 
 /**
- * Trägt `substack_url` in die Frontmatter einer Obsidian-Essay-Notiz ein.
+ * Trägt `substack_url` in die Frontmatter einer Obsidian-Notiz ein
+ * (Essay oder Resümee — daher der Vault-Ordner als Parameter).
  * Die Notiz bleibt die Quelle der Wahrheit — stünde der Link nur im Repo,
  * wäre er beim nächsten Lauf wieder überschrieben. Ein vorhandener (auch
  * leerer) Schlüssel wird ersetzt, sonst wird die Zeile vor dem schließenden
  * `---` eingefügt. Ohne Frontmatter passiert nichts — dann fehlte auch
  * `status: fertig`, der Essay wäre gar nicht so weit gekommen.
  */
-function setzeSubstackImVault(datei, url) {
-  const pfad = join(ESSAY_VAULT, datei);
+function setzeSubstackImVault(vault, datei, url) {
+  const pfad = join(vault, datei);
   const roh = readFileSync(pfad, 'utf-8');
   const block = roh.match(/^---\r?\n[\s\S]*?\r?\n---/)?.[0];
   if (!block) return false;
@@ -244,8 +247,43 @@ const KOPF = (quelle) =>
   `// via \`npm run publizieren\`. Nicht von Hand bearbeiten — Änderungen hier\n` +
   `// werden beim nächsten Publizieren überschrieben.\n`;
 
+/** Normalisiert einen Buchtitel für den Abgleich Lektüre ↔ Resümee:
+ *  klein, Umlaute aufgelöst, alles außer Buchstaben/Ziffern weg. So matcht
+ *  „Was bedeutet das alles?" auch gegen den langen Untertitel in der Liste. */
+function buchKey(s) {
+  return (s || '')
+    .toLowerCase()
+    .replace(/ü/g, 'ue')
+    .replace(/ö/g, 'oe')
+    .replace(/ä/g, 'ae')
+    .replace(/ß/g, 'ss')
+    .replace(/[^a-z0-9]/g, '');
+}
+
+// Gefüllt beim Vorab-Scan der fertigen Resümees: { key, slug } je Buch.
+// genLektuere hängt an jedes passende Buch den Resümee-Slug.
+const resuemeeIndex = [];
+
+/** Resümee-Slug für ein Buch aus der Lektüre-Liste, falls eins existiert.
+ *  Treffer, wenn ein Schlüssel im anderen steckt (kurzer Titel ↔ langer). */
+function findeResuemee(buchTitel) {
+  const k = buchKey(buchTitel);
+  if (!k) return null;
+  for (const e of resuemeeIndex) {
+    if (k.includes(e.key) || e.key.includes(k)) return e.slug;
+  }
+  return null;
+}
+
 function genLektuere(body) {
   const d = parseLektuere(body);
+  // Jedem Buch den Resümee-Slug beilegen (nur wo es eins gibt).
+  for (const abschnitt of [d.aktuell, d.geplant, d.abgeschlossen, d.empfohlen]) {
+    for (const buch of abschnitt) {
+      const slug = findeResuemee(buch.titel);
+      if (slug) buch.resuemee = slug;
+    }
+  }
   const j = (a) => JSON.stringify(a, null, 2);
   return (
     KOPF('Lektüre.md') +
@@ -331,11 +369,46 @@ if (existsSync(ESSAY_VAULT)) {
   }
 }
 
+// ── Vorab-Scan: welche Bücher haben ein Resümee? ────────────────────────────
+// Baut resuemeeIndex (Buch-Schlüssel → Resümee-Slug), damit genLektuere die
+// Lektüre-Liste mit „Resümee lesen"-Links versehen kann. Ein Resümee bindet
+// sich über die Eigenschaft `buch` an ein Buch — fehlt sie, dient der Titel
+// als Schlüssel. Nur fertige Resümees (Vault) und bereits publizierte (Repo).
+
+function merkeResuemee(buchOderTitel, slug) {
+  const key = buchKey(buchOderTitel);
+  if (key && !resuemeeIndex.some((e) => e.key === key)) {
+    resuemeeIndex.push({ key, slug });
+  }
+}
+
+if (existsSync(RESUEMEE_ORDNER)) {
+  for (const datei of readdirSync(RESUEMEE_ORDNER)) {
+    if (!datei.endsWith('.md')) continue;
+    const slug = basename(datei, '.md');
+    const { daten } = parseFrontmatter(readFileSync(join(RESUEMEE_ORDNER, datei), 'utf-8'));
+    merkeResuemee(daten.buch || daten.title, slug);
+  }
+}
+
+if (existsSync(RESUEMEE_VAULT)) {
+  for (const datei of readdirSync(RESUEMEE_VAULT)) {
+    if (!datei.endsWith('.md') || datei.startsWith('_')) continue;
+    const { daten, body } = parseFrontmatter(readFileSync(join(RESUEMEE_VAULT, datei), 'utf-8'));
+    if (daten.status !== 'fertig') continue;
+    const h1 = body.match(/^\s*#\s+(.+)$/m);
+    const titel = daten.title || h1?.[1].trim() || basename(datei, '.md');
+    const slug = slugify(daten.slug || titel);
+    merkeResuemee(daten.buch || titel, slug);
+  }
+}
+
 // ── Essays sammeln ──────────────────────────────────────────────────────────
 
 const kandidaten = []; // { art, label, ziel, inhalt, url }
 const argumentListe = []; // { slug, titel, diagramm, datum } — für argumente.js
-const fertigeEssays = []; // { datei, slug, titel, ziel, url, substackUrl, baueInhalt }
+const fertigeEssays = []; // { datei, vault, slug, titel, ziel, url, substackUrl, baueInhalt }
+const fertigeResuemees = []; // dieselbe Form — für den gemeinsamen Substack-Schritt
 
 if (existsSync(ESSAY_VAULT)) {
   for (const datei of readdirSync(ESSAY_VAULT)) {
@@ -391,6 +464,7 @@ if (existsSync(ESSAY_VAULT)) {
 
     fertigeEssays.push({
       datei,
+      vault: ESSAY_VAULT,
       slug,
       titel,
       ziel,
@@ -404,6 +478,69 @@ if (existsSync(ESSAY_VAULT)) {
     kandidaten.push({
       art: existsSync(ziel) ? 'aktualisiert' : 'neu',
       label: titel,
+      ziel,
+      inhalt,
+      url,
+    });
+  }
+}
+
+// ── Resümees sammeln ────────────────────────────────────────────────────────
+// Zweite Textform, bewusst wie die Essays: Notiz mit `# Titel`, status:fertig,
+// eigene Datei in src/content/buecher/. Kein Argument-Diagramm. `buch` bindet
+// optional an ein Buch der Lektüre-Liste (siehe resuemeeIndex/genLektuere).
+
+if (existsSync(RESUEMEE_VAULT)) {
+  for (const datei of readdirSync(RESUEMEE_VAULT)) {
+    if (!datei.endsWith('.md') || datei.startsWith('_')) continue;
+
+    const roh = readFileSync(join(RESUEMEE_VAULT, datei), 'utf-8');
+    const { daten, body } = parseFrontmatter(roh);
+    if (daten.status !== 'fertig') continue;
+
+    const h1 = body.match(/^\s*#\s+(.+)$/m);
+    const titel = daten.title || h1?.[1].trim() || basename(datei, '.md');
+    const slug = slugify(daten.slug || titel);
+    const datum = daten.date || new Date().toISOString().split('T')[0];
+    const buch = daten.buch || null;
+
+    const text = bereinige(body.replace(/^\s*#\s+.+\r?\n+/, ''), slugMap);
+    if (!text) {
+      console.log(`· „${titel}" ist noch leer — übersprungen.`);
+      continue;
+    }
+
+    const baueInhalt = (substackUrl) => {
+      const frontmatter = [
+        '---',
+        `title: "${titel.replace(/"/g, '\\"')}"`,
+        `date: ${datum}`,
+        ...(buch ? [`buch: "${buch.replace(/"/g, '\\"')}"`] : []),
+        ...(substackUrl ? [`substack_url: "${substackUrl}"`] : []),
+        '---',
+      ].join('\n');
+      return `${frontmatter}\n\n${text}\n`;
+    };
+
+    const ziel = join(RESUEMEE_ORDNER, `${slug}.md`);
+    const url = `https://www.annotanda.com/buecher/${slug}/`;
+
+    fertigeResuemees.push({
+      datei,
+      vault: RESUEMEE_VAULT,
+      slug,
+      titel,
+      ziel,
+      url,
+      substackUrl: daten.substack_url || null,
+      baueInhalt,
+    });
+
+    const inhalt = baueInhalt(daten.substack_url);
+    if (existsSync(ziel) && readFileSync(ziel, 'utf-8') === inhalt) continue;
+    kandidaten.push({
+      art: existsSync(ziel) ? 'aktualisiert' : 'neu',
+      label: `Resümee: ${titel}`,
       ziel,
       inhalt,
       url,
@@ -477,10 +614,11 @@ for (const seite of SEITEN) {
 
 // ── Nichts zu tun? ──────────────────────────────────────────────────────────
 
-// Fertige Essays, bei denen der Substack-Link noch fehlt. Bewusst ALLE, nicht
-// nur die geänderten: der Normalfall ist „letzten Sonntag veröffentlicht, jetzt
-// drüben online" — da hat sich am Text nichts getan, nur der Link kommt dazu.
-const ohneSubstack = fertigeEssays.filter((e) => !e.substackUrl);
+// Fertige Texte (Essays + Resümees), bei denen der Substack-Link noch fehlt.
+// Bewusst ALLE, nicht nur die geänderten: der Normalfall ist „letzten Sonntag
+// veröffentlicht, jetzt drüben online" — da hat sich am Text nichts getan, nur
+// der Link kommt dazu.
+const ohneSubstack = [...fertigeEssays, ...fertigeResuemees].filter((e) => !e.substackUrl);
 
 if (kandidaten.length === 0 && ohneSubstack.length === 0) {
   console.log('\nNichts zu veröffentlichen — keine fertigen, geänderten Essays');
@@ -540,7 +678,7 @@ if (ohneSubstack.length > 0) {
       }
 
       e.substackUrl = eingabe;
-      if (setzeSubstackImVault(e.datei, eingabe)) vaultGeaendert = true;
+      if (setzeSubstackImVault(e.vault, e.datei, eingabe)) vaultGeaendert = true;
 
       const inhalt = e.baueInhalt(eingabe);
       const schonKandidat = kandidaten.find((k) => k.ziel === e.ziel);
@@ -589,6 +727,7 @@ if (antwort.trim().toLowerCase() !== 'j') {
 }
 
 for (const k of kandidaten) {
+  mkdirSync(dirname(k.ziel), { recursive: true }); // Bücher-Ordner ist evtl. neu
   writeFileSync(k.ziel, k.inhalt, 'utf-8');
 }
 

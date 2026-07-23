@@ -1,0 +1,149 @@
+---
+import Basis from '../../layouts/Basis.astro';
+import Vignette from '../../components/Vignette.astro';
+import { getCollection } from 'astro:content';
+import { lesezeit, auszug } from '../../lib/text.ts';
+
+// Zweite Textform neben den Essays: Resümees zu gelesenen Büchern.
+const resuemees = await getCollection('buecher');
+const sortiert = resuemees
+  .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
+
+const formatDatum = (datum: Date) =>
+  datum.toLocaleDateString('de-DE', { day: '2-digit', month: 'long', year: 'numeric' });
+---
+
+<Basis
+  titel="Bücher — annotanda"
+  beschreibung="Resümees zu den Büchern, die ich lese — was hängengeblieben ist und was sich lohnt."
+>
+  <Vignette motiv="buecher" />
+  <h1>Bücher</h1>
+  <p class="intro">Resümees zu dem, was ich lese. Ein Buch, zu Ende gedacht.</p>
+  {sortiert.length === 0 ? (
+    <p>Noch keine Resümees.</p>
+  ) : (
+    <ul class="liste">
+      {sortiert.map((r, i) => (
+        <li style={`animation-delay: ${Math.min(i, 10) * 60}ms`}>
+          <a href={`/buecher/${r.id}/`} class="essay-link">
+            <span class="titel">{r.data.title}</span>
+            <span class="meta">{formatDatum(r.data.date)} · {lesezeit(r.body)} Min. Lesezeit</span>
+            <span class="auszug">{auszug(r.body, 150)}</span>
+          </a>
+          {r.data.substack_url && (
+            <a class="substack-link" href={r.data.substack_url} target="_blank" rel="noopener noreferrer">
+              auch auf Substack ↗
+            </a>
+          )}
+        </li>
+      ))}
+    </ul>
+  )}
+</Basis>
+
+<style>
+  h1 {
+    animation: aufklaren 0.6s ease-out both;
+  }
+
+  .intro {
+    color: var(--grau);
+    font-style: italic;
+    margin: 0 0 2rem;
+    animation: aufklaren 0.6s ease-out 100ms both;
+  }
+
+  .liste {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  .liste li {
+    padding: 1rem 0;
+    border-bottom: 1px solid var(--linie);
+    animation: einblenden 0.5s var(--feder) both;
+  }
+
+  .liste li:last-child {
+    border-bottom: none;
+  }
+
+  /* Hauptlink: Titel + Datum */
+  .essay-link {
+    position: relative;
+    text-decoration: none;
+    color: var(--ink);
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+    transition: transform 0.35s var(--feder);
+  }
+
+  .essay-link::before {
+    content: '→';
+    position: absolute;
+    left: -1.5rem;
+    top: 0.1rem;
+    color: var(--akzent);
+    opacity: 0;
+    transform: translateX(-8px);
+    transition: opacity 0.25s ease, transform 0.35s var(--feder);
+  }
+
+  .essay-link:hover {
+    transform: translateX(10px);
+  }
+
+  .essay-link:hover::before {
+    opacity: 1;
+    transform: none;
+  }
+
+  .essay-link:hover .titel {
+    color: var(--akzent);
+  }
+
+  @media (max-width: 640px) {
+    .essay-link::before {
+      display: none;
+    }
+
+    .essay-link:hover {
+      transform: none;
+    }
+  }
+
+  .titel {
+    font-size: 1.15rem;
+    transition: color 0.15s ease;
+  }
+
+  .meta {
+    font-family: var(--schrift-ui);
+    font-size: 0.85rem;
+    color: var(--grau);
+  }
+
+  .auszug {
+    margin-top: 0.35rem;
+    color: var(--ink-soft);
+    line-height: 1.5;
+  }
+
+  /* Substack-Hinweis: kleiner, dezent, eigenständiger Link */
+  .substack-link {
+    display: inline-block;
+    margin-top: 0.2rem;
+    font-family: var(--schrift-ui);
+    font-size: 0.8rem;
+    color: var(--grau);
+    text-decoration: none;
+    transition: color 0.15s ease;
+  }
+
+  .substack-link:hover {
+    color: var(--akzent);
+  }
+</style>

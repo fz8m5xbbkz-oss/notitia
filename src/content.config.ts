@@ -14,6 +14,20 @@ const essays = defineCollection({
   }),
 });
 
+// Resümees — zweite Textform neben den Essays: Buchbesprechungen. Bewusst
+// dieselbe Maschinerie (eigene Notizen im Vault, status:fertig, publizieren).
+// `buch` verknüpft optional mit einem Titel aus der Lektüre-Liste, damit der
+// dort einen „Resümee lesen"-Link bekommen kann.
+const buecher = defineCollection({
+  loader: glob({ pattern: '**/*.md', base: './src/content/buecher' }),
+  schema: z.object({
+    title: z.string(),
+    date: z.coerce.date(),
+    buch: z.string().optional(),
+    substack_url: z.string().url().optional(),
+  }),
+});
+
 const felder = defineCollection({
   loader: glob({ pattern: '**/*.md', base: './src/content/felder' }),
   schema: z.object({
@@ -22,4 +36,4 @@ const felder = defineCollection({
   }),
 });
 
-export const collections = { essays, felder };
+export const collections = { essays, buecher, felder };
